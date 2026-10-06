@@ -4,6 +4,7 @@ import React from 'react';
 import type { SimulationState } from '../../types/game';
 import { Cpu, Activity, Zap, Wind, ShieldCheck, Layers } from 'lucide-react';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { EclssFlowDiagram } from './EclssFlowDiagram';
 
 interface CommanderTelemetryProps {
   state: SimulationState;
@@ -119,6 +120,11 @@ export const CommanderTelemetry: React.FC<CommanderTelemetryProps> = ({ state })
             <span className="text-amber-300 font-bold">{formatNum(resources.spareParts)} {language === 'bn' ? 'টি' : 'units'}</span>
           </div>
         </div>
+      </div>
+
+      {/* NASA ECLSS Closed-Loop Mass Balance Flow Diagram */}
+      <div className="mt-3">
+        <EclssFlowDiagram state={state} />
       </div>
 
       {/* Subsystem Dependencies Graph / Matrix */}

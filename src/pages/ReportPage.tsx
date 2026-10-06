@@ -19,8 +19,9 @@ import {
   Droplets, 
   Apple, 
   Heart,
-  Award 
+  Printer
 } from 'lucide-react';
+import { CadetFlightCertificateModal } from '../components/report/CadetFlightCertificateModal';
 
 export const ReportPage: React.FC = () => {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ export const ReportPage: React.FC = () => {
   const isVictory = missionStatus === 'victory';
 
   const [expandedChain, setExpandedChain] = useState<boolean>(true);
+  const [showCertificateModal, setShowCertificateModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (isVictory) {
@@ -208,11 +210,14 @@ export const ReportPage: React.FC = () => {
 
             <div className="flex flex-wrap items-center gap-2">
               <button
-                onClick={() => navigate('/learn')}
-                className="flex-1 sm:flex-none min-h-[42px] px-3.5 sm:px-4 py-2.5 rounded-xl bg-amber-950/40 border border-amber-500/40 text-amber-300 hover:bg-amber-900/40 text-xs font-mono flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95"
+                onClick={() => {
+                  sound.playClick();
+                  setShowCertificateModal(true);
+                }}
+                className="flex-1 sm:flex-none min-h-[42px] px-3.5 sm:px-4 py-2.5 rounded-xl bg-amber-500/20 border border-amber-400/60 text-amber-300 hover:bg-amber-500/30 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95"
               >
-                <Award className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>{language === 'bn' ? 'সনদ ও কুইজ' : 'Cadet Certificate'}</span>
+                <Printer className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>{language === 'bn' ? 'ফ্লাইট সনদ প্রিন্ট' : 'Flight Certificate'}</span>
               </button>
 
               <button
@@ -245,6 +250,13 @@ export const ReportPage: React.FC = () => {
           </div>
         </div>
       </main>
+
+      {/* Official NASA Cadet Flight Certificate Modal */}
+      <CadetFlightCertificateModal
+        state={gameState}
+        isOpen={showCertificateModal}
+        onClose={() => setShowCertificateModal(false)}
+      />
     </div>
   );
 };

@@ -237,6 +237,88 @@ class SoundEngine {
     } catch {}
   }
 
+  // NASA Quindar Tones (Authentic Apollo / Artemis Radio Beep)
+  // Intro tone: 2524 Hz for 250ms | Outro tone: 2475 Hz for 250ms
+  public playQuindarTone(isIntro: boolean = true) {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    try {
+      const now = this.ctx.currentTime;
+      const freq = isIntro ? 2524 : 2475;
+
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now);
+
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.22);
+    } catch {}
+  }
+
+  // Rover Sortie Motor Drive Hum
+  public playRoverMotor() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    try {
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.linearRampToValueAtTime(260, now + 0.4);
+      osc.frequency.linearRampToValueAtTime(180, now + 0.8);
+
+      gain.gain.setValueAtTime(0.06, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.85);
+    } catch {}
+  }
+
+  // Rover Core Drill / Sample Acquisition
+  public playRoverDrill() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    try {
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(420, now);
+      osc.frequency.linearRampToValueAtTime(580, now + 0.3);
+      osc.frequency.linearRampToValueAtTime(360, now + 0.6);
+
+      gain.gain.setValueAtTime(0.07, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.65);
+    } catch {}
+  }
+
   public stopAmbient() {
     if (this.ambientOsc) {
       try {

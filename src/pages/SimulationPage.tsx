@@ -19,6 +19,7 @@ import { GAME_EVENTS } from '../events/eventDatabase';
 import { sound } from '../sound/audioEngine';
 import { NasaDataSourceModal } from '../components/nasa/NasaDataSourceModal';
 import { NasaTerrainExplorerModal } from '../components/nasa/NasaTerrainExplorerModal';
+import { RoverSortieModal } from '../components/mission/RoverSortieModal';
 
 export const SimulationPage: React.FC = () => {
   const { eventId } = useParams<{ eventId?: string }>();
@@ -26,6 +27,7 @@ export const SimulationPage: React.FC = () => {
 
   const [showNasaDataModal, setShowNasaDataModal] = useState(false);
   const [showTerrainModal, setShowTerrainModal] = useState(false);
+  const [showRoverSortieModal, setShowRoverSortieModal] = useState(false);
 
   const {
     gameState,
@@ -64,6 +66,20 @@ export const SimulationPage: React.FC = () => {
     }
   }, [eventId, gameState.activeEvent, gameState.completedDecisions, navigate, setGameState]);
 
+  const handleApplyRoverRewards = (rewards: { water?: number; power?: number; sciencePts?: number; spares?: number }) => {
+    setGameState(prev => {
+      const nextRes = { ...prev.resources };
+      if (rewards.water) nextRes.water = Math.min(nextRes.waterMax, nextRes.water + rewards.water);
+      if (rewards.power) nextRes.power = Math.min(nextRes.powerMax, nextRes.power + rewards.power);
+      if (rewards.spares) nextRes.spareParts = Math.min(100, nextRes.spareParts + rewards.spares);
+      return {
+        ...prev,
+        resources: nextRes,
+        sciencePoints: prev.sciencePoints + (rewards.sciencePts || 0)
+      };
+    });
+  };
+
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-[#050914] text-[#F5F7FA] font-sans relative selection:bg-[#52D6FF]/30">
       {/* 1. Specialized Game Top HUD */}
@@ -86,6 +102,7 @@ export const SimulationPage: React.FC = () => {
             sound.playClick();
           }}
           onOpenTerrainExplorer={() => setShowTerrainModal(true)}
+          onOpenRoverSortie={() => setShowRoverSortieModal(true)}
         />
 
         {/* 3. Six Core Resources HUD with Progressive Disclosure */}
@@ -173,6 +190,12 @@ export const SimulationPage: React.FC = () => {
             dataset={gameState.landingSite.nasaDataset}
             isOpen={showNasaDataModal}
             onClose={() => setShowNasaDataModal(false)}
+          />
+          <RoverSortieModal
+            state={gameState}
+            isOpen={showRoverSortieModal}
+            onClose={() => setShowRoverSortieModal(false)}
+            onApplyRewards={handleApplyRoverRewards}
           />
         </>
       )}

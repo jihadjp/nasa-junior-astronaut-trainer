@@ -23,6 +23,7 @@ import { getLandingSitesForDestination, getLandingSiteById } from '../data/landi
 import { NasaDataBadge } from '../components/common/NasaDataBadge';
 import { NasaDataSourceModal } from '../components/nasa/NasaDataSourceModal';
 import { NasaTerrainExplorerModal } from '../components/nasa/NasaTerrainExplorerModal';
+import { PlanetarySurfaceRadar } from '../components/nasa/PlanetarySurfaceRadar';
 
 export const LocationPage: React.FC = () => {
   const navigate = useNavigate();
@@ -263,6 +264,17 @@ export const LocationPage: React.FC = () => {
                 <span>{language === 'bn' ? 'উচ্চতা প্রোফাইল দেখুন' : 'Explore NASA Data'}</span>
               </button>
             </div>
+          </div>
+
+          {/* Interactive NASA Planetary Surface Topographic Radar */}
+          <div className="mb-6">
+            <PlanetarySurfaceRadar
+              destination={destConfig}
+              sites={availableSites}
+              selectedSiteId={landingSiteConfig}
+              onSelectSite={handleSelectSite}
+              onExploreElevation={(site) => setActiveExplorerSite(site)}
+            />
           </div>
 
           {/* 4 Landing Sites Cards Grid */}

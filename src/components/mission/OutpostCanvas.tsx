@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import type { SimulationState, ModuleType } from '../../types/game';
 import { AlertTriangle, Info, Compass, Maximize2 } from 'lucide-react';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { sound } from '../../sound/audioEngine';
 
 interface OutpostCanvasProps {
   state: SimulationState;
   focusedModule?: ModuleType | null;
   onInspectModule?: (moduleId: ModuleType) => void;
   onOpenTerrainExplorer?: () => void;
+  onOpenRoverSortie?: () => void;
 }
 
 interface Particle {
@@ -23,7 +25,8 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
   state, 
   focusedModule = null, 
   onInspectModule,
-  onOpenTerrainExplorer
+  onOpenTerrainExplorer,
+  onOpenRoverSortie
 }) => {
   const { t, formatNum, language } = useLanguage();
   const { destination, environment, modules, resources, deltas, missionDay, activeEvent, landingSite } = state;
@@ -898,6 +901,19 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
             <span>{t('canvas.spe')}</span>
           </span>
         )}
+
+        {/* Autonomous Rover Science Sortie Trigger */}
+        {onOpenRoverSortie && (
+          <button
+            type="button"
+            onClick={onOpenRoverSortie}
+            className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 font-mono text-[10px] sm:text-xs font-bold flex items-center gap-1 shadow-md transition-all active:scale-95 cursor-pointer ml-auto sm:ml-0"
+            title={language === 'bn' ? 'স্বায়ত্তশাসিত রোভার বিজ্ঞান ও বরফ অভিযান' : 'Deploy Autonomous Rover Science Sortie'}
+          >
+            <span>🚜</span>
+            <span>{language === 'bn' ? 'রোভার সর্টি' : 'ROVER SORTIE'}</span>
+          </button>
+        )}
       </div>
 
       {/* Reset Camera View Button */}
@@ -935,9 +951,23 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
             <div>{language === 'bn' ? '⚡ বিদ্যুৎ খরচ: ' : '⚡ Power Load: '}<span className="text-amber-400">{formatNum(modules[selectedModule].powerDraw)} kW</span></div>
             <div>{language === 'bn' ? '⚙️ কার্যক্ষমতা: ' : '⚙️ Efficiency: '}<span className="text-emerald-400">{formatNum(Math.round(modules[selectedModule].efficiency * 100))}%</span></div>
           </div>
-          <div className="text-[11px] text-sky-200/80 italic border-l-2 border-[#52D6FF] pl-2">
+          <div className="text-[11px] text-sky-200/80 italic border-l-2 border-[#52D6FF] pl-2 mb-2">
             {t('canvas.spec')} {modules[selectedModule].educationalFact}
           </div>
+
+          {selectedModule === 'rover_garage' && onOpenRoverSortie && (
+            <button
+              type="button"
+              onClick={() => {
+                sound.playClick();
+                onOpenRoverSortie();
+              }}
+              className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-display font-bold text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all mt-2"
+            >
+              <span>🚜</span>
+              <span>{language === 'bn' ? 'রোভার সর্টি অভিযান শুরু করুন ↗' : 'Launch Rover Science Sortie ↗'}</span>
+            </button>
+          )}
         </div>
       )}
 
