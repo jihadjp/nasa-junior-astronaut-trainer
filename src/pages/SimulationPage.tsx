@@ -1,5 +1,5 @@
 // Route /mission/simulation & /mission/event/:eventId : Interactive Core Game Simulator
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useMission } from '../context/MissionContext';
 import { TopHUD } from '../components/mission/TopHUD';
@@ -17,10 +17,15 @@ import { EducationalModal } from '../components/events/EducationalModal';
 import { AidaCompanion } from '../components/ai/AidaCompanion';
 import { GAME_EVENTS } from '../events/eventDatabase';
 import { sound } from '../sound/audioEngine';
+import { NasaDataSourceModal } from '../components/nasa/NasaDataSourceModal';
+import { NasaTerrainExplorerModal } from '../components/nasa/NasaTerrainExplorerModal';
 
 export const SimulationPage: React.FC = () => {
   const { eventId } = useParams<{ eventId?: string }>();
   const navigate = useNavigate();
+
+  const [showNasaDataModal, setShowNasaDataModal] = useState(false);
+  const [showTerrainModal, setShowTerrainModal] = useState(false);
 
   const {
     gameState,
@@ -69,6 +74,8 @@ export const SimulationPage: React.FC = () => {
         onOpenAchievements={() => setShowAchievementsModal(true)}
         onOpenDemo={() => setShowDemoModal(true)}
         onAbortMission={() => setShowAbortModal(true)}
+        onOpenNasaData={() => setShowNasaDataModal(true)}
+        onOpenTerrainExplorer={() => setShowTerrainModal(true)}
       />
 
       <main className="max-w-7xl mx-auto w-full px-2.5 sm:px-4 py-3 sm:py-4 flex-1 flex flex-col gap-3 sm:gap-4">
@@ -78,6 +85,7 @@ export const SimulationPage: React.FC = () => {
           onInspectModule={() => {
             sound.playClick();
           }}
+          onOpenTerrainExplorer={() => setShowTerrainModal(true)}
         />
 
         {/* 3. Six Core Resources HUD with Progressive Disclosure */}
@@ -147,6 +155,26 @@ export const SimulationPage: React.FC = () => {
           whyId={educationalWhyId}
           onClose={() => setEducationalWhyId(null)}
         />
+      )}
+
+      {/* NASA Planetary Terrain & Data Modals */}
+      {gameState.landingSite && (
+        <>
+          <NasaTerrainExplorerModal
+            site={gameState.landingSite}
+            isOpen={showTerrainModal}
+            onClose={() => setShowTerrainModal(false)}
+            onOpenSourceDetails={() => {
+              setShowTerrainModal(false);
+              setShowNasaDataModal(true);
+            }}
+          />
+          <NasaDataSourceModal
+            dataset={gameState.landingSite.nasaDataset}
+            isOpen={showNasaDataModal}
+            onClose={() => setShowNasaDataModal(false)}
+          />
+        </>
       )}
     </div>
   );

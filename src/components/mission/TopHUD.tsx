@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { SimulationState } from '../../types/game';
-import { Compass, ShieldAlert, Award, GraduationCap, Play, Eye, AlertOctagon } from 'lucide-react';
+import { Compass, ShieldAlert, Award, GraduationCap, Play, Eye, AlertOctagon, Satellite } from 'lucide-react';
 import { useLanguage } from '../../i18n/LanguageContext';
 import { LanguageToggle } from '../common/LanguageToggle';
 
@@ -13,6 +13,8 @@ interface TopHUDProps {
   onOpenAchievements: () => void;
   onOpenDemo: () => void;
   onAbortMission: () => void;
+  onOpenNasaData?: () => void;
+  onOpenTerrainExplorer?: () => void;
 }
 
 export const TopHUD: React.FC<TopHUDProps> = ({
@@ -21,16 +23,22 @@ export const TopHUD: React.FC<TopHUDProps> = ({
   onOpenTeacher,
   onOpenAchievements,
   onOpenDemo,
-  onAbortMission
+  onAbortMission,
+  onOpenNasaData,
+  onOpenTerrainExplorer
 }) => {
   const { t, formatNum, language } = useLanguage();
-  const { missionDay, totalDays, destination, mode, missionStatus, environment } = state;
+  const { missionDay, totalDays, destination, mode, missionStatus, environment, landingSite } = state;
   const progressPct = Math.min(100, (missionDay / totalDays) * 100);
   const isMars = destination === 'mars';
 
   const expeditionLabel = isMars 
     ? (language === 'bn' ? 'মঙ্গল অভিযান' : 'MARS EXPEDITION')
     : (language === 'bn' ? 'চাঁদ অভিযান' : 'MOON EXPEDITION');
+
+  const siteName = landingSite 
+    ? ((language === 'bn' && landingSite.nameBn) ? landingSite.nameBn : landingSite.name)
+    : null;
 
   return (
     <header className="w-full bg-[#101827]/95 border-b border-[#52D6FF]/20 px-2.5 sm:px-4 py-2 sm:py-2.5 backdrop-blur-md sticky top-0 z-20">
@@ -40,11 +48,22 @@ export const TopHUD: React.FC<TopHUDProps> = ({
           <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
             <span className="text-lg sm:text-xl shrink-0">{isMars ? '🔴' : '🌙'}</span>
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 flex-wrap">
                 <span className="font-display font-bold text-xs sm:text-sm tracking-wide text-white shrink-0">{t('nav.brand')}</span>
                 <span className="text-[9px] sm:text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-[#52D6FF]/15 text-[#52D6FF] border border-[#52D6FF]/30 truncate max-w-[120px] sm:max-w-none">
                   {expeditionLabel}
                 </span>
+                {siteName && (
+                  <button
+                    type="button"
+                    onClick={onOpenTerrainExplorer || onOpenNasaData}
+                    className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-sky-500/10 hover:bg-sky-500/20 border border-sky-400/30 text-[9px] font-mono text-sky-300 transition-all cursor-pointer"
+                    title={language === 'bn' ? 'নাসা আসল ভূখণ্ড প্রোফাইল দেখুন' : 'Explore Real NASA Topography & Orbiter Data'}
+                  >
+                    <span className="truncate max-w-[120px] lg:max-w-[160px]">{siteName}</span>
+                    <span className="text-sky-400">({landingSite?.coordinates})</span>
+                  </button>
+                )}
               </div>
               <p className="text-[10px] sm:text-[11px] text-slate-400 font-mono hidden xs:block truncate">
                 {t('nav.tagline')}
@@ -109,6 +128,17 @@ export const TopHUD: React.FC<TopHUDProps> = ({
             </div>
 
             {/* Quick Nav Buttons */}
+            {onOpenNasaData && (
+              <button
+                onClick={onOpenNasaData}
+                className="px-2 py-1 rounded bg-sky-500/15 border border-sky-400/40 text-sky-300 hover:bg-sky-500/30 text-xs font-mono font-bold flex items-center gap-1 transition-all min-h-[30px] justify-center"
+                title={language === 'bn' ? 'অফিসিয়াল নাসা ডেটাসেট ও তথ্যসূত্র দেখুন' : 'Explore Official NASA Mission Datasets & Citations'}
+              >
+                <Satellite className="w-3.5 h-3.5 text-sky-400" />
+                <span className="hidden sm:inline">NASA DATA</span>
+              </button>
+            )}
+
             <button
               onClick={onOpenDemo}
               className="p-1.5 rounded bg-purple-500/15 border border-purple-500/40 text-purple-300 hover:bg-purple-500/30 text-xs font-mono flex items-center gap-1 transition-all min-h-[30px] min-w-[30px] justify-center"

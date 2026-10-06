@@ -1,0 +1,118 @@
+// NASA Planetary Data & Instrument Registry
+// Authoritative metadata for real NASA missions, instruments, and Solar System Treks portals
+
+import type { NasaDatasetMetadata } from '../types/game';
+
+export const NASA_PLANETARY_DATASETS: Record<string, NasaDatasetMetadata> = {
+  lola_topography: {
+    id: 'lola_topography',
+    name: 'LRO LOLA Global Topographic & Elevation Model',
+    nameBn: 'লুনার রিকনেসান্স অরবিটার (LOLA) টপোগ্রাফিক ও উচ্চতা মডেল',
+    source: 'NASA Planetary Data System (PDS) & Solar System Treks',
+    dataset: 'LOLA Gridded Data Record (LDEM_128 / SLDEM2015)',
+    instrument: 'Lunar Orbiter Laser Altimeter (LOLA)',
+    mission: 'Lunar Reconnaissance Orbiter (LRO)',
+    pdsNode: 'NASA PDS Geosciences Node (Washington University in St. Louis)',
+    url: 'https://pds-geosciences.wustl.edu/missions/lro/lola.htm',
+    trekUrl: 'https://trek.nasa.gov/moon/',
+    usage: 'Real lunar terrain elevation (km), crater rim slope angles (deg), and base site leveling feasibility.',
+    usageBn: 'চাঁদের বাস্তব পৃষ্ঠের উচ্চতা (কিমি), খাদ বা ক্র্যাটারের ঢাল (ডিগ্রি) এবং ঘাঁটি স্থাপনের সমতলতা বিশ্লেষণ।',
+    scientificContext: 'Measures lunar surface topography with 1064 nm Nd:YAG laser pulses fired at 28 Hz, determining elevation precision to under 1 meter.',
+    scientificContextBn: '১০৬৪ ন্যানোমিটার লেজার পালসের মাধ্যমে প্রতি সেকেন্ডে ২৮ বার চন্দ্রপৃষ্ঠের দূরত্ব মেপে ১ মিটারের কম সূক্ষ্মতায় উচ্চতার মানচিত্র তৈরি করেছে।'
+  },
+  diviner_thermal_solar: {
+    id: 'diviner_thermal_solar',
+    name: 'LRO Diviner Polar Thermal & Illumination Mapping',
+    nameBn: 'লুনার ডিভাইনার পোলার থার্মাল ও সৌর আলোকায়ন ম্যাপিং',
+    source: 'NASA Planetary Data System (PDS) & UCLA Diviner Team',
+    dataset: 'Diviner RDR / Polar Cumulative Illumination Maps',
+    instrument: 'Diviner Lunar Radiometer Experiment (DLRE)',
+    mission: 'Lunar Reconnaissance Orbiter (LRO)',
+    pdsNode: 'NASA PDS Geosciences Node / UCLA',
+    url: 'https://www.diviner.ucla.edu/',
+    trekUrl: 'https://trek.nasa.gov/moon/',
+    usage: 'Calculates Peak of Eternal Light solar incidence, seasonal shade, and cryogenic temperatures (-246°C in PSRs).',
+    usageBn: 'চাঁদের দক্ষিণ মেরুতে চিরন্তন সূর্যালোক (Peak of Eternal Light), ছায়া এবং অতিশীতল তাপমাত্রা (-২৪৬°C) নির্ধারণ।',
+    scientificContext: '9-channel filter radiometer measuring solar reflectance and thermal emission across 0.35 to 400 microns to identify permanently shadowed volatile traps.',
+    scientificContextBn: '৯-চ্যানেলের ফিল্টার রেডিওমিটার যা ০.৩৫ থেকে ৪০০ মাইক্রন তরঙ্গে বিকিরণ মেপে স্থায়ী ছায়াযুক্ত বরফ ফাঁদ শনাক্ত করে।'
+  },
+  mola_mars_topography: {
+    id: 'mola_mars_topography',
+    name: 'MGS MOLA Mars Global Topographic Model (MEGDR)',
+    nameBn: 'মার্স গ্লোবাল সার্ভেয়ার (MOLA) বৈশ্বিক উচ্চতা মডেল',
+    source: 'NASA Planetary Data System (PDS) & Mars Trek',
+    dataset: 'MOLA Mission Experiment Gridded Data Record (MEGDR_128)',
+    instrument: 'Mars Orbiter Laser Altimeter (MOLA)',
+    mission: 'Mars Global Surveyor (MGS)',
+    pdsNode: 'NASA PDS Geosciences Node',
+    url: 'https://pds-geosciences.wustl.edu/missions/mgs/mola.htm',
+    trekUrl: 'https://trek.nasa.gov/mars/',
+    usage: 'Authentic Martian surface elevation (relative to 6.1 mbar datum) and regional terrain slopes.',
+    usageBn: 'মঙ্গলের বাস্তব পৃষ্ঠের উচ্চতা (৬.১ মিলিবার বায়ুচাপের সাপেক্ষে) এবং আঞ্চলিক ভূমির ঢাল পরিমাপ।',
+    scientificContext: 'Established the official reference topographic datum for Mars by emitting over 670 million laser pulses with vertical precision of 30 cm.',
+    scientificContextBn: '৬৭০ মিলিয়নেরও বেশি লেজার পালস পাঠিয়ে ৩০ সেমি উল্লম্ব নির্ভুলতায় মঙ্গলের অফিশিয়াল উচ্চতা মানচিত্র তৈরি করে।'
+  },
+  sharad_subsurface_radar: {
+    id: 'sharad_subsurface_radar',
+    name: 'MRO SHARAD Subsurface Ice Sounding Radar',
+    nameBn: 'মার্স রিকনেসান্স অরবিটার (SHARAD) ভূগর্ভস্থ বরফ রাডার',
+    source: 'NASA Jet Propulsion Laboratory & Italian Space Agency (ASI)',
+    dataset: 'SHARAD Radargram Subsurface Dielectric Profiles',
+    instrument: 'Shallow Subsurface Radar (SHARAD)',
+    mission: 'Mars Reconnaissance Orbiter (MRO)',
+    pdsNode: 'NASA PDS Geosciences Node / JPL',
+    url: 'https://mars.nasa.gov/mro/mission/instruments/sharad/',
+    trekUrl: 'https://trek.nasa.gov/mars/',
+    usage: 'Grounds the in-situ water extraction model by confirming shallow subsurface ice sheets (1.5–2.5m depth in Arcadia Planitia).',
+    usageBn: 'আর্কেডিয়া প্ল্যানিটিয়া অঞ্চলে মাটির মাত্র ১.৫-২.৫ মিটার নিচে বিশাল বিশুদ্ধ বরফের অস্তিত্ব প্রমাণ করে পানির জোগান নিশ্চিত করে।',
+    scientificContext: '15-25 MHz swept frequency radar pulse penetrating up to 1 kilometer into the Martian crust to detect dielectric contrast of pure water ice sheets.',
+    scientificContextBn: '১৫-২৫ মেগাহার্টজের রাডার পালস মঙ্গলের ভূত্বকের ১ কিমি গভীরে প্রবেশ করে খাঁটি বরফের স্তর শনাক্ত করেছে।'
+  },
+  moxie_perseverance_isru: {
+    id: 'moxie_perseverance_isru',
+    name: 'Mars 2020 MOXIE Solid Oxide Oxygen Extraction',
+    nameBn: 'মার্স ২০২০ মোক্সি (MOXIE) সলিড অক্সাইড অক্সিজেন প্রযুক্তি',
+    source: 'NASA Jet Propulsion Laboratory & MIT Haystack Observatory',
+    dataset: 'Mars 2020 Flight Instrument Engineering Logs (PDS)',
+    instrument: 'Mars Oxygen ISRU Experiment (MOXIE)',
+    mission: 'Mars 2020 (Perseverance Rover)',
+    pdsNode: 'NASA Planetary Data System Atmospheres Node',
+    url: 'https://mars.nasa.gov/mars2020/spacecraft/instruments/moxie/',
+    trekUrl: 'https://trek.nasa.gov/mars/',
+    usage: 'Calibrates oxygen generation rates from Martian atmospheric CO2 via high-temperature electrolysis.',
+    usageBn: 'উচ্চ তাপমাত্রার ইলেক্ট্রোলাইসিসের মাধ্যমে মঙ্গলের কার্বন ডাই-অক্সাইড ভেঙে শ্বাসযোগ্য অক্সিজেন উৎপাদনের সমীকরণ নিয়ন্ত্রণ করে।',
+    scientificContext: 'Demonstrated in-situ resource utilization by converting Mars CO2 into 98% pure breathable oxygen at rates of 6-12 grams/hr at 800°C.',
+    scientificContextBn: '৮০০ ডিগ্রি সেলসিয়াস তাপমাত্রায় মঙ্গলের CO₂ ভেঙে ঘণ্টায় ৬-১২ গ্রাম ৯৮% খাঁটি অক্সিজেন তৈরির পরীক্ষিত নাসা প্রযুক্তি।'
+  },
+  msl_curiosity_rad: {
+    id: 'msl_curiosity_rad',
+    name: 'MSL Curiosity RAD Surface Radiation Dosimetry',
+    nameBn: 'কিউরিওসিটি রোভার (RAD) পৃষ্ঠের বিকিরণ পরিমাপক',
+    source: 'NASA Science Mission Directorate & SwRI',
+    dataset: 'MSL RAD Calibrated Dose Equivalent Rates (PDS)',
+    instrument: 'Radiation Assessment Detector (RAD)',
+    mission: 'Mars Science Laboratory (MSL Curiosity)',
+    pdsNode: 'NASA PDS Planetary Plasma Interactions (PPI) Node',
+    url: 'https://science.nasa.gov/mission/msl-curiosity/instruments/rad/',
+    trekUrl: 'https://trek.nasa.gov/mars/',
+    usage: 'Calibrates background cosmic ray dose (~0.64 mSv/sol) and crater terrain shielding models.',
+    usageBn: 'মঙ্গলের পৃষ্ঠে স্বাভাবিক মহাজাগতিক বিকিরণের মাত্রা (~০.৬৪ mSv/sol) এবং খাদের দেওয়ালের প্রাকৃতিক বাধা হিসাব করে।',
+    scientificContext: 'Silicon solid-state particle telescope measuring GCR and SPE energetic ions to assess acute biological risk for human Mars missions.',
+    scientificContextBn: 'সিলিকন সলিড-স্টেট টেলিস্কোপের মাধ্যমে মহাজাগতিক আয়ন ও সৌরঝড়ের কণা মেপে মানুষের জৈবিক ঝুঁকির মাত্রা নির্ধারণ করে।'
+  },
+  nasa_image_video_library: {
+    id: 'nasa_image_video_library',
+    name: 'NASA Image and Video Library & Scientific Archives',
+    nameBn: 'নাসা ইমেজ অ্যান্ড ভিডিও লাইব্রেরি এবং বৈজ্ঞানিক আর্কাইভ',
+    source: 'NASA Headquarters (NASA Images API)',
+    dataset: 'NASA Public Media Imagery & Mission Photographs',
+    instrument: 'Multi-Mission Cameras (LROC, Mastcam-Z, HiRISE, Apollo Hasselblad)',
+    mission: 'Apollo, Artemis, LRO, Mars 2020, MRO',
+    pdsNode: 'NASA Office of Communications',
+    url: 'https://images.nasa.gov/',
+    usage: 'Authentic mission photography, landing site context images, and educational visuals with full attribution.',
+    usageBn: 'নাসার অফিশিয়াল মহাকাশ ফটোগ্রাফি, অবতরণ এলাকার চিত্র এবং শিক্ষামূলক প্রামাণ্য ভিজ্যুয়াল সরবরাহ করে।',
+    scientificContext: 'Curated public domain imagery collected across 60+ years of human and robotic planetary exploration.',
+    scientificContextBn: 'গত ৬০ বছরেরও বেশি সময় ধরে পরিচালিত মানব ও রোবোটিক মহাকাশ অভিযানের ঐতিহাসিক প্রামাণ্য ফটোগ্রাফি সংগ্রহ।'
+  }
+};

@@ -191,10 +191,59 @@ export interface MissionScores {
   feedbackBn?: string[];
 }
 
+export interface NasaDatasetMetadata {
+  id: string;
+  name: string;
+  nameBn?: string;
+  source: string;
+  dataset: string;
+  instrument: string;
+  mission: string;
+  pdsNode?: string;
+  url: string;
+  trekUrl?: string;
+  usage: string;
+  usageBn?: string;
+  scientificContext: string;
+  scientificContextBn?: string;
+}
+
+export interface LandingSiteConfig {
+  id: string;
+  name: string;
+  nameBn: string;
+  destination: DestinationType;
+  coordinates: string;
+  elevation_km: number; // Elevation relative to lunar/Martian datum
+  slope_deg: number;    // Surface slope from LOLA / MOLA
+  solarIlluminationPct: number; // Mean annual or diurnal illumination fraction
+  temperatureRange: [number, number]; // Celsius min to max
+  constructionSuitability: 'GOOD' | 'MODERATE' | 'CHALLENGING';
+  suitabilityReason: string;
+  suitabilityReasonBn: string;
+  terrainRisk: string;
+  terrainRiskBn: string;
+  subsurfaceIce: boolean;
+  subsurfaceIceDepth_m?: number;
+  missionContext: string;
+  missionContextBn: string;
+  scientificSignificance: string;
+  scientificSignificanceBn: string;
+  nasaDataset: NasaDatasetMetadata;
+  simulatedEffects: {
+    solarEfficiencyMod: number;     // Modifies base solar generation
+    constructionCostMod: number;    // Modifies base construction spares/energy cost
+    waterExtractionBonus: number;   // Boosts water recovery/yield
+    radiationDoseMod: number;       // Topographic shielding modifier
+  };
+}
+
 export interface SimulationState {
   missionDay: number;
   totalDays: MissionDuration;
   destination: DestinationType;
+  landingSiteId?: string;
+  landingSite?: LandingSiteConfig;
   mode: GameMode;
   isPaused: boolean;
   speed: 1 | 3;

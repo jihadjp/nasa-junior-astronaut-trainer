@@ -9,6 +9,8 @@ import { STEM_LEARNING_OBJECTIVES, TEACHER_PRESETS, CLASSROOM_DEBRIEF_QUESTIONS 
 import { NASA_DATA_SOURCES } from '../../data/nasaSources';
 import { ACHIEVEMENTS_LIST } from '../../data/achievements';
 import { EDUCATIONAL_ARTICLES } from '../../data/educationalContent';
+import { LUNAR_LANDING_SITES, MARS_LANDING_SITES } from '../../data/landingSites';
+import { NASA_PLANETARY_DATASETS } from '../../data/nasaDatasets';
 
 describe('Bilingual Language System (বাংলা 🇧🇩 ↔ English 🇬🇧)', () => {
   it('has matching translation keys between English and Bengali dictionaries', () => {
@@ -113,6 +115,29 @@ describe('Bilingual Language System (বাংলা 🇧🇩 ↔ English 🇬�
       expect(topic.visualDiagram.labelsBn?.length).toBe(topic.visualDiagram.labels.length);
       expect(topic.visualDiagram.captionBn, `Article "${topic.id}" missing visualDiagram.captionBn`).toBeTruthy();
       expect(topic.advancedEngineeringSpec.descriptionBn, `Article "${topic.id}" missing advancedEngineeringSpec.descriptionBn`).toBeTruthy();
+    }
+  });
+
+  it('provides complete Bengali fields for Authentic NASA Planetary Landing Sites and Datasets', () => {
+    const allSites = [...LUNAR_LANDING_SITES, ...MARS_LANDING_SITES];
+    expect(allSites.length).toBe(8);
+
+    for (const site of allSites) {
+      expect(site.nameBn, `Site "${site.id}" missing nameBn`).toBeTruthy();
+      expect(site.suitabilityReasonBn, `Site "${site.id}" missing suitabilityReasonBn`).toBeTruthy();
+      expect(site.terrainRiskBn, `Site "${site.id}" missing terrainRiskBn`).toBeTruthy();
+      expect(site.missionContextBn, `Site "${site.id}" missing missionContextBn`).toBeTruthy();
+      expect(site.scientificSignificanceBn, `Site "${site.id}" missing scientificSignificanceBn`).toBeTruthy();
+      expect(site.nasaDataset.nameBn, `Site "${site.id}" dataset missing nameBn`).toBeTruthy();
+      expect(site.nasaDataset.usageBn, `Site "${site.id}" dataset missing usageBn`).toBeTruthy();
+    }
+
+    const datasets = Object.values(NASA_PLANETARY_DATASETS);
+    expect(datasets.length).toBeGreaterThanOrEqual(6);
+    for (const ds of datasets) {
+      expect(ds.nameBn, `Dataset "${ds.id}" missing nameBn`).toBeTruthy();
+      expect(ds.usageBn, `Dataset "${ds.id}" missing usageBn`).toBeTruthy();
+      expect(ds.scientificContextBn, `Dataset "${ds.id}" missing scientificContextBn`).toBeTruthy();
     }
   });
 

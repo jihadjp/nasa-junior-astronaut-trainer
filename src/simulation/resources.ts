@@ -7,7 +7,8 @@ import type {
   BaseModule, 
   ModuleType, 
   Astronaut, 
-  DestinationType 
+  DestinationType,
+  LandingSiteConfig
 } from '../types/game';
 
 export interface ResourceTickResult {
@@ -22,7 +23,8 @@ export function calculateDailyResourceChanges(
   modules: Record<ModuleType, BaseModule>,
   crew: Astronaut[],
   environment: EnvironmentalConditions,
-  destination: DestinationType
+  destination: DestinationType,
+  landingSite?: LandingSiteConfig
 ): ResourceTickResult {
   const warnings: string[] = [];
   const crewCount = crew.length;
@@ -32,7 +34,7 @@ export function calculateDailyResourceChanges(
   const hasBiologist = crew.some(c => c.role === 'biologist' && c.health > 40);
   const hasCommander = crew.some(c => c.role === 'commander' && c.health > 40);
 
-  // --- 1. POWER GENERATION & DEMAND ---
+  // --- 1. POWER GENERATION & DEMAND (NASA-CALIBRATED) ---
   // Solar generation depends on destination solar flux, dust factor, and module level
   const solarModule = modules.solar_array;
   let solarBaseGen = (solarModule.powerGeneration || 45) * (solarModule.level * 0.7);
@@ -43,8 +45,10 @@ export function calculateDailyResourceChanges(
   const dustFactor = Math.max(0.1, 1 - (environment.dustLevel / 100) * 0.85);
   // Sun intensity factor (orbital sun cycle)
   const sunFactor = environment.sunIntensity;
+  // Landing site specific illumination modifier (e.g., Shackleton peak vs equatorial night)
+  const siteSolarMod = landingSite?.simulatedEffects.solarEfficiencyMod ?? 1.0;
 
-  const totalPowerGen = Math.round(solarBaseGen * destFluxMod * dustFactor * sunFactor * 10) / 10;
+  const totalPowerGen = Math.round(solarBaseGen * destFluxMod * dustFactor * sunFactor * siteSolarMod * 10) / 10;
 
   // Module base loads
   let habitatLoad = modules.habitat.powerDraw;
@@ -56,10 +60,14 @@ export function calculateDailyResourceChanges(
   let fabricatorLoad = modules.spare_fabricator.powerDraw;
   let shieldLoad = modules.radiation_shield.powerDraw;
 
+  // Terrain slope penalty: steeper terrain requires additional leveling and thermal load
+  const slopeCostMod = landingSite?.simulatedEffects.constructionCostMod ?? 1.0;
+  const slopeMaintenanceLoad = slopeCostMod > 1.0 ? Math.round((slopeCostMod - 1.0) * 4.0 * 10) / 10 : 0;
+
   // Calculate gross power load
   let totalPowerLoad = 
     habitatLoad + lifeSupportLoad + waterRecyclerLoad + 
-    greenhouseLoad + labLoad + roverLoad + fabricatorLoad + shieldLoad;
+    greenhouseLoad + labLoad + roverLoad + fabricatorLoad + shieldLoad + slopeMaintenanceLoad;
 
   let netPower = totalPowerGen - totalPowerLoad;
   let lowPowerModeActive = false;
@@ -109,7 +117,11 @@ export function calculateDailyResourceChanges(
   const recyclerEff = modules.water_recycler.efficiency * (hasEngineer ? 1.05 : 1.0);
   const waterRecovered = Math.round(totalWaterDemand * Math.min(0.98, recyclerEff * 0.92) * 10) / 10;
   
-  const netWater = Math.round((waterRecovered - totalWaterDemand) * 10) / 10;
+  // In-situ subsurface ice extraction bonus (e.g. Arcadia Planitia or Shackleton PSR)
+  const iceBonus = landingSite?.simulatedEffects.waterExtractionBonus ?? 1.0;
+  const inSituIceYield = (iceBonus > 1.0 && !lowPowerModeActive) ? Math.round((iceBonus - 1.0) * 1.8 * 10) / 10 : 0;
+
+  const netWater = Math.round((waterRecovered + inSituIceYield - totalWaterDemand) * 10) / 10;
   let nextWater = Math.min(resources.waterMax, Math.max(0, resources.water + netWater));
 
   if (nextWater < 25) {
@@ -134,9 +146,11 @@ export function calculateDailyResourceChanges(
     warnings.push('🌱 FOOD RESERVES CRITICAL: Emergency caloric rationing initiated.');
   }
 
-  // --- 5. RADIATION SHIELDING & DOSE ---
-  // Base daily cosmic ray dose: Moon has no atmosphere (~1.2 mSv/day base), Mars has thin atmosphere (~0.7 mSv/day)
-  let baseRadiationRate = destination === 'moon' ? 1.2 : 0.75;
+  // --- 5. RADIATION SHIELDING & DOSE (NASA MSL RAD CALIBRATED) ---
+  // Base daily cosmic ray dose: Moon (~1.2 mSv/day base), Mars (~0.75 mSv/day base)
+  // Topographic shielding modifier: Crater depressions block grazing cosmic rays; high summits suffer higher exposure
+  const radMod = landingSite?.simulatedEffects.radiationDoseMod ?? 1.0;
+  let baseRadiationRate = (destination === 'moon' ? 1.2 : 0.75) * radMod;
   if (environment.solarFlareActive) {
     baseRadiationRate *= 4.5; // Solar Particle Event spike
     warnings.push('☀️ SOLAR PARTICLE EVENT: Severe coronal mass ejection detected!');

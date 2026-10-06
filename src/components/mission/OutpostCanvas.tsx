@@ -7,6 +7,7 @@ interface OutpostCanvasProps {
   state: SimulationState;
   focusedModule?: ModuleType | null;
   onInspectModule?: (moduleId: ModuleType) => void;
+  onOpenTerrainExplorer?: () => void;
 }
 
 interface Particle {
@@ -21,12 +22,48 @@ interface Particle {
 export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({ 
   state, 
   focusedModule = null, 
-  onInspectModule 
+  onInspectModule,
+  onOpenTerrainExplorer
 }) => {
   const { t, formatNum, language } = useLanguage();
-  const { destination, environment, modules, resources, deltas, missionDay, activeEvent } = state;
+  const { destination, environment, modules, resources, deltas, missionDay, activeEvent, landingSite } = state;
   const isMars = destination === 'mars';
   const [selectedModule, setSelectedModule] = useState<ModuleType | null>(null);
+
+  const siteId = landingSite?.id || '';
+  const isMountainSite = siteId === 'malapert_mountain' || siteId === 'olympus_mons' || siteId === 'gale_crater';
+  const isCraterSite = siteId === 'shackleton_rim' || siteId === 'jezero_crater';
+  const isPlainsSite = siteId === 'oceanus_procellarum' || siteId === 'arcadia_planitia';
+  const isValleySite = siteId === 'taurus_littrow';
+
+  // Customize distant ridge path based on actual NASA site morphology
+  const distantRidgePath = useMemo(() => {
+    if (isMountainSite) {
+      // Towering massif peaks rising into the sky
+      return isMars
+        ? "M 0,270 Q 140,160 280,240 T 560,140 T 840,230 L 960,250 L 960,480 L 0,480 Z"
+        : "M 0,275 Q 160,170 320,250 T 640,150 T 960,260 L 960,480 L 0,480 Z";
+    }
+    if (isCraterSite) {
+      // Crater rim walls with sharp elevation lip
+      return isMars
+        ? "M 0,250 Q 180,210 360,240 T 720,205 T 960,255 L 960,480 L 0,480 Z"
+        : "M 0,255 Q 220,195 440,250 T 780,210 T 960,265 L 960,480 L 0,480 Z";
+    }
+    if (isPlainsSite) {
+      // Vast, flat, low-relief basalt plain
+      return isMars
+        ? "M 0,290 Q 240,280 480,285 T 960,288 L 960,480 L 0,480 Z"
+        : "M 0,295 Q 240,288 480,292 T 960,294 L 960,480 L 0,480 Z";
+    }
+    if (isValleySite) {
+      // Deep valley with massifs on sides
+      return "M 0,220 Q 200,275 480,280 T 800,220 T 960,210 L 960,480 L 0,480 Z";
+    }
+    return isMars
+      ? "M 0,260 Q 200,215 380,245 T 760,225 T 960,260 L 960,480 L 0,480 Z"
+      : "M 0,270 Q 240,235 460,260 T 820,240 T 960,270 L 960,480 L 0,480 Z";
+  }, [isMountainSite, isCraterSite, isPlainsSite, isValleySite, isMars]);
 
   // Time & Animation Tick State (Continuous 60 FPS motion loop)
   const [animTime, setAnimTime] = useState<number>(0);
@@ -325,11 +362,9 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
           <line x1="0" y1="-36" x2="0" y2="36" stroke="#FDE047" strokeWidth="1.5" opacity={daylightIntensity * 0.4} />
         </g>
 
-        {/* Distant Mountain / Crater Ridges */}
+        {/* Distant Mountain / Crater Ridges grounded in LOLA/MOLA site topography */}
         <path
-          d={isMars 
-            ? "M 0,260 Q 200,215 380,245 T 760,225 T 960,260 L 960,480 L 0,480 Z" 
-            : "M 0,270 Q 240,235 460,260 T 820,240 T 960,270 L 960,480 L 0,480 Z"}
+          d={distantRidgePath}
           fill={isMars ? "#5E251F" : "#1B2232"}
           opacity={isNight ? 0.5 : 0.85}
         />
@@ -827,10 +862,24 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
 
       {/* Floating Outpost Environment Telemetry Overlay */}
       <div className="absolute top-2 sm:top-3 left-2 sm:left-3 right-2 sm:right-auto flex flex-wrap gap-1 sm:gap-2 items-center text-[10px] sm:text-xs">
-        <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded bg-[#0A1020]/90 border border-[#52D6FF]/40 text-[#52D6FF] font-mono flex items-center gap-1 sm:gap-1.5 shadow-md">
-          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#52D6FF] animate-pulse"></span>
-          <span>{language === 'bn' ? (isMars ? 'মঙ্গল // ক্রিস প্ল্যানিশিয়া' : 'চাঁদ // শ্যাকলটন ক্রেটার') : (isMars ? 'MARS // CHRYSE PLANITIA' : 'MOON // SHACKLETON CRATER')}</span>
-        </span>
+        <button
+          type="button"
+          onClick={onOpenTerrainExplorer}
+          className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded bg-[#0A1020]/90 hover:bg-[#121c35] border border-[#52D6FF]/40 hover:border-[#52D6FF] text-[#52D6FF] font-mono flex items-center gap-1 sm:gap-1.5 shadow-md transition-all cursor-pointer active:scale-95 text-left"
+          title={language === 'bn' ? 'নাসা আসল ভূখণ্ড প্রোফাইল দেখুন' : 'Explore NASA LOLA/MOLA Topography Profile'}
+        >
+          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#52D6FF] animate-pulse shrink-0"></span>
+          <span className="font-bold truncate max-w-[130px] sm:max-w-[220px]">
+            {landingSite 
+              ? ((language === 'bn' && landingSite.nameBn) ? landingSite.nameBn : landingSite.name) 
+              : (isMars ? 'MARS EXPEDITION' : 'LUNAR EXPEDITION')}
+          </span>
+          {landingSite && (
+            <span className="text-slate-400 text-[9px] hidden md:inline">
+              ({landingSite.elevation_km >= 0 ? `+${formatNum(landingSite.elevation_km)}` : formatNum(landingSite.elevation_km)} km)
+            </span>
+          )}
+        </button>
         <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 rounded bg-[#101827]/85 border border-slate-700 text-slate-300 font-mono">
           {t('canvas.temp', { temp: formatNum(environment.externalTempC) })}
         </span>

@@ -12,14 +12,18 @@ import { DEFAULT_ASTRONAUTS, updateCrewStates } from './crew';
 import { calculateDailyResourceChanges } from './resources';
 import { checkForTriggeredEvent } from '../events/eventEngine';
 import { calculateMissionScores } from './scoring';
+import { getLandingSiteById } from '../data/landingSites';
 
 export function createInitialSimulationState(
   destination: DestinationType = 'moon',
   duration: MissionDuration = 30,
   mode: GameMode = 'junior',
-  crewCount: number = 4
+  crewCount: number = 4,
+  landingSiteId?: string
 ): SimulationState {
   const selectedCrew = DEFAULT_ASTRONAUTS.slice(0, crewCount);
+  const defaultSiteId = destination === 'moon' ? 'shackleton_rim' : 'jezero_crater';
+  const siteConfig = getLandingSiteById(landingSiteId || defaultSiteId);
 
   // Initial resources based on destination and budget
   const initialResources = {
@@ -51,7 +55,7 @@ export function createInitialSimulationState(
     solarFlareActive: false,
     dustStormActive: false,
     micrometeoroidThreat: false,
-    externalTempC: destination === 'moon' ? -20 : -45,
+    externalTempC: Math.round((siteConfig.temperatureRange[0] + siteConfig.temperatureRange[1]) / 2),
     communicationDelaySec: destination === 'mars' ? 720 : 1.3,
     sunIntensity: 0.95
   };
@@ -60,6 +64,8 @@ export function createInitialSimulationState(
     missionDay: 1,
     totalDays: duration,
     destination,
+    landingSiteId: siteConfig.id,
+    landingSite: siteConfig,
     mode,
     isPaused: true,
     speed: 1,
@@ -99,9 +105,13 @@ export function stepSimulationDay(state: SimulationState): SimulationState {
 
   const nextDay = state.missionDay + 1;
 
-  // 1. Environmental cycling (orbital sun intensity, dust fluctuation)
+  // 1. Environmental cycling (orbital sun intensity, dust fluctuation, polar illumination model)
   // Day-night or orbital cycle variation
-  const sunAngleFactor = 0.75 + 0.25 * Math.sin((nextDay / (state.destination === 'moon' ? 14 : 7)) * Math.PI);
+  const isPolarMoon = state.destination === 'moon' && (state.landingSiteId === 'shackleton_rim' || state.landingSiteId === 'malapert_mountain');
+  const sunAngleFactor = isPolarMoon
+    ? 0.85 + 0.15 * Math.sin((nextDay / 14) * Math.PI) // Peak of Eternal Light maintains persistent illumination!
+    : 0.75 + 0.25 * Math.sin((nextDay / (state.destination === 'moon' ? 14 : 7)) * Math.PI);
+
   let nextDust = state.environment.dustLevel;
   if (state.environment.dustStormActive) {
     nextDust = Math.min(85, nextDust + 5);
@@ -119,13 +129,14 @@ export function stepSimulationDay(state: SimulationState): SimulationState {
     solarFlareActive
   };
 
-  // 2. Resource updates
+  // 2. Resource updates (uses authentic landing site properties)
   const { nextResources, deltas, lowPowerModeActive, warnings } = calculateDailyResourceChanges(
     state.resources,
     state.modules,
     state.crew,
     nextEnv,
-    state.destination
+    state.destination,
+    state.landingSite
   );
 
   // 3. Crew updates

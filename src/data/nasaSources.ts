@@ -5,7 +5,7 @@ export interface DataSourceItem {
   name: string;
   nameBn?: string;
   agencyOrPublisher: string;
-  dataType: 'Telemetry Model' | 'Atmospheric Data' | 'Radiation Measurements' | 'Life Support Parameters' | 'Engineering Principles';
+  dataType: 'Telemetry Model' | 'Atmospheric Data' | 'Radiation Measurements' | 'Life Support Parameters' | 'Engineering Principles' | 'Planetary Topography' | 'Planetary Mapping';
   dataTypeBn?: string;
   description: string;
   descriptionBn?: string;
@@ -15,6 +15,45 @@ export interface DataSourceItem {
 }
 
 export const NASA_DATA_SOURCES: DataSourceItem[] = [
+  {
+    id: 'nasa_solar_system_treks',
+    name: 'NASA Solar System Treks (Moon Trek & Mars Trek)',
+    nameBn: 'নাসা সোলার সিস্টেম ট্রেক্স (মুন ট্রেক ও মার্স ট্রেক)',
+    agencyOrPublisher: 'NASA Jet Propulsion Laboratory (JPL) & SSERVI',
+    dataType: 'Planetary Mapping',
+    dataTypeBn: 'গ্রহ মানচিত্র ও ভূখণ্ড ডেটা',
+    description: 'Browser-based visualization of returned orbiter elevation, surface slopes, and candidate Artemis / Mars landing sites.',
+    descriptionBn: 'চাঁদ ও মঙ্গলের অরবিটার স্যাটেলাইট থেকে পাওয়া উচ্চতা, ভূখণ্ড ঢাল, ক্র্যাটার ও অবতরণ সাইটের বিশ্লেষণ ও উন্মুক্ত ম্যাপিং পোর্টাল।',
+    url: 'https://trek.nasa.gov/',
+    citation: 'NASA Solar System Treks Project. (2024). Moon Trek and Mars Trek Web Portals. NASA JPL / SSERVI.',
+    license: 'NASA Public Planetary Data Service'
+  },
+  {
+    id: 'lro_lola_elevation',
+    name: 'LRO Lunar Orbiter Laser Altimeter (LOLA) Global Topography',
+    nameBn: 'এলআরও লুনার অল্টিমিটার (LOLA) উচ্চতা ডেটাসেট',
+    agencyOrPublisher: 'NASA Goddard Space Flight Center',
+    dataType: 'Planetary Topography',
+    dataTypeBn: 'চন্দ্র ভূখণ্ড উচ্চতা',
+    description: 'Gridded topographic model (LDEM) with sub-meter vertical precision detailing lunar south polar crater rims, massifs, and slope hazards.',
+    descriptionBn: 'চাঁদের দক্ষিণ মেরুর ক্র্যাটার রিম ও শৈলশিরার সাব-মিটার নির্ভুল উচ্চতা ও ঢালের বৈজ্ঞানিক মডেল।',
+    url: 'https://pds-geosciences.wustl.edu/missions/lro/lola.htm',
+    citation: 'Smith, D. E., et al. (2010). Initial observations from the Lunar Orbiter Laser Altimeter (LOLA). Geophysical Research Letters, 37(18).',
+    license: 'NASA PDS Geosciences Open Node'
+  },
+  {
+    id: 'mgs_mola_mars',
+    name: 'Mars Global Surveyor MOLA Topographic MEGDR Grid',
+    nameBn: 'মার্স গ্লোবাল সারভেয়ার MOLA ভূখণ্ড গ্রিড',
+    agencyOrPublisher: 'NASA Goddard Space Flight Center / JPL',
+    dataType: 'Planetary Topography',
+    dataTypeBn: 'মঙ্গল ভূখণ্ড উচ্চতা',
+    description: 'Mission Elevation Experiment Gridded Data Record (MEGDR) establishing global topographic elevations for Olympus Mons, Jezero, and Gale Crater.',
+    descriptionBn: 'অলিম্পাস মনস, জেজেরো এবং গেইল ক্র্যাটারের পৃষ্ঠের বৈশ্বিক উচ্চতা পরিমাপক ভিত্তি।',
+    url: 'https://pds-geosciences.wustl.edu/missions/mgs/mola.html',
+    citation: 'Smith, D. E., et al. (2001). Mars Orbiter Laser Altimeter: Experiment summary. JGR: Planets, 106(E10), 23689-23722.',
+    license: 'NASA Planetary Data System (PDS)'
+  },
   {
     id: 'eclss_metrics',
     name: 'NASA ECLSS Exploration Water Recovery Architecture',

@@ -18,6 +18,18 @@ interface NasaSource {
 
 const NASA_DATASETS: NasaSource[] = [
   {
+    id: 'treks',
+    name: 'NASA Solar System Treks (Moon Trek & Mars Trek)',
+    nameBn: 'নাসা সোলার সিস্টেম ট্রেক্স (মুন ও মার্স ট্রেকিং পোর্টাল)',
+    instrument: 'Orbiter Laser Altimeter, Camera & Radar Data Mosaics',
+    mission: 'LRO, MGS, MRO, Mars Odyssey & Global Spacecraft',
+    description: 'Browser-based 3D terrain modeling, elevation profiles, sun angle simulation, and slope hazard analyses used directly to model OUTPOST base candidate sites.',
+    descriptionBn: 'ব্রাউজার-ভিত্তিক থ্রি-ডি ভূখণ্ড মডেলিং, উচ্চতা প্রোফাইল ও সূর্যালোক কোণ বিশ্লেষণ, যা আউটপোস্টের অবতরণ সাইটের ভিত্তি হিসেবে ব্যবহৃত।',
+    keyMetric: 'Global Planetary Topography & Sub-meter Slope Datasets',
+    url: 'https://trek.nasa.gov/',
+    icon: <Compass className="w-5 h-5 text-[#52D6FF]" />
+  },
+  {
     id: 'pds',
     name: 'NASA Planetary Data System (PDS)',
     nameBn: 'নাসা প্ল্যানেটারি ডেটা সিস্টেম (PDS)',

@@ -20,6 +20,10 @@ import {
   Eye 
 } from 'lucide-react';
 import type { ModuleType, BaseModule, MissionDuration } from '../types/game';
+import { getLandingSiteById } from '../data/landingSites';
+import { NasaDataBadge } from '../components/common/NasaDataBadge';
+import { NasaDataSourceModal } from '../components/nasa/NasaDataSourceModal';
+import { NasaTerrainExplorerModal } from '../components/nasa/NasaTerrainExplorerModal';
 
 type SetupStep = 'location' | 'crew' | 'base' | 'difficulty' | 'launch';
 
@@ -27,6 +31,7 @@ export const SetupPage: React.FC = () => {
   const navigate = useNavigate();
   const { 
     destConfig, 
+    landingSiteConfig,
     crewCountConfig, 
     setCrewCountConfig,
     durationConfig, 
@@ -38,6 +43,11 @@ export const SetupPage: React.FC = () => {
   const { t, formatNum, language } = useLanguage();
 
   const [currentStep, setCurrentStep] = useState<SetupStep>('crew'); // starts at Crew since location was picked in /mission
+  const [showSourceModal, setShowSourceModal] = useState(false);
+  const [showTerrainModal, setShowTerrainModal] = useState(false);
+
+  const landingSite = getLandingSiteById(landingSiteConfig);
+  const siteName = (language === 'bn' && landingSite.nameBn) ? landingSite.nameBn : landingSite.name;
 
   // Cached module & budget configuration from BaseBuilder
   const [builtModules, setBuiltModules] = useState<Record<ModuleType, BaseModule> | null>(null);
@@ -120,6 +130,44 @@ export const SetupPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Real NASA Landing Site Active Context Banner */}
+        <div className="mb-4 p-3 rounded-xl bg-[#091122]/90 border border-slate-800 flex flex-wrap items-center justify-between gap-2.5 text-xs font-mono">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-lg shrink-0">{destConfig === 'moon' ? '🌙' : '🔴'}</span>
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="font-bold text-white truncate">{siteName}</span>
+                <span className="text-[10px] text-slate-400 font-mono">({landingSite.coordinates})</span>
+                <NasaDataBadge layer="nasa_data" size="sm" />
+              </div>
+              <div className="text-[11px] text-slate-400 flex items-center gap-2 mt-0.5">
+                <span>{landingSite.elevation_km >= 0 ? `+${formatNum(landingSite.elevation_km)}` : formatNum(landingSite.elevation_km)} km elev</span>
+                <span>•</span>
+                <span>{formatNum(landingSite.slope_deg)}° slope</span>
+                <span>•</span>
+                <span className="text-[#52D6FF]">{landingSite.nasaDataset.instrument}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => setShowTerrainModal(true)}
+              className="px-2.5 py-1 rounded-lg bg-[#52D6FF]/10 hover:bg-[#52D6FF]/20 border border-[#52D6FF]/30 text-[#52D6FF] text-[11px] font-mono flex items-center gap-1 transition-all"
+            >
+              <span>{language === 'bn' ? 'ভূখণ্ড প্রোফাইল' : 'Terrain Profile'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/mission')}
+              className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-mono transition-all"
+            >
+              {language === 'bn' ? 'সাইট পরিবর্তন' : 'Change Site'}
+            </button>
+          </div>
+        </div>
+
         {/* STEP CONTENT CONTAINER */}
         <div className="flex-1 flex flex-col justify-center">
           {/* STEP 1: Location Review */}
@@ -127,14 +175,39 @@ export const SetupPage: React.FC = () => {
             <div className="max-w-xl mx-auto w-full p-6 rounded-2xl bg-[#0B1222] border border-slate-800 text-center animate-fadeIn">
               <span className="text-4xl block mb-2">{destConfig === 'moon' ? '🌙' : '🔴'}</span>
               <div className="text-xs font-mono text-slate-400 mb-1">{t('setup.loc.selected')}</div>
-              <h2 className="text-2xl font-display font-bold text-white mb-2">
-                {destConfig === 'moon' ? t('dest.moon.name') : t('dest.mars.name')}
+              <h2 className="text-2xl font-display font-bold text-white mb-1">
+                {siteName}
               </h2>
-              <p className="text-xs text-slate-300 font-sans mb-6">
-                {destConfig === 'moon' ? t('dest.moon.loc') : t('dest.mars.loc')}
+              <div className="text-xs font-mono text-[#52D6FF] mb-3">
+                {landingSite.coordinates} • {landingSite.nasaDataset.mission}
+              </div>
+              <p className="text-xs text-slate-300 font-sans mb-4 leading-relaxed">
+                {(language === 'bn' && landingSite.suitabilityReasonBn) ? landingSite.suitabilityReasonBn : landingSite.suitabilityReason}
               </p>
 
-              <div className="flex items-center justify-center gap-4">
+              <div className="grid grid-cols-3 gap-2 bg-[#060B18] p-3 rounded-xl border border-slate-800 text-xs font-mono mb-6 text-center">
+                <div>
+                  <span className="text-slate-500 block text-[10px] uppercase">{language === 'bn' ? 'উচ্চতা' : 'Elevation'}</span>
+                  <span className="font-bold text-white">{landingSite.elevation_km >= 0 ? `+${formatNum(landingSite.elevation_km)}` : formatNum(landingSite.elevation_km)} km</span>
+                </div>
+                <div>
+                  <span className="text-slate-500 block text-[10px] uppercase">{language === 'bn' ? 'ঢাল' : 'Slope'}</span>
+                  <span className="font-bold text-amber-300">{formatNum(landingSite.slope_deg)}°</span>
+                </div>
+                <div>
+                  <span className="text-slate-500 block text-[10px] uppercase">{language === 'bn' ? 'সূর্যালোক' : 'Solar Flux'}</span>
+                  <span className="font-bold text-[#52D6FF]">{formatNum(landingSite.solarIlluminationPct)}%</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowTerrainModal(true)}
+                  className="px-4 py-2 rounded-xl border border-[#52D6FF]/40 bg-[#52D6FF]/10 text-xs font-mono text-[#52D6FF] hover:bg-[#52D6FF]/20 transition-all"
+                >
+                  {language === 'bn' ? 'নাসা প্রোফাইল দেখুন' : 'Explore NASA Data'}
+                </button>
                 <button
                   onClick={() => navigate('/mission')}
                   className="px-4 py-2 rounded-xl border border-slate-700 text-xs font-mono text-slate-300 hover:text-white transition-all"
@@ -302,10 +375,18 @@ export const SetupPage: React.FC = () => {
               </p>
 
               {/* Summary Badges Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6 sm:mb-8 text-xs font-mono bg-[#060B18] p-3 sm:p-4 rounded-xl border border-slate-800">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 mb-6 sm:mb-8 text-xs font-mono bg-[#060B18] p-3.5 sm:p-4 rounded-xl border border-slate-800 text-left">
+                <div className="text-slate-300 col-span-2 sm:col-span-1">
+                  <span className="text-slate-500 block text-[10px] uppercase">{language === 'bn' ? 'অবতরণ সাইট' : 'Landing Site'}</span>
+                  <span className="font-bold text-white truncate block">{siteName}</span>
+                  <span className="text-[10px] text-sky-400 font-mono block">{landingSite.coordinates}</span>
+                </div>
                 <div className="text-slate-300">
-                  <span className="text-slate-500 block text-[10px] uppercase">{language === 'bn' ? 'অবস্থান' : 'Location'}</span>
-                  <span className="font-bold text-white capitalize">{destConfig}</span>
+                  <span className="text-slate-500 block text-[10px] uppercase">{language === 'bn' ? 'ভূখণ্ড (LOLA/MOLA)' : 'Topography (LOLA/MOLA)'}</span>
+                  <span className="font-bold text-[#52D6FF] block">
+                    {landingSite.elevation_km >= 0 ? `+${formatNum(landingSite.elevation_km)}` : formatNum(landingSite.elevation_km)} km | {formatNum(landingSite.slope_deg)}°
+                  </span>
+                  <span className="text-[10px] text-slate-400 block">{landingSite.constructionSuitability}</span>
                 </div>
                 <div className="text-slate-300">
                   <span className="text-slate-500 block text-[10px] uppercase">{language === 'bn' ? 'নভোচারী' : 'Crew'}</span>
@@ -318,6 +399,9 @@ export const SetupPage: React.FC = () => {
                 <div className="text-slate-300">
                   <span className="text-slate-500 block text-[10px] uppercase">{language === 'bn' ? 'মোড' : 'Mode'}</span>
                   <span className="font-bold text-[#52D6FF] capitalize">{modeConfig}</span>
+                </div>
+                <div className="text-slate-300 flex flex-col justify-center">
+                  <NasaDataBadge layer="nasa_data" size="sm" />
                 </div>
               </div>
 
@@ -342,6 +426,23 @@ export const SetupPage: React.FC = () => {
           )}
         </div>
       </main>
+
+      {/* NASA Modals */}
+      <NasaTerrainExplorerModal
+        site={landingSite}
+        isOpen={showTerrainModal}
+        onClose={() => setShowTerrainModal(false)}
+        onOpenSourceDetails={() => {
+          setShowTerrainModal(false);
+          setShowSourceModal(true);
+        }}
+      />
+
+      <NasaDataSourceModal
+        dataset={landingSite.nasaDataset}
+        isOpen={showSourceModal}
+        onClose={() => setShowSourceModal(false)}
+      />
     </div>
   );
 };

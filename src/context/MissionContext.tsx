@@ -16,6 +16,7 @@ import { createInitialSimulationState, stepSimulationDay } from '../simulation/e
 import { GAME_EVENTS } from '../events/eventDatabase';
 import { sound } from '../sound/audioEngine';
 import { useLanguage } from '../i18n/LanguageContext';
+import { getLandingSiteById } from '../data/landingSites';
 
 export const LOCAL_STORAGE_KEY = 'outpost_save_v1';
 export const SETUP_STORAGE_KEY = 'outpost_setup_v1';
@@ -33,6 +34,14 @@ function loadSavedGameState(): SimulationState {
           parsed.activeEvent = realEvent || null;
         } else {
           parsed.activeEvent = null;
+        }
+
+        // Re-hydrate landingSite
+        if (parsed.landingSiteId) {
+          parsed.landingSite = getLandingSiteById(parsed.landingSiteId);
+        } else if (parsed.destination) {
+          parsed.landingSite = getLandingSiteById(parsed.destination === 'moon' ? 'shackleton_rim' : 'jezero_crater');
+          parsed.landingSiteId = parsed.landingSite.id;
         }
 
         if (!Array.isArray(parsed.lastCausalChain)) {
@@ -59,6 +68,8 @@ export interface MissionContextValue {
   setGameState: React.Dispatch<React.SetStateAction<SimulationState>>;
   destConfig: DestinationType;
   setDestConfig: (dest: DestinationType) => void;
+  landingSiteConfig: string;
+  setLandingSiteConfig: (siteId: string) => void;
   crewCountConfig: number;
   setCrewCountConfig: (n: number) => void;
   durationConfig: MissionDuration;
@@ -115,6 +126,17 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
     } catch {}
     return 'moon';
+  });
+
+  const [landingSiteConfig, setLandingSiteConfig] = useState<string>(() => {
+    try {
+      const raw = localStorage.getItem(SETUP_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (typeof parsed.landingSiteConfig === 'string') return parsed.landingSiteConfig;
+      }
+    } catch {}
+    return 'shackleton_rim';
   });
 
   const [crewCountConfig, setCrewCountConfig] = useState<number>(() => {
@@ -227,17 +249,28 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSimulationRoute, gameState.activeEvent, stepDays]);
 
+  // Ensure landing site stays consistent with selected planet
+  useEffect(() => {
+    const isMoonSite = landingSiteConfig === 'shackleton_rim' || landingSiteConfig === 'malapert_mountain' || landingSiteConfig === 'oceanus_procellarum' || landingSiteConfig === 'taurus_littrow';
+    if (destConfig === 'moon' && !isMoonSite) {
+      setLandingSiteConfig('shackleton_rim');
+    } else if (destConfig === 'mars' && isMoonSite) {
+      setLandingSiteConfig('jezero_crater');
+    }
+  }, [destConfig, landingSiteConfig]);
+
   // Persist setup parameters to localStorage
   useEffect(() => {
     try {
       localStorage.setItem(SETUP_STORAGE_KEY, JSON.stringify({
         destConfig,
+        landingSiteConfig,
         crewCountConfig,
         durationConfig,
         modeConfig
       }));
     } catch {}
-  }, [destConfig, crewCountConfig, durationConfig, modeConfig]);
+  }, [destConfig, landingSiteConfig, crewCountConfig, durationConfig, modeConfig]);
 
   // Persist game state to localStorage (preserves active mission on refresh)
   useEffect(() => {
@@ -322,7 +355,7 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Base construction finalized -> start Day 1 in PAUSED mode
   const handleFinishBase = (modules: Record<ModuleType, BaseModule>, customBudget: { extraSpares: number; extraFood: number }) => {
-    const freshState = createInitialSimulationState(destConfig, durationConfig, modeConfig, crewCountConfig);
+    const freshState = createInitialSimulationState(destConfig, durationConfig, modeConfig, crewCountConfig, landingSiteConfig);
     freshState.modules = modules;
     freshState.resources.spareParts += customBudget.extraSpares;
     freshState.resources.food += customBudget.extraFood;
@@ -427,6 +460,8 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setGameState,
         destConfig,
         setDestConfig,
+        landingSiteConfig,
+        setLandingSiteConfig,
         crewCountConfig,
         setCrewCountConfig,
         durationConfig,
