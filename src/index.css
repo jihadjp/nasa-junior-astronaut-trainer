@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-dark: #050914;
+    --bg-deep: #0A1020;
+    --panel-bg: #101827;
+    --panel-secondary: #151F32;
+    --primary-cyan: #52D6FF;
+    --nasa-blue: #3B82F6;
+    --status-success: #35D07F;
+    --status-warning: #F4C95D;
+    --status-danger: #FF5C5C;
+    --text-white: #F5F7FA;
+    --text-muted: #8D9AAF;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0A1020;
+}
+::-webkit-scrollbar-thumb {
+  background: #1E293B;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3B82F6;
+}
+
+/* Keyframe Animations */
+@keyframes flow-pulse {
+  0% { stroke-dashoffset: 40; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes slow-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes hud-scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 4px currentColor); }
+  50% { opacity: 0.3; filter: drop-shadow(0 0 1px currentColor); }
+}
+
+@keyframes radar-sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-flow {
+  stroke-dasharray: 6 6;
+  animation: flow-pulse 1.5s linear infinite;
+}
+
+.animate-slow-spin {
+  animation: slow-rotate 25s linear infinite;
+}
+
+.animate-radar {
+  animation: radar-sweep 4s linear infinite;
+  transform-origin: center;
+}
+
+.animate-glow {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Subtle Starfield & Grid */
+.bg-grid-pattern {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(82, 214, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(82, 214, 255, 0.04) 1px, transparent 1px);
+}
+
+.bg-dot-pattern {
+  background-size: 24px 24px;
+  background-image: radial-gradient(rgba(82, 214, 255, 0.08) 1px, transparent 1px);
+}
+
+.glass-panel {
+  background: rgba(16, 24, 39, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(82, 214, 255, 0.15);
+}
+
+.glass-panel-glow {
+  background: rgba(16, 24, 39, 0.85);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(82, 214, 255, 0.3);
+  box-shadow: 0 0 20px -5px rgba(82, 214, 255, 0.15);
+}
+
+/* High Contrast & Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.reduced-motion *, .reduced-motion ::before, .reduced-motion ::after {
+  animation: none !important;
+  transition: none !important;
+}
