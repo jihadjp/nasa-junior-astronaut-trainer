@@ -46,37 +46,37 @@ export const TeacherPage: React.FC = () => {
     <div className="w-full min-h-screen bg-[#050914] text-slate-100 flex flex-col justify-between selection:bg-[#52D6FF]/30">
       <AppNavbar />
 
-      <main className="max-w-6xl mx-auto w-full px-4 sm:px-6 py-8 flex-1 flex flex-col animate-fadeIn">
+      <main className="max-w-6xl mx-auto w-full px-3 sm:px-6 py-5 sm:py-8 flex-1 flex flex-col animate-fadeIn">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-mono mb-3 shadow-md">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-mono mb-2.5 sm:mb-3 shadow-md">
             <GraduationCap className="w-4 h-4" />
             <span>{t('teacher.page.badge')}</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-display font-extrabold text-white tracking-tight mb-3">
+          <h1 className="text-2xl sm:text-4xl font-display font-extrabold text-white tracking-tight mb-2 sm:mb-3">
             {t('teacher.page.title')}
           </h1>
 
-          <p className="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto font-sans leading-relaxed">
+          <p className="text-xs sm:text-base text-slate-400 max-w-2xl mx-auto font-sans leading-relaxed">
             {t('teacher.page.desc')}
           </p>
         </div>
 
         {/* 3 Main Tabs */}
-        <div className="flex items-center justify-center gap-2 mb-8">
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-6 sm:mb-8">
           <button
             onClick={() => {
               sound.playClick();
               setActiveTab('presets');
             }}
-            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-mono flex items-center gap-2 transition-all ${
+            className={`min-h-[42px] flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-mono flex items-center justify-center gap-1.5 sm:gap-2 transition-all active:scale-95 ${
               activeTab === 'presets'
                 ? 'bg-purple-600 text-white font-bold shadow-lg shadow-purple-600/25'
                 : 'bg-[#101827] text-slate-400 hover:text-white border border-slate-800'
             }`}
           >
-            <Rocket className="w-4 h-4" />
+            <Rocket className="w-4 h-4 shrink-0" />
             <span>{t('teacher.tab.presets')}</span>
           </button>
 
@@ -85,13 +85,13 @@ export const TeacherPage: React.FC = () => {
               sound.playClick();
               setActiveTab('standards');
             }}
-            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-mono flex items-center gap-2 transition-all ${
+            className={`min-h-[42px] flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-mono flex items-center justify-center gap-1.5 sm:gap-2 transition-all active:scale-95 ${
               activeTab === 'standards'
                 ? 'bg-purple-600 text-white font-bold shadow-lg shadow-purple-600/25'
                 : 'bg-[#101827] text-slate-400 hover:text-white border border-slate-800'
             }`}
           >
-            <BookOpen className="w-4 h-4" />
+            <BookOpen className="w-4 h-4 shrink-0" />
             <span>{t('teacher.tab.standards')}</span>
           </button>
 
@@ -100,13 +100,13 @@ export const TeacherPage: React.FC = () => {
               sound.playClick();
               setActiveTab('debrief');
             }}
-            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-mono flex items-center gap-2 transition-all ${
+            className={`min-h-[42px] flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-mono flex items-center justify-center gap-1.5 sm:gap-2 transition-all active:scale-95 ${
               activeTab === 'debrief'
                 ? 'bg-purple-600 text-white font-bold shadow-lg shadow-purple-600/25'
                 : 'bg-[#101827] text-slate-400 hover:text-white border border-slate-800'
             }`}
           >
-            <HelpCircle className="w-4 h-4" />
+            <HelpCircle className="w-4 h-4 shrink-0" />
             <span>{t('teacher.tab.debrief')}</span>
           </button>
         </div>

@@ -29,18 +29,18 @@ export const EmergencyAbortModal: React.FC<EmergencyAbortModalProps> = ({
       aria-modal="true"
       aria-labelledby="abort-dialog-title"
     >
-      <div className="relative w-full max-w-lg bg-[#0F172A] border-2 border-rose-500/60 rounded-2xl shadow-2xl shadow-rose-950/60 overflow-hidden">
+      <div className="relative w-full max-w-lg bg-[#0F172A] border-2 border-rose-500/60 rounded-2xl shadow-2xl shadow-rose-950/60 overflow-hidden max-h-[92vh] overflow-y-auto">
         {/* Red Alert Header Banner */}
-        <div className="bg-gradient-to-r from-rose-950/90 via-rose-900/60 to-slate-900 px-6 py-4 border-b border-rose-500/40 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="bg-gradient-to-r from-rose-950/90 via-rose-900/60 to-slate-900 px-4 sm:px-6 py-3.5 sm:py-4 border-b border-rose-500/40 flex items-center justify-between">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <div className="p-2 rounded-lg bg-rose-500/20 border border-rose-500/40 text-rose-400 animate-pulse">
-              <AlertOctagon className="w-6 h-6" />
+              <AlertOctagon className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
               <span className="text-[10px] uppercase font-mono tracking-wider text-rose-400 font-bold block">
                 {t('common.abort.subtitle')}
               </span>
-              <h2 id="abort-dialog-title" className="text-lg font-bold text-white font-display">
+              <h2 id="abort-dialog-title" className="text-base sm:text-lg font-bold text-white font-display">
                 {t('common.abort.title')}
               </h2>
             </div>
@@ -50,7 +50,7 @@ export const EmergencyAbortModal: React.FC<EmergencyAbortModalProps> = ({
               sound.playClick();
               onClose();
             }}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors min-w-[32px] min-h-[32px] flex items-center justify-center"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
@@ -58,16 +58,16 @@ export const EmergencyAbortModal: React.FC<EmergencyAbortModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 space-y-5">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-5">
           {/* Warning Message Box */}
-          <div className="p-4 rounded-xl bg-rose-950/30 border border-rose-500/30 flex items-start gap-3.5">
+          <div className="p-3.5 sm:p-4 rounded-xl bg-rose-950/30 border border-rose-500/30 flex items-start gap-3">
             <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-            <p className="text-sm text-rose-200/90 leading-relaxed">
+            <p className="text-xs sm:text-sm text-rose-200/90 leading-relaxed">
               {t('common.abort.msg')}
             </p>
           </div>
 
-          <div className="space-y-2 text-xs font-mono text-slate-400 bg-slate-900/70 p-3.5 rounded-xl border border-slate-800">
+          <div className="space-y-2 text-xs font-mono text-slate-400 bg-slate-900/70 p-3 sm:p-3.5 rounded-xl border border-slate-800">
             <div className="flex items-center gap-2 text-slate-300 font-semibold">
               <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-ping" />
               {language === 'bn' ? 'জরুরি প্রটোকল নির্দেশনা:' : 'EMERGENCY PROTOCOL ACTIONS:'}
@@ -85,14 +85,14 @@ export const EmergencyAbortModal: React.FC<EmergencyAbortModalProps> = ({
           </div>
 
           {/* Action Choice Buttons */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 pt-2">
             {/* Resume Mission / Cancel Button */}
             <button
               onClick={() => {
                 sound.playClick();
                 onClose();
               }}
-              className="px-4 py-2.5 rounded-xl text-xs font-mono font-medium text-slate-300 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 flex items-center justify-center gap-2 transition-all order-3 sm:order-1"
+              className="min-h-[42px] px-4 py-2.5 rounded-xl text-xs font-mono font-medium text-slate-300 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 flex items-center justify-center gap-2 transition-all order-3 sm:order-1 active:scale-95"
             >
               <ArrowLeft className="w-4 h-4" />
               {t('common.abort.cancel')}
@@ -104,7 +104,7 @@ export const EmergencyAbortModal: React.FC<EmergencyAbortModalProps> = ({
                 sound.playClick();
                 onConfirmAbortToSetup();
               }}
-              className="px-4 py-2.5 rounded-xl text-xs font-mono font-semibold text-amber-300 bg-amber-950/40 hover:bg-amber-900/60 border border-amber-500/40 flex items-center justify-center gap-2 transition-all order-2 sm:order-2"
+              className="min-h-[42px] px-4 py-2.5 rounded-xl text-xs font-mono font-semibold text-amber-300 bg-amber-950/40 hover:bg-amber-900/60 border border-amber-500/40 flex items-center justify-center gap-2 transition-all order-2 sm:order-2 active:scale-95"
             >
               <RotateCcw className="w-4 h-4" />
               {t('common.abort.setup')}
@@ -116,7 +116,7 @@ export const EmergencyAbortModal: React.FC<EmergencyAbortModalProps> = ({
                 sound.playWarning();
                 onConfirmAbortToReport();
               }}
-              className="px-5 py-2.5 rounded-xl text-xs font-mono font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-lg shadow-rose-600/30 flex items-center justify-center gap-2 transition-all order-1 sm:order-3 active:scale-95"
+              className="min-h-[42px] px-5 py-2.5 rounded-xl text-xs font-mono font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-lg shadow-rose-600/30 flex items-center justify-center gap-2 transition-all order-1 sm:order-3 active:scale-95"
             >
               <AlertOctagon className="w-4 h-4" />
               {t('common.abort.confirm')}

@@ -169,18 +169,18 @@ export const BaseBuilder: React.FC<BaseBuilderProps> = ({
                   <button
                     onClick={() => handleDowngradeModule(mod.id)}
                     disabled={!canDowngrade}
-                    className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                    className="min-w-[36px] min-h-[36px] flex items-center justify-center p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95"
                     title="Downgrade module level"
                   >
-                    <Minus className="w-3.5 h-3.5" />
+                    <Minus className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleUpgradeModule(mod.id)}
                     disabled={!canUpgrade}
-                    className="p-1.5 rounded-lg bg-[#52D6FF] hover:bg-[#38BDF8] text-slate-950 font-bold disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                    className="min-w-[36px] min-h-[36px] flex items-center justify-center p-2 rounded-lg bg-[#52D6FF] hover:bg-[#38BDF8] text-slate-950 font-bold disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95"
                     title="Upgrade module level"
                   >
-                    <Plus className="w-3.5 h-3.5" />
+                    <Plus className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -213,7 +213,7 @@ export const BaseBuilder: React.FC<BaseBuilderProps> = ({
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setExtraFood(prev => Math.max(0, prev - 10))}
-                className="p-1 rounded bg-slate-800 text-slate-200 hover:bg-slate-700 text-xs font-mono"
+                className="min-w-[36px] min-h-[36px] px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-200 hover:bg-slate-700 text-xs font-mono flex items-center justify-center transition-all active:scale-95"
               >
                 -{formatNum(10)}
               </button>
@@ -221,7 +221,7 @@ export const BaseBuilder: React.FC<BaseBuilderProps> = ({
                 onClick={() => {
                   if (creditsRemaining >= 25) setExtraFood(prev => prev + 10);
                 }}
-                className="p-1 rounded bg-[#52D6FF] text-slate-950 hover:bg-[#38BDF8] text-xs font-mono font-bold"
+                className="min-w-[36px] min-h-[36px] px-2.5 py-1.5 rounded-lg bg-[#52D6FF] text-slate-950 hover:bg-[#38BDF8] text-xs font-mono font-bold flex items-center justify-center transition-all active:scale-95"
               >
                 +{formatNum(10)}
               </button>
@@ -241,7 +241,7 @@ export const BaseBuilder: React.FC<BaseBuilderProps> = ({
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setExtraSpares(prev => Math.max(0, prev - 5))}
-                className="p-1 rounded bg-slate-800 text-slate-200 hover:bg-slate-700 text-xs font-mono"
+                className="min-w-[36px] min-h-[36px] px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-200 hover:bg-slate-700 text-xs font-mono flex items-center justify-center transition-all active:scale-95"
               >
                 -{formatNum(5)}
               </button>
@@ -249,7 +249,7 @@ export const BaseBuilder: React.FC<BaseBuilderProps> = ({
                 onClick={() => {
                   if (creditsRemaining >= 20) setExtraSpares(prev => prev + 5);
                 }}
-                className="p-1 rounded bg-[#52D6FF] text-slate-950 hover:bg-[#38BDF8] text-xs font-mono font-bold"
+                className="min-w-[36px] min-h-[36px] px-2.5 py-1.5 rounded-lg bg-[#52D6FF] text-slate-950 hover:bg-[#38BDF8] text-xs font-mono font-bold flex items-center justify-center transition-all active:scale-95"
               >
                 +{formatNum(5)}
               </button>
@@ -259,10 +259,10 @@ export const BaseBuilder: React.FC<BaseBuilderProps> = ({
       </div>
 
       {/* Nav Buttons */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 pt-2">
         <button
           onClick={onBack}
-          className="py-2.5 px-5 rounded-xl border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 font-mono text-xs font-bold flex items-center gap-2 transition-all"
+          className="min-h-[42px] py-2.5 px-4 sm:px-5 rounded-xl border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 font-mono text-xs font-bold flex items-center gap-2 transition-all active:scale-95"
         >
           <ArrowLeft className="w-4 h-4" />
           {t('base.btn.back')}
@@ -270,7 +270,7 @@ export const BaseBuilder: React.FC<BaseBuilderProps> = ({
 
         <button
           onClick={handleStartMission}
-          className="py-3 px-7 rounded-xl bg-gradient-to-r from-emerald-500 to-[#52D6FF] hover:from-emerald-400 hover:to-[#38BDF8] text-slate-950 font-display font-bold text-sm flex items-center gap-2 shadow-xl hover:shadow-[#52D6FF]/25 transition-all"
+          className="min-h-[42px] py-2.5 sm:py-3 px-5 sm:px-7 rounded-xl bg-gradient-to-r from-emerald-500 to-[#52D6FF] hover:from-emerald-400 hover:to-[#38BDF8] text-slate-950 font-display font-bold text-sm flex items-center gap-2 shadow-xl hover:shadow-[#52D6FF]/25 transition-all active:scale-95"
         >
           {t('base.btn.launch')}
           <ArrowRight className="w-4 h-4" />

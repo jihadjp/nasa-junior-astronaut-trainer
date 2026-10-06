@@ -54,13 +54,13 @@ export const ResourceDetailModal: React.FC<ResourceDetailModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn overflow-y-auto"
       role="dialog"
       aria-modal="true"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-md bg-[#0F172A] border border-slate-700 rounded-2xl shadow-2xl shadow-cyan-950/40 p-5 overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-md bg-[#0F172A] border border-slate-700 rounded-2xl shadow-2xl shadow-cyan-950/40 p-4 sm:p-5 overflow-hidden animate-in fade-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto"
         onClick={e => e.stopPropagation()}
       >
         {/* Header Ribbon */}

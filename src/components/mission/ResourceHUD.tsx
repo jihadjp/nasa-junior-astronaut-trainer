@@ -247,17 +247,17 @@ export const ResourceHUD: React.FC<ResourceHUDProps> = ({ state, onOpenEducation
                   handleOpenDetail(item);
                 }
               }}
-              className={`p-3 rounded-xl border transition-all duration-200 relative overflow-hidden cursor-pointer group select-none ${
+              className={`p-2.5 sm:p-3 rounded-xl border transition-all duration-200 relative overflow-hidden cursor-pointer group select-none ${
                 isCritical
                   ? 'bg-red-950/40 border-red-500/70 shadow-[0_0_15px_-3px_rgba(239,68,68,0.4)] animate-pulse'
                   : 'bg-[#0B132B]/90 border-slate-700/80 hover:border-[#52D6FF]/60 hover:bg-[#121E3F]/90 shadow-md hover:shadow-cyan-950/30'
               }`}
             >
               {/* Header: Icon, Clean Name, and ⓘ Info Button */}
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-1.5">
-                  <Icon className={`w-4 h-4 ${item.iconColor}`} />
-                  <span className="text-xs font-bold tracking-wider text-slate-200 font-display">
+              <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <Icon className={`w-4 h-4 shrink-0 ${item.iconColor}`} />
+                  <span className="text-xs font-bold tracking-wider text-slate-200 font-display truncate">
                     {item.shortCode}
                   </span>
                 </div>
@@ -269,7 +269,7 @@ export const ResourceHUD: React.FC<ResourceHUDProps> = ({ state, onOpenEducation
                       e.stopPropagation();
                       handleOpenDetail(item);
                     }}
-                    className="p-1 rounded-full text-slate-400 hover:text-[#52D6FF] hover:bg-[#52D6FF]/15 transition-colors"
+                    className="p-1.5 min-w-[32px] min-h-[32px] flex items-center justify-center rounded-full text-slate-400 hover:text-[#52D6FF] hover:bg-[#52D6FF]/15 transition-colors"
                     aria-label={`${item.name} details`}
                   >
                     <Info className="w-3.5 h-3.5" />

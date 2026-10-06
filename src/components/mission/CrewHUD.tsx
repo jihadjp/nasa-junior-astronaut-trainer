@@ -113,18 +113,18 @@ export const CrewHUD: React.FC<CrewHUDProps> = ({ state }) => {
   };
 
   return (
-    <div className="w-full bg-[#0B132B]/90 rounded-2xl border border-slate-700/80 p-3.5 backdrop-blur-md shadow-xl">
+    <div className="w-full bg-[#0B132B]/90 rounded-2xl border border-slate-700/80 p-2.5 sm:p-3.5 backdrop-blur-md shadow-xl">
       {/* Top Banner: Overall Wellbeing + Science Discovery */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-2.5 border-b border-slate-800/80 mb-3">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-slate-800/80 mb-3">
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <Heart className={`w-4 h-4 ${crewWellbeing > 60 ? 'text-rose-500' : 'text-red-500 animate-ping'}`} />
             <span className="font-display font-bold text-xs tracking-wide text-white">
               {t('crew.wellbeing')}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-lg font-mono font-bold text-white tracking-tight">
+            <span className="text-base sm:text-lg font-mono font-bold text-white tracking-tight">
               {formatNum(Math.round(crewWellbeing))}%
             </span>
             <span className={`text-[9px] font-mono px-2 py-0.5 rounded border font-semibold ${
@@ -140,16 +140,16 @@ export const CrewHUD: React.FC<CrewHUDProps> = ({ state }) => {
         </div>
 
         {/* Science Output Display */}
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#080E1C] border border-purple-500/30">
-          <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-          <span className="text-xs font-mono text-purple-300">
+        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#080E1C] border border-purple-500/30">
+          <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+          <span className="text-xs font-mono text-purple-300 font-semibold">
             {t('crew.science.pts', { pts: formatNum(sciencePoints) })}
           </span>
         </div>
       </div>
 
       {/* Individual Astronaut Roster Grid (Level 1 Clean View) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5">
         {crew.map(astro => {
           const astroName = (language === 'bn' && astro.nameBn) ? astro.nameBn : astro.name;
 
@@ -165,7 +165,7 @@ export const CrewHUD: React.FC<CrewHUDProps> = ({ state }) => {
                   handleOpenAstro(astro);
                 }
               }}
-              className="p-2.5 rounded-xl bg-[#111C36]/80 border border-slate-700/80 hover:border-[#52D6FF]/50 hover:bg-[#162444] transition-all flex items-center justify-between gap-3 cursor-pointer group shadow-sm select-none"
+              className="p-2.5 rounded-xl bg-[#111C36]/80 border border-slate-700/80 hover:border-[#52D6FF]/50 hover:bg-[#162444] transition-all flex items-center justify-between gap-2.5 cursor-pointer group shadow-sm select-none active:scale-[0.99]"
             >
               <div className="flex items-center gap-2.5 min-w-0">
                 {renderAstronautAvatar(astro)}
@@ -176,7 +176,7 @@ export const CrewHUD: React.FC<CrewHUDProps> = ({ state }) => {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
                     <span className="text-[10px] font-mono text-[#52D6FF] font-medium uppercase truncate">
                       {getRoleLabel(astro.role)}
                     </span>
@@ -186,7 +186,7 @@ export const CrewHUD: React.FC<CrewHUDProps> = ({ state }) => {
                   </div>
 
                   {/* Health Mini Bar */}
-                  <div className="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden mt-1.5 border border-slate-700/60">
+                  <div className="w-20 sm:w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden mt-1.5 border border-slate-700/60">
                     <div
                       className="h-full bg-rose-500 rounded-full transition-all duration-300"
                       style={{ width: `${astro.health}%` }}
@@ -202,7 +202,7 @@ export const CrewHUD: React.FC<CrewHUDProps> = ({ state }) => {
                     e.stopPropagation();
                     handleOpenAstro(astro);
                   }}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-[#52D6FF] hover:bg-[#52D6FF]/15 transition-colors shrink-0"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-[#52D6FF] hover:bg-[#52D6FF]/15 transition-colors shrink-0 min-w-[32px] min-h-[32px] flex items-center justify-center"
                   aria-label={`${astroName} profile`}
                 >
                   <Info className="w-4 h-4" />

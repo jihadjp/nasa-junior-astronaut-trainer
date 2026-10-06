@@ -15,10 +15,24 @@
     --text-muted: #8D9AAF;
   }
 
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
   body {
     background-color: var(--bg-dark);
     color: var(--text-white);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  #root {
+    overflow-x: hidden;
+    width: 100%;
+    min-height: 100vh;
   }
 
   h1, h2, h3, h4, .font-display {
@@ -134,3 +148,12 @@
   animation: none !important;
   transition: none !important;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

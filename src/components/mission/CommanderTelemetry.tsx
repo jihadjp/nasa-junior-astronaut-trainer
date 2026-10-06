@@ -14,9 +14,9 @@ export const CommanderTelemetry: React.FC<CommanderTelemetryProps> = ({ state })
   const { resources, deltas, modules, environment, cumulativeRadiation_mSv, baseIntegrity, crew } = state;
 
   return (
-    <div className="w-full bg-[#0A1020]/95 rounded-xl border border-amber-500/30 p-4 font-mono text-xs text-slate-300 shadow-xl backdrop-blur-md">
+    <div className="w-full bg-[#0A1020]/95 rounded-xl border border-amber-500/30 p-3 sm:p-4 font-mono text-xs text-slate-300 shadow-xl backdrop-blur-md">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-amber-500/20 mb-3">
+      <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-amber-500/20 mb-3">
         <div className="flex items-center gap-2 text-amber-300 font-display font-bold text-sm">
           <Cpu className="w-4 h-4 text-amber-400" />
           {t('cmd.title')}
@@ -27,9 +27,9 @@ export const CommanderTelemetry: React.FC<CommanderTelemetryProps> = ({ state })
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
         {/* Column 1: Power & Electrical Bus */}
-        <div className="p-3 rounded-lg bg-[#101827] border border-slate-800 space-y-2">
+        <div className="p-2.5 sm:p-3 rounded-lg bg-[#101827] border border-slate-800 space-y-2">
           <div className="text-[#52D6FF] font-bold text-[11px] flex items-center gap-1.5 border-b border-slate-800 pb-1">
             <Zap className="w-3.5 h-3.5" />
             {t('cmd.bus')}

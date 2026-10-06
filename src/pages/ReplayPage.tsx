@@ -30,16 +30,16 @@ export const ReplayPage: React.FC = () => {
     <div className="w-full min-h-screen bg-[#050914] text-slate-100 flex flex-col justify-between selection:bg-[#52D6FF]/30">
       <AppNavbar />
 
-      <main className="max-w-4xl mx-auto w-full px-4 sm:px-6 py-8 flex-1 flex flex-col justify-center animate-fadeIn">
-        <div className="bg-[#0B1220] border border-purple-500/40 rounded-2xl p-6 sm:p-8 shadow-2xl mb-6">
+      <main className="max-w-4xl mx-auto w-full px-3 sm:px-6 py-4 sm:py-8 flex-1 flex flex-col justify-center animate-fadeIn">
+        <div className="bg-[#0B1220] border border-purple-500/40 rounded-2xl p-4 sm:p-8 shadow-2xl mb-6">
           {/* Header */}
-          <div className="pb-4 border-b border-slate-800 mb-6">
+          <div className="pb-4 border-b border-slate-800 mb-5 sm:mb-6">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-mono font-bold mb-2">
               <GitBranch className="w-3.5 h-3.5" />
               <span>{t('replay.page.badge')}</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight mb-2">
+            <h1 className="text-xl sm:text-3xl font-display font-bold text-white tracking-tight mb-2">
               {t('replay.page.title')}
             </h1>
 
@@ -49,33 +49,33 @@ export const ReplayPage: React.FC = () => {
           </div>
 
           {/* First Run Benchmark Summary */}
-          <div className="p-4 rounded-xl bg-[#060B18] border border-slate-800 mb-6">
-            <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block mb-3 font-bold">
+          <div className="p-3 sm:p-4 rounded-xl bg-[#060B18] border border-slate-800 mb-6">
+            <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block mb-2 sm:mb-3 font-bold">
               {t('replay.benchmark')}
             </span>
-            <div className="grid grid-cols-3 gap-3 text-xs font-mono text-center">
-              <div className="p-3 rounded-lg bg-[#0B1220] border border-slate-800">
-                <span className="text-slate-500 block text-[10px] uppercase">
-                  {language === 'bn' ? 'নভোচারী স্বাস্থ্য' : 'WELLBEING'}
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 text-xs font-mono text-center">
+              <div className="p-2 sm:p-3 rounded-lg bg-[#0B1220] border border-slate-800">
+                <span className="text-slate-500 block text-[9px] sm:text-[10px] uppercase truncate">
+                  {language === 'bn' ? 'স্বাস্থ্য' : 'WELLBEING'}
                 </span>
-                <span className="text-emerald-400 font-bold text-sm sm:text-base">
+                <span className="text-emerald-400 font-bold text-xs sm:text-base">
                   {formatNum(Math.round(gameState.crewWellbeing))}%
                 </span>
               </div>
-              <div className="p-3 rounded-lg bg-[#0B1220] border border-slate-800">
-                <span className="text-slate-500 block text-[10px] uppercase">
-                  {language === 'bn' ? 'বিজ্ঞান পয়েন্ট' : 'SCIENCE'}
+              <div className="p-2 sm:p-3 rounded-lg bg-[#0B1220] border border-slate-800">
+                <span className="text-slate-500 block text-[9px] sm:text-[10px] uppercase truncate">
+                  {language === 'bn' ? 'বিজ্ঞান' : 'SCIENCE'}
                 </span>
-                <span className="text-purple-400 font-bold text-sm sm:text-base">
-                  {formatNum(gameState.sciencePoints)} PTS
+                <span className="text-purple-400 font-bold text-xs sm:text-base">
+                  {formatNum(gameState.sciencePoints)}
                 </span>
               </div>
-              <div className="p-3 rounded-lg bg-[#0B1220] border border-slate-800">
-                <span className="text-slate-500 block text-[10px] uppercase">
-                  {language === 'bn' ? 'চূড়ান্ত স্কোর' : 'FINAL SCORE'}
+              <div className="p-2 sm:p-3 rounded-lg bg-[#0B1220] border border-slate-800">
+                <span className="text-slate-500 block text-[9px] sm:text-[10px] uppercase truncate">
+                  {language === 'bn' ? 'স্কোর' : 'SCORE'}
                 </span>
-                <span className="text-[#52D6FF] font-bold text-sm sm:text-base">
-                  {formatNum(scores?.overallScore || 70)} / {formatNum(100)}
+                <span className="text-[#52D6FF] font-bold text-xs sm:text-base">
+                  {formatNum(scores?.overallScore || 70)}
                 </span>
               </div>
             </div>

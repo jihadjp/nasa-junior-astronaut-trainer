@@ -4,6 +4,8 @@ import { AppNavbar } from '../components/layout/AppNavbar';
 import { useLanguage } from '../i18n/LanguageContext';
 import { sound } from '../sound/audioEngine';
 import { EDUCATIONAL_ARTICLES } from '../data/educationalContent';
+import { CadetQuizCertificate } from '../components/learn/CadetQuizCertificate';
+import { NasaDataSourcesDirectory } from '../components/learn/NasaDataSourcesDirectory';
 import { 
   Sparkles, 
   ExternalLink, 
@@ -11,7 +13,7 @@ import {
   FileText 
 } from 'lucide-react';
 
-type LearnTab = 'moon' | 'mars' | 'power' | 'water' | 'oxygen' | 'food' | 'radiation' | 'missions';
+type LearnTab = 'moon' | 'mars' | 'power' | 'water' | 'oxygen' | 'food' | 'radiation' | 'missions' | 'quiz' | 'data';
 
 export const LearnPage: React.FC = () => {
   const { t, language } = useLanguage();
@@ -26,6 +28,8 @@ export const LearnPage: React.FC = () => {
     { id: 'food', label: t('learn.tab.food'), icon: '🌱' },
     { id: 'radiation', label: t('learn.tab.rad'), icon: '🛡️' },
     { id: 'missions', label: t('learn.tab.missions'), icon: '🚀' },
+    { id: 'quiz', label: t('learn.tab.quiz'), icon: '🎖️' },
+    { id: 'data', label: t('learn.tab.data'), icon: '🛰️' },
   ];
 
   const handleTabChange = (tabId: LearnTab) => {
@@ -52,32 +56,32 @@ export const LearnPage: React.FC = () => {
     <div className="w-full min-h-screen bg-[#050914] text-slate-100 flex flex-col justify-between selection:bg-[#52D6FF]/30">
       <AppNavbar />
 
-      <main className="max-w-6xl mx-auto w-full px-4 sm:px-6 py-8 flex-1 flex flex-col animate-fadeIn">
+      <main className="max-w-6xl mx-auto w-full px-3 sm:px-6 py-5 sm:py-8 flex-1 flex flex-col animate-fadeIn">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#101827] border border-[#52D6FF]/40 text-[#52D6FF] text-xs font-mono mb-3 shadow-md">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#101827] border border-[#52D6FF]/40 text-[#52D6FF] text-xs font-mono mb-2.5 sm:mb-3 shadow-md">
             <Sparkles className="w-4 h-4" />
             <span>{t('learn.badge')}</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-display font-extrabold text-white tracking-tight mb-3">
+          <h1 className="text-2xl sm:text-4xl font-display font-extrabold text-white tracking-tight mb-2 sm:mb-3">
             {t('learn.title')}
           </h1>
 
-          <p className="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto font-sans leading-relaxed">
+          <p className="text-xs sm:text-base text-slate-400 max-w-2xl mx-auto font-sans leading-relaxed">
             {t('learn.desc')}
           </p>
         </div>
 
         {/* 8 Topic Tabs Pill Row */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 justify-start sm:justify-center">
+        <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-3 sm:pb-4 mb-6 sm:mb-8 justify-start sm:justify-center max-w-full no-scrollbar">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-mono flex items-center gap-2 transition-all whitespace-nowrap ${
+                className={`min-h-[40px] px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-mono flex items-center gap-1.5 sm:gap-2 transition-all whitespace-nowrap active:scale-95 ${
                   isActive
                     ? 'bg-[#52D6FF] text-slate-950 font-bold shadow-lg shadow-[#52D6FF]/25 scale-105'
                     : 'bg-[#101827]/80 hover:bg-[#152238] text-slate-300 border border-slate-800'
@@ -91,7 +95,7 @@ export const LearnPage: React.FC = () => {
         </div>
 
         {/* Content Box */}
-        <div className="bg-[#0B1222] border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl flex-1 flex flex-col justify-between">
+        <div className="bg-[#0B1222] border border-slate-800 rounded-2xl p-4 sm:p-8 shadow-2xl flex-1 flex flex-col justify-between">
           {/* SPECIAL TAB 1: THE MOON */}
           {activeTab === 'moon' && (
             <div className="space-y-6 animate-fadeIn">
@@ -277,6 +281,16 @@ export const LearnPage: React.FC = () => {
                 </div>
               )}
             </div>
+          )}
+
+          {/* SPECIAL TAB 9: CADET STEM QUIZ & CERTIFICATE */}
+          {activeTab === 'quiz' && (
+            <CadetQuizCertificate />
+          )}
+
+          {/* SPECIAL TAB 10: NASA OPEN DATA DIRECTORY */}
+          {activeTab === 'data' && (
+            <NasaDataSourcesDirectory />
           )}
 
           {/* NASA Scientific Sources Section at Footer */}

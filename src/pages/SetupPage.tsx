@@ -72,10 +72,10 @@ export const SetupPage: React.FC = () => {
     <div className="w-full min-h-screen bg-[#050914] text-slate-100 flex flex-col justify-between selection:bg-[#52D6FF]/30">
       <AppNavbar />
 
-      <main className="max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 flex-1 flex flex-col">
+      <main className="max-w-6xl mx-auto w-full px-3 sm:px-6 py-4 sm:py-6 flex-1 flex flex-col">
         {/* Step Progression Header */}
-        <div className="mb-6">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-4">
+        <div className="mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3 sm:pb-4">
             <div>
               <div className="text-[10px] font-mono text-[#52D6FF] uppercase tracking-wider mb-0.5">
                 {t('setup.badge')}
@@ -86,7 +86,7 @@ export const SetupPage: React.FC = () => {
             </div>
 
             {/* Stepper Breadcrumb Pills */}
-            <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto py-1">
+            <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto py-1 max-w-full no-scrollbar">
               {steps.map((st) => {
                 const isActive = currentStep === st.id;
                 const isPassed = 
@@ -103,7 +103,7 @@ export const SetupPage: React.FC = () => {
                       if (st.id === 'location') navigate('/mission');
                       else setCurrentStep(st.id);
                     }}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-mono flex items-center gap-1.5 transition-all whitespace-nowrap ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-mono flex items-center gap-1.5 transition-all whitespace-nowrap min-h-[36px] active:scale-95 ${
                       isActive
                         ? 'bg-[#52D6FF] text-slate-950 font-bold shadow-lg shadow-[#52D6FF]/20'
                         : isPassed
@@ -111,7 +111,7 @@ export const SetupPage: React.FC = () => {
                         : 'bg-slate-900/60 text-slate-400 hover:text-slate-200 border border-slate-800'
                     }`}
                   >
-                    {isPassed ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : st.icon}
+                    {isPassed ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" /> : <span className="shrink-0">{st.icon}</span>}
                     <span>{st.label}</span>
                   </button>
                 );
@@ -176,9 +176,9 @@ export const SetupPage: React.FC = () => {
 
           {/* STEP 4: Difficulty & Duration */}
           {currentStep === 'difficulty' && (
-            <div className="max-w-3xl mx-auto w-full p-6 sm:p-8 rounded-2xl bg-[#0B1222] border border-slate-800 animate-fadeIn">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-display font-bold text-white mb-2">
+            <div className="max-w-3xl mx-auto w-full p-4 sm:p-8 rounded-2xl bg-[#0B1222] border border-slate-800 animate-fadeIn">
+              <div className="text-center mb-6 sm:mb-8">
+                <h2 className="text-xl sm:text-2xl font-display font-bold text-white mb-2">
                   {t('setup.diff.title')}
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto">
@@ -187,21 +187,21 @@ export const SetupPage: React.FC = () => {
               </div>
 
               {/* Mode Selection (Junior vs Commander) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
                 {/* Junior Mode */}
                 <div
                   onClick={() => {
                     sound.playClick();
                     setModeConfig('junior');
                   }}
-                  className={`p-5 rounded-xl border cursor-pointer transition-all ${
+                  className={`p-4 sm:p-5 rounded-xl border cursor-pointer transition-all active:scale-[0.99] ${
                     modeConfig === 'junior'
                       ? 'bg-sky-950/30 border-[#52D6FF] ring-1 ring-[#52D6FF] shadow-lg shadow-[#52D6FF]/10'
                       : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
                   }`}
                 >
-                  <div className="flex items-center gap-2.5 mb-2">
-                    <Heart className="w-5 h-5 text-emerald-400" />
+                  <div className="flex items-center gap-2.5 mb-1.5 sm:mb-2">
+                    <Heart className="w-5 h-5 text-emerald-400 shrink-0" />
                     <h3 className="font-display font-bold text-sm text-white">
                       {t('setup.diff.junior')}
                     </h3>
@@ -217,14 +217,14 @@ export const SetupPage: React.FC = () => {
                     sound.playClick();
                     setModeConfig('commander');
                   }}
-                  className={`p-5 rounded-xl border cursor-pointer transition-all ${
+                  className={`p-4 sm:p-5 rounded-xl border cursor-pointer transition-all active:scale-[0.99] ${
                     modeConfig === 'commander'
                       ? 'bg-amber-950/30 border-amber-500 ring-1 ring-amber-500 shadow-lg shadow-amber-500/10'
                       : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
                   }`}
                 >
-                  <div className="flex items-center gap-2.5 mb-2">
-                    <Eye className="w-5 h-5 text-amber-400" />
+                  <div className="flex items-center gap-2.5 mb-1.5 sm:mb-2">
+                    <Eye className="w-5 h-5 text-amber-400 shrink-0" />
                     <h3 className="font-display font-bold text-sm text-white">
                       {t('setup.diff.commander')}
                     </h3>
@@ -236,11 +236,11 @@ export const SetupPage: React.FC = () => {
               </div>
 
               {/* Duration Selection (30 / 60 / 90 Days) */}
-              <div className="mb-8">
-                <label className="text-xs font-mono text-slate-300 font-bold block mb-3 text-center sm:text-left">
+              <div className="mb-6 sm:mb-8">
+                <label className="text-xs font-mono text-slate-300 font-bold block mb-2.5 text-center sm:text-left">
                   {t('setup.duration.title')}
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
                   {[
                     { days: 30 as MissionDuration, label: t('setup.duration.30') },
                     { days: 60 as MissionDuration, label: t('setup.duration.60') },
@@ -253,7 +253,7 @@ export const SetupPage: React.FC = () => {
                         sound.playClick();
                         setDurationConfig(d.days);
                       }}
-                      className={`p-3.5 rounded-xl border text-xs font-mono font-bold transition-all text-center ${
+                      className={`p-3 sm:p-3.5 rounded-xl border text-xs font-mono font-bold transition-all text-center min-h-[42px] active:scale-95 ${
                         durationConfig === d.days
                           ? 'bg-[#52D6FF] text-slate-950 border-[#52D6FF] shadow-md'
                           : 'bg-slate-900/60 text-slate-300 border-slate-800 hover:border-slate-700 hover:text-white'
@@ -266,17 +266,17 @@ export const SetupPage: React.FC = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-between pt-4 border-t border-slate-800">
+              <div className="flex items-center justify-between gap-3 pt-3 sm:pt-4 border-t border-slate-800">
                 <button
                   onClick={() => setCurrentStep('base')}
-                  className="px-5 py-2.5 rounded-xl border border-slate-700 text-xs font-mono text-slate-300 hover:text-white transition-all flex items-center gap-2"
+                  className="min-h-[42px] px-4 sm:px-5 py-2.5 rounded-xl border border-slate-700 text-xs font-mono text-slate-300 hover:text-white transition-all flex items-center gap-2 active:scale-95"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   <span>{t('common.back')}</span>
                 </button>
                 <button
                   onClick={() => setCurrentStep('launch')}
-                  className="px-6 py-2.5 rounded-xl bg-[#52D6FF] hover:bg-[#38BDF8] text-slate-950 text-xs font-mono font-bold transition-all flex items-center gap-2 shadow-lg"
+                  className="min-h-[42px] px-5 sm:px-6 py-2.5 rounded-xl bg-[#52D6FF] hover:bg-[#38BDF8] text-slate-950 text-xs font-mono font-bold transition-all flex items-center gap-2 shadow-lg active:scale-95"
                 >
                   <span>{t('common.continue')}</span>
                   <ArrowRight className="w-4 h-4" />
@@ -287,29 +287,29 @@ export const SetupPage: React.FC = () => {
 
           {/* STEP 5: Final Review & Launch */}
           {currentStep === 'launch' && (
-            <div className="max-w-2xl mx-auto w-full p-6 sm:p-8 rounded-2xl bg-[#0B1222] border border-slate-800 text-center animate-fadeIn">
-              <div className="w-16 h-16 rounded-full bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-center text-emerald-400 mx-auto mb-4">
-                <Rocket className="w-8 h-8" />
+            <div className="max-w-2xl mx-auto w-full p-4 sm:p-8 rounded-2xl bg-[#0B1222] border border-slate-800 text-center animate-fadeIn">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-center text-emerald-400 mx-auto mb-3 sm:mb-4">
+                <Rocket className="w-7 h-7 sm:w-8 sm:h-8" />
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-white mb-2">
+              <h2 className="text-xl sm:text-3xl font-display font-extrabold text-white mb-2">
                 {language === 'bn' ? 'ফ্লাইট প্রস্তুতি সম্পন্ন' : 'Expedition Flight Ready'}
               </h2>
-              <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto mb-6">
+              <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto mb-5 sm:mb-6">
                 {language === 'bn' 
                   ? 'তোমার আউটপোস্ট জীবনরক্ষা ব্যবস্থা ও নভোচারী দল প্রস্তুত। এখন মিশন ব্রিফিংয়ে অংশ নাও।' 
                   : 'Your outpost architecture, life support loops, and crew roster are verified. Proceed to flight briefing.'}
               </p>
 
               {/* Summary Badges Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8 text-xs font-mono bg-[#060B18] p-4 rounded-xl border border-slate-800">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6 sm:mb-8 text-xs font-mono bg-[#060B18] p-3 sm:p-4 rounded-xl border border-slate-800">
                 <div className="text-slate-300">
                   <span className="text-slate-500 block text-[10px] uppercase">{language === 'bn' ? 'অবস্থান' : 'Location'}</span>
                   <span className="font-bold text-white capitalize">{destConfig}</span>
                 </div>
                 <div className="text-slate-300">
                   <span className="text-slate-500 block text-[10px] uppercase">{language === 'bn' ? 'নভোচারী' : 'Crew'}</span>
-                  <span className="font-bold text-white">{formatNum(crewCountConfig)} {language === 'bn' ? 'জন' : 'Astronauts'}</span>
+                  <span className="font-bold text-white">{formatNum(crewCountConfig)} {language === 'bn' ? 'জন' : 'Crew'}</span>
                 </div>
                 <div className="text-slate-300">
                   <span className="text-slate-500 block text-[10px] uppercase">{language === 'bn' ? 'সময়কাল' : 'Duration'}</span>
@@ -321,10 +321,10 @@ export const SetupPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center justify-between gap-3 pt-2">
                 <button
                   onClick={() => setCurrentStep('difficulty')}
-                  className="px-5 py-3 rounded-xl border border-slate-700 text-xs font-mono text-slate-300 hover:text-white transition-all flex items-center gap-1.5"
+                  className="min-h-[42px] px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border border-slate-700 text-xs font-mono text-slate-300 hover:text-white transition-all flex items-center gap-1.5 active:scale-95"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   <span>{t('common.back')}</span>
@@ -332,10 +332,10 @@ export const SetupPage: React.FC = () => {
 
                 <button
                   onClick={handleProceedToBriefing}
-                  className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-display font-bold text-sm sm:text-base flex items-center gap-2 shadow-xl hover:shadow-emerald-500/25 hover:scale-105 transition-all"
+                  className="min-h-[42px] px-6 sm:px-8 py-2.5 sm:py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-display font-bold text-xs sm:text-base flex items-center gap-2 shadow-xl hover:shadow-emerald-500/25 active:scale-95 transition-all"
                 >
                   <span>{t('setup.btn.briefing')}</span>
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               </div>
             </div>

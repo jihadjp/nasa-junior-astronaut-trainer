@@ -20,6 +20,7 @@ export const DecisionModal: React.FC<DecisionModalProps> = ({
   const { t, language } = useLanguage();
   const [showTelemetry, setShowTelemetry] = useState<boolean>(false);
   const [expandedChoiceId, setExpandedChoiceId] = useState<string | null>(null);
+  const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
   const getChoiceIcon = (choiceId: string) => {
     if (choiceId.includes('shield') || choiceId.includes('shelter') || choiceId.includes('protect')) return Shield;
@@ -131,6 +132,8 @@ export const DecisionModal: React.FC<DecisionModalProps> = ({
   };
 
   const handleChoice = (c: DecisionChoice) => {
+    if (isExecuting) return;
+    setIsExecuting(true);
     sound.playClick();
     onSelectChoice(c);
   };
@@ -146,16 +149,16 @@ export const DecisionModal: React.FC<DecisionModalProps> = ({
   const eventTelemetry = (language === 'bn' && event.telemetrySnapshotTextBn) ? event.telemetrySnapshotTextBn : event.telemetrySnapshotText;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 overflow-y-auto">
-      <div className="w-full max-w-xl bg-[#0D1527] border-2 border-[#52D6FF]/40 rounded-2xl shadow-2xl p-5 sm:p-6 text-slate-100 relative animate-in fade-in zoom-in-95 duration-200 my-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-3 sm:p-4 overflow-y-auto">
+      <div className="w-full max-w-xl bg-[#0D1527] border-2 border-[#52D6FF]/40 rounded-2xl shadow-2xl p-4 sm:p-6 text-slate-100 relative animate-in fade-in zoom-in-95 duration-200 my-auto max-h-[92vh] overflow-y-auto">
         {/* Header Ribbon */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3.5">
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded text-[10px] font-mono uppercase font-bold tracking-wider bg-rose-500/20 border border-rose-500/40 text-rose-300 flex items-center gap-1.5">
+        <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-slate-800 mb-3">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase font-bold tracking-wider bg-rose-500/20 border border-rose-500/40 text-rose-300 flex items-center gap-1">
               <AlertCircle className="w-3.5 h-3.5" />
               {priorityLabel}
             </span>
-            <span className="text-xs text-slate-400 font-mono">
+            <span className="text-xs text-slate-400 font-mono hidden xs:inline">
               {t('event.alert')}
             </span>
           </div>
@@ -163,7 +166,7 @@ export const DecisionModal: React.FC<DecisionModalProps> = ({
           {/* Deep Science Button */}
           <button
             onClick={() => onOpenWhy(firstWhyId)}
-            className="px-2.5 py-1 rounded-lg bg-[#52D6FF]/15 border border-[#52D6FF]/40 text-[#52D6FF] hover:bg-[#52D6FF]/25 text-xs font-mono font-semibold flex items-center gap-1.5 transition-all"
+            className="min-h-[32px] px-2.5 py-1 rounded-lg bg-[#52D6FF]/15 border border-[#52D6FF]/40 text-[#52D6FF] hover:bg-[#52D6FF]/25 text-xs font-mono font-semibold flex items-center gap-1.5 transition-all active:scale-95"
             title="Explore NASA STEM Science behind this event"
           >
             <BookOpen className="w-3.5 h-3.5" />
@@ -172,12 +175,12 @@ export const DecisionModal: React.FC<DecisionModalProps> = ({
         </div>
 
         {/* Event Title */}
-        <h2 className="text-xl sm:text-2xl font-display font-bold text-white mb-2 tracking-tight">
+        <h2 className="text-lg sm:text-2xl font-display font-bold text-white mb-2 tracking-tight">
           {eventTitle}
         </h2>
 
         {/* Visual Illustration */}
-        <div className="mb-3.5">
+        <div className="mb-3">
           {renderIllustration()}
         </div>
 
@@ -187,7 +190,7 @@ export const DecisionModal: React.FC<DecisionModalProps> = ({
         </p>
 
         {/* Progressive Disclosure: Collapsible Telemetry Snapshot */}
-        <div className="mb-4">
+        <div className="mb-3.5">
           <button
             onClick={() => setShowTelemetry(prev => !prev)}
             className="text-[11px] font-mono text-[#52D6FF] hover:underline flex items-center gap-1 focus:outline-none"
@@ -226,9 +229,9 @@ export const DecisionModal: React.FC<DecisionModalProps> = ({
                 {/* Main Clickable Action Bar */}
                 <div
                   onClick={() => handleChoice(choice)}
-                  className="p-3 sm:p-3.5 cursor-pointer flex items-center justify-between gap-3 group select-none"
+                  className="p-2.5 sm:p-3.5 cursor-pointer flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 group select-none"
                 >
-                  <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
                     <div className="w-8 h-8 rounded-lg bg-[#0A1020] border border-slate-700 flex items-center justify-center shrink-0 group-hover:border-[#52D6FF] transition-colors">
                       <ChoiceIcon className="w-4 h-4 text-[#52D6FF]" />
                     </div>
@@ -249,17 +252,25 @@ export const DecisionModal: React.FC<DecisionModalProps> = ({
                         e.stopPropagation();
                         setExpandedChoiceId(isExpanded ? null : choice.id);
                       }}
-                      className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-700/50 text-[10px] font-mono flex items-center gap-0.5"
+                      className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-700/50 text-[10px] font-mono flex items-center gap-0.5 min-w-[28px] min-h-[28px] justify-center"
                       title={t('event.tradeoff.toggle')}
                     >
                       <span>ⓘ</span>
                       {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                     </button>
 
-                    <div className="px-3 py-1.5 rounded-lg bg-[#52D6FF] group-hover:bg-[#38bdf8] text-slate-950 font-mono font-bold text-xs flex items-center gap-1 shadow-sm transition-transform active:scale-95">
+                    <button
+                      type="button"
+                      disabled={isExecuting}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleChoice(choice);
+                      }}
+                      className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#52D6FF] hover:bg-[#38bdf8] text-slate-950 font-mono font-bold text-xs flex items-center gap-1 shadow-sm transition-transform active:scale-95 min-h-[34px] disabled:opacity-50 disabled:pointer-events-none"
+                    >
                       <span>{language === 'bn' ? 'বাছাই করো' : 'EXECUTE'}</span>
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                    </div>
+                    </button>
                   </div>
                 </div>
 

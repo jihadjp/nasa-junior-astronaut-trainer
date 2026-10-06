@@ -14,6 +14,7 @@ import { DecisionModal } from '../components/events/DecisionModal';
 import { CausalChainModal } from '../components/events/CausalChainModal';
 import { EmergencyAbortModal } from '../components/mission/EmergencyAbortModal';
 import { EducationalModal } from '../components/events/EducationalModal';
+import { AidaCompanion } from '../components/ai/AidaCompanion';
 import { GAME_EVENTS } from '../events/eventDatabase';
 import { sound } from '../sound/audioEngine';
 
@@ -39,22 +40,24 @@ export const SimulationPage: React.FC = () => {
     eventModalVisible
   } = useMission();
 
-  // Support direct route deep-linking to /mission/event/:eventId
+  // Support direct route deep-linking to /mission/event/:eventId (e.g. bookmarks or educational links)
   useEffect(() => {
-    if (eventId && !gameState.activeEvent) {
-      const matched = GAME_EVENTS.find(e => e.id === eventId);
-      if (matched) {
-        setGameState(prev => ({ ...prev, activeEvent: matched, isPaused: true }));
+    if (eventId) {
+      const isCompleted = gameState.completedDecisions.some(d => d.eventId === eventId);
+      if (isCompleted) {
+        navigate('/mission/simulation', { replace: true });
+        return;
+      }
+      if (!gameState.activeEvent) {
+        const matched = GAME_EVENTS.find(e => e.id === eventId);
+        if (matched) {
+          setGameState(prev => ({ ...prev, activeEvent: matched, isPaused: true }));
+        } else {
+          navigate('/mission/simulation', { replace: true });
+        }
       }
     }
-  }, [eventId, gameState.activeEvent, setGameState]);
-
-  // Sync event route when event triggers during active simulation
-  useEffect(() => {
-    if (gameState.activeEvent && !eventId) {
-      navigate(`/mission/event/${gameState.activeEvent.id}`, { replace: true });
-    }
-  }, [gameState.activeEvent, eventId, navigate]);
+  }, [eventId, gameState.activeEvent, gameState.completedDecisions, navigate, setGameState]);
 
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-[#050914] text-[#F5F7FA] font-sans relative selection:bg-[#52D6FF]/30">
@@ -68,7 +71,7 @@ export const SimulationPage: React.FC = () => {
         onAbortMission={() => setShowAbortModal(true)}
       />
 
-      <main className="max-w-7xl mx-auto w-full px-4 py-4 flex-1 flex flex-col gap-4">
+      <main className="max-w-7xl mx-auto w-full px-2.5 sm:px-4 py-3 sm:py-4 flex-1 flex flex-col gap-3 sm:gap-4">
         {/* 2. Main Animated Outpost Canvas Centerpiece with live physics loops */}
         <OutpostCanvas
           state={gameState}
@@ -104,6 +107,9 @@ export const SimulationPage: React.FC = () => {
 
       {/* --- IN-GAME OVERLAYS & MODALS (Keeps active game aesthetic) --- */}
 
+      {/* AI Flight Assistant Companion (AIDA) */}
+      <AidaCompanion state={gameState} />
+
       {/* Decision Card Modal: In-game cinematic overlay */}
       {gameState.activeEvent && eventModalVisible && (
         <DecisionModal
@@ -118,7 +124,11 @@ export const SimulationPage: React.FC = () => {
         <CausalChainModal
           chain={gameState.lastCausalChain}
           onDismiss={() => {
-            setGameState(prev => ({ ...prev, lastCausalChain: null, isPaused: true }));
+            sound.playClick();
+            setGameState(prev => ({ ...prev, activeEvent: null, lastCausalChain: null, isPaused: true }));
+            if (eventId) {
+              navigate('/mission/simulation', { replace: true });
+            }
           }}
         />
       )}

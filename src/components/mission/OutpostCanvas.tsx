@@ -192,7 +192,7 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
     : 220 + Math.sin(animTime * 0.8) * 18; // Normal patrol inspection
 
   return (
-    <div className="relative w-full h-[380px] sm:h-[440px] lg:h-[490px] rounded-2xl overflow-hidden border border-[#52D6FF]/25 bg-[#040814] shadow-2xl select-none group">
+    <div className="relative w-full h-[260px] xs:h-[300px] sm:h-[400px] lg:h-[480px] rounded-2xl overflow-hidden border border-[#52D6FF]/25 bg-[#040814] shadow-2xl select-none group">
       {/* Dynamic Animated SVG Space Simulation */}
       <svg 
         className="w-full h-full transition-all duration-300" 
@@ -826,27 +826,27 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
       </svg>
 
       {/* Floating Outpost Environment Telemetry Overlay */}
-      <div className="absolute top-3 left-3 flex flex-wrap gap-2 items-center text-xs">
-        <span className="px-2.5 py-1 rounded bg-[#0A1020]/90 border border-[#52D6FF]/40 text-[#52D6FF] font-mono flex items-center gap-1.5 shadow-md">
-          <span className="w-2 h-2 rounded-full bg-[#52D6FF] animate-pulse"></span>
-          {language === 'bn' ? (isMars ? 'মঙ্গল // ক্রিস প্ল্যানিশিয়া' : 'চাঁদ // শ্যাকলটন ক্রেটার') : (isMars ? 'MARS // CHRYSE PLANITIA' : 'MOON // SHACKLETON CRATER')}
+      <div className="absolute top-2 sm:top-3 left-2 sm:left-3 right-2 sm:right-auto flex flex-wrap gap-1 sm:gap-2 items-center text-[10px] sm:text-xs">
+        <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded bg-[#0A1020]/90 border border-[#52D6FF]/40 text-[#52D6FF] font-mono flex items-center gap-1 sm:gap-1.5 shadow-md">
+          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#52D6FF] animate-pulse"></span>
+          <span>{language === 'bn' ? (isMars ? 'মঙ্গল // ক্রিস প্ল্যানিশিয়া' : 'চাঁদ // শ্যাকলটন ক্রেটার') : (isMars ? 'MARS // CHRYSE PLANITIA' : 'MOON // SHACKLETON CRATER')}</span>
         </span>
-        <span className="px-2 py-1 rounded bg-[#101827]/85 border border-slate-700 text-slate-300 font-mono">
+        <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 rounded bg-[#101827]/85 border border-slate-700 text-slate-300 font-mono">
           {t('canvas.temp', { temp: formatNum(environment.externalTempC) })}
         </span>
-        <span className="px-2 py-1 rounded bg-[#101827]/85 border border-slate-700 text-slate-300 font-mono">
+        <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 rounded bg-[#101827]/85 border border-slate-700 text-slate-300 font-mono hidden xs:inline">
           {t('canvas.solarFlux', { flux: formatNum(Math.round(environment.sunIntensity * 100)) })}
         </span>
         {environment.dustLevel > 30 && (
-          <span className="px-2 py-1 rounded bg-amber-950/80 border border-amber-500/50 text-amber-300 font-mono flex items-center gap-1">
-            <AlertTriangle className="w-3.5 h-3.5" />
-            {t('canvas.dustTau', { tau: formatNum(environment.dustLevel) })}
+          <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 rounded bg-amber-950/80 border border-amber-500/50 text-amber-300 font-mono flex items-center gap-1">
+            <AlertTriangle className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+            <span>{t('canvas.dustTau', { tau: formatNum(environment.dustLevel) })}</span>
           </span>
         )}
         {environment.solarFlareActive && (
-          <span className="px-2 py-1 rounded bg-red-950/80 border border-red-500 text-red-300 font-mono flex items-center gap-1 animate-pulse">
-            <AlertTriangle className="w-3.5 h-3.5" />
-            {t('canvas.spe')}
+          <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 rounded bg-red-950/80 border border-red-500 text-red-300 font-mono flex items-center gap-1 animate-pulse">
+            <AlertTriangle className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+            <span>{t('canvas.spe')}</span>
           </span>
         )}
       </div>

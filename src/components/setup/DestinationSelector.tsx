@@ -32,8 +32,8 @@ export const DestinationSelector: React.FC<DestinationSelectorProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 sm:p-6 text-slate-100">
-      <div className="text-center mb-8">
+    <div className="w-full max-w-4xl mx-auto p-3 sm:p-6 text-slate-100">
+      <div className="text-center mb-6 sm:mb-8">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#52D6FF]/15 border border-[#52D6FF]/30 text-[#52D6FF] text-xs font-mono mb-2">
           <Compass className="w-3.5 h-3.5" />
           {t('dest.badge')}
@@ -41,16 +41,16 @@ export const DestinationSelector: React.FC<DestinationSelectorProps> = ({
         <h2 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight">
           {t('dest.title')}
         </h2>
-        <p className="text-sm text-slate-400 max-w-xl mx-auto mt-1">
+        <p className="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto mt-1">
           {t('dest.desc')}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
         {/* Destination 1: The Moon */}
         <div
           onClick={() => handleSelect('moon')}
-          className={`cursor-pointer rounded-2xl p-6 border transition-all duration-300 relative overflow-hidden flex flex-col justify-between ${
+          className={`cursor-pointer rounded-2xl p-4 sm:p-6 border transition-all duration-300 relative overflow-hidden flex flex-col justify-between ${
             selected === 'moon'
               ? 'bg-[#0F1B33] border-[#52D6FF] shadow-[0_0_25px_-5px_rgba(82,214,255,0.3)] ring-1 ring-[#52D6FF]'
               : 'bg-[#101827]/70 border-slate-800 hover:border-slate-700 hover:bg-[#131E33]/60'
@@ -113,7 +113,7 @@ export const DestinationSelector: React.FC<DestinationSelectorProps> = ({
         {/* Destination 2: Mars */}
         <div
           onClick={() => handleSelect('mars')}
-          className={`cursor-pointer rounded-2xl p-6 border transition-all duration-300 relative overflow-hidden flex flex-col justify-between ${
+          className={`cursor-pointer rounded-2xl p-4 sm:p-6 border transition-all duration-300 relative overflow-hidden flex flex-col justify-between ${
             selected === 'mars'
               ? 'bg-[#261214] border-red-500 shadow-[0_0_25px_-5px_rgba(239,68,68,0.3)] ring-1 ring-red-500'
               : 'bg-[#101827]/70 border-slate-800 hover:border-slate-700 hover:bg-[#1C1720]/60'
@@ -174,10 +174,10 @@ export const DestinationSelector: React.FC<DestinationSelectorProps> = ({
       </div>
 
       {/* Navigation Footer */}
-      <div className="flex justify-end">
+      <div className="flex justify-end pt-2">
         <button
           onClick={handleProceed}
-          className="py-3 px-6 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#52D6FF] hover:from-[#2563EB] hover:to-[#38BDF8] text-slate-950 font-display font-bold text-sm flex items-center gap-2 shadow-lg hover:shadow-[#52D6FF]/20 transition-all"
+          className="min-h-[42px] py-2.5 sm:py-3 px-6 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#52D6FF] hover:from-[#2563EB] hover:to-[#38BDF8] text-slate-950 font-display font-bold text-sm flex items-center gap-2 shadow-lg hover:shadow-[#52D6FF]/20 transition-all active:scale-95"
         >
           {t('dest.btn.confirm')}
           <ArrowRight className="w-4 h-4" />

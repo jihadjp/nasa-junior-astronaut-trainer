@@ -18,7 +18,8 @@ import {
   Zap, 
   Droplets, 
   Apple, 
-  Heart 
+  Heart,
+  Award 
 } from 'lucide-react';
 
 export const ReportPage: React.FC = () => {
@@ -158,13 +159,13 @@ export const ReportPage: React.FC = () => {
             <div className="text-center sm:text-right">
               <span className="text-xs font-mono text-slate-400 block">{language === 'bn' ? 'সামগ্রিক স্কোর' : 'OVERALL SCORE'}</span>
               <div className="text-3xl font-display font-extrabold text-white">
-                {formatNum(sc.overallScore)}<span className="text-sm font-mono text-slate-400">/১০০</span>
+                {formatNum(sc.overallScore)}<span className="text-sm font-mono text-slate-400">/{formatNum(100)}</span>
               </div>
             </div>
           </div>
 
           {/* Visual Causal Timeline: What Happened? */}
-          <div className="border border-slate-800 rounded-xl p-4 bg-[#060B18]/60 mb-6">
+          <div className="border border-slate-800 rounded-xl p-3 sm:p-4 bg-[#060B18]/60 mb-6">
             <button
               onClick={() => setExpandedChain(prev => !prev)}
               className="w-full flex items-center justify-between text-xs font-mono font-bold text-[#52D6FF] hover:underline"
@@ -174,11 +175,11 @@ export const ReportPage: React.FC = () => {
             </button>
 
             {expandedChain && (
-              <div className="mt-4 space-y-3 animate-fadeIn">
+              <div className="mt-3 sm:mt-4 space-y-2 animate-fadeIn">
                 {completedDecisions.length > 0 ? (
                   <div className="space-y-2">
                     {completedDecisions.map((dec, i) => (
-                      <div key={i} className="p-3 rounded-lg bg-[#0B1222] border border-slate-800 text-xs font-mono flex items-center justify-between">
+                      <div key={i} className="p-2.5 sm:p-3 rounded-lg bg-[#0B1222] border border-slate-800 text-xs font-mono flex items-center justify-between">
                         <span className="text-[#52D6FF] font-bold">
                           {language === 'bn' ? `দিন ${formatNum(dec.day)}:` : `DAY ${dec.day}:`}
                         </span>
@@ -196,10 +197,10 @@ export const ReportPage: React.FC = () => {
           </div>
 
           {/* Navigation Action Buttons */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-800">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 border-t border-slate-800">
             <button
               onClick={handleShare}
-              className="px-4 py-2.5 rounded-xl border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white text-xs font-mono flex items-center gap-2 transition-all"
+              className="min-h-[42px] px-4 py-2.5 rounded-xl border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white text-xs font-mono flex items-center justify-center gap-2 transition-all active:scale-95"
             >
               <Share2 className="w-4 h-4 text-[#52D6FF]" />
               <span>{t('report.btn.share')}</span>
@@ -207,18 +208,26 @@ export const ReportPage: React.FC = () => {
 
             <div className="flex flex-wrap items-center gap-2">
               <button
-                onClick={() => navigate('/mission/replay')}
-                className="px-4 py-2.5 rounded-xl bg-purple-950/40 border border-purple-500/40 text-purple-300 hover:bg-purple-900/40 text-xs font-mono flex items-center gap-1.5 transition-all"
+                onClick={() => navigate('/learn')}
+                className="flex-1 sm:flex-none min-h-[42px] px-3.5 sm:px-4 py-2.5 rounded-xl bg-amber-950/40 border border-amber-500/40 text-amber-300 hover:bg-amber-900/40 text-xs font-mono flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95"
               >
-                <RotateCcw className="w-4 h-4" />
+                <Award className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>{language === 'bn' ? 'সনদ ও কুইজ' : 'Cadet Certificate'}</span>
+              </button>
+
+              <button
+                onClick={() => navigate('/mission/replay')}
+                className="flex-1 sm:flex-none min-h-[42px] px-3 sm:px-4 py-2.5 rounded-xl bg-purple-950/40 border border-purple-500/40 text-purple-300 hover:bg-purple-900/40 text-xs font-mono flex items-center justify-center gap-1.5 transition-all active:scale-95"
+              >
+                <RotateCcw className="w-4 h-4 shrink-0" />
                 <span>{t('report.page.replay')}</span>
               </button>
 
               <button
                 onClick={() => navigate('/learn')}
-                className="px-4 py-2.5 rounded-xl bg-sky-950/40 border border-sky-500/40 text-sky-300 hover:bg-sky-900/40 text-xs font-mono flex items-center gap-1.5 transition-all"
+                className="flex-1 sm:flex-none min-h-[42px] px-3 sm:px-4 py-2.5 rounded-xl bg-sky-950/40 border border-sky-500/40 text-sky-300 hover:bg-sky-900/40 text-xs font-mono flex items-center justify-center gap-1.5 transition-all active:scale-95"
               >
-                <BookOpen className="w-4 h-4" />
+                <BookOpen className="w-4 h-4 shrink-0" />
                 <span>{t('report.btn.learn')}</span>
               </button>
 
@@ -227,10 +236,10 @@ export const ReportPage: React.FC = () => {
                   handleStartSetup('moon');
                   navigate('/mission');
                 }}
-                className="px-5 py-2.5 rounded-xl bg-[#52D6FF] hover:bg-[#38BDF8] text-slate-950 font-display font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all shadow-lg"
+                className="w-full sm:w-auto min-h-[42px] px-5 py-2.5 rounded-xl bg-[#52D6FF] hover:bg-[#38BDF8] text-slate-950 font-display font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-lg active:scale-95"
               >
                 <span>{t('report.page.new')}</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 shrink-0" />
               </button>
             </div>
           </div>

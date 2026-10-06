@@ -57,8 +57,8 @@ export const SettingsPage: React.FC = () => {
     <div className="w-full min-h-screen bg-[#050914] text-slate-100 flex flex-col justify-between selection:bg-[#52D6FF]/30">
       <AppNavbar />
 
-      <main className="max-w-4xl mx-auto w-full px-4 sm:px-6 py-8 flex-1 flex flex-col justify-center animate-fadeIn">
-        <div className="bg-[#0B1222] border border-amber-500/40 rounded-2xl p-6 sm:p-8 shadow-2xl mb-6">
+      <main className="max-w-4xl mx-auto w-full px-3 sm:px-6 py-5 sm:py-8 flex-1 flex flex-col justify-center animate-fadeIn">
+        <div className="bg-[#0B1222] border border-amber-500/40 rounded-2xl p-4 sm:p-8 shadow-2xl mb-6">
           {/* Header */}
           <div className="pb-4 border-b border-slate-800 mb-6">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-mono font-bold mb-2">

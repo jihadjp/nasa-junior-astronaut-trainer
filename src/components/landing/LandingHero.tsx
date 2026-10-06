@@ -12,10 +12,9 @@ import {
   Apple, 
   Shield, 
   Wrench, 
-  Compass,
-  ArrowRight,
-  Radio,
-  Activity
+  ArrowRight, 
+  Radio, 
+  Activity 
 } from 'lucide-react';
 import { sound } from '../../sound/audioEngine';
 import { useLanguage } from '../../i18n/LanguageContext';
@@ -70,10 +69,10 @@ export const LandingHero: React.FC<LandingHeroProps> = ({
       </div>
 
       {/* Top Mission Control Bar */}
-      <nav className="w-full px-6 py-4 flex items-center justify-between border-b border-slate-800/80 backdrop-blur-md relative z-10">
-        <div className="flex items-center gap-3">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#52D6FF] animate-pulse shadow-[0_0_10px_#52D6FF]" />
-          <span className="font-display font-extrabold text-sm sm:text-base tracking-widest text-white">
+      <nav className="w-full px-3.5 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-slate-800/80 backdrop-blur-md relative z-10">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#52D6FF] animate-pulse shadow-[0_0_10px_#52D6FF] shrink-0" />
+          <span className="font-display font-extrabold text-sm sm:text-base tracking-widest text-white truncate">
             {t('nav.brand')}
           </span>
           <span className="hidden md:inline text-[11px] font-mono text-slate-400 border-l border-slate-700 pl-3">
@@ -81,7 +80,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <LanguageToggle />
 
           <button
@@ -103,39 +102,39 @@ export const LandingHero: React.FC<LandingHeroProps> = ({
       </nav>
 
       {/* Hero Central Showcase */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10 text-center relative z-10 my-auto">
+      <main className="max-w-6xl mx-auto px-3 sm:px-6 py-6 sm:py-10 text-center relative z-10 my-auto w-full">
         {/* Mission Status Callout Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#101827]/90 border border-[#52D6FF]/40 text-[#52D6FF] text-xs font-mono mb-6 shadow-xl backdrop-blur-md animate-in fade-in duration-700">
-          <Radio className="w-3.5 h-3.5 text-[#52D6FF] animate-pulse" />
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#101827]/90 border border-[#52D6FF]/40 text-[#52D6FF] text-[11px] sm:text-xs font-mono mb-4 sm:mb-6 shadow-xl backdrop-blur-md animate-in fade-in duration-700">
+          <Radio className="w-3.5 h-3.5 text-[#52D6FF] animate-pulse shrink-0" />
           <span>{t('landing.badge')}</span>
         </div>
 
         {/* Main Title */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-black tracking-tight text-white mb-3 leading-none drop-shadow-2xl">
+        <h1 className="text-3xl sm:text-6xl lg:text-7xl font-display font-black tracking-tight text-white mb-2 sm:mb-3 leading-tight sm:leading-none drop-shadow-2xl">
           {t('landing.title')}
         </h1>
 
-        <div className="text-lg sm:text-2xl font-display font-semibold text-transparent bg-clip-text bg-gradient-to-r from-slate-100 via-sky-200 to-[#52D6FF] mb-4 tracking-wide">
+        <div className="text-base sm:text-2xl font-display font-semibold text-transparent bg-clip-text bg-gradient-to-r from-slate-100 via-sky-200 to-[#52D6FF] mb-3 sm:mb-4 tracking-wide">
           {t('landing.subtitle')}
         </div>
 
-        <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto mb-8 font-sans leading-relaxed drop-shadow-md">
+        <p className="text-xs sm:text-base text-slate-300 max-w-2xl mx-auto mb-6 sm:mb-8 font-sans leading-relaxed drop-shadow-md">
           {t('landing.quote')}
           <br className="hidden sm:inline" />
           {' '}{t('landing.desc')}
         </p>
 
         {/* Primary Call to Action Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mb-14">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-4 mb-8 sm:mb-14 max-w-md sm:max-w-none mx-auto w-full">
           {hasSavedMission && onResumeMission && (
             <button
               onClick={() => {
                 sound.playClick();
                 onResumeMission();
               }}
-              className="py-3.5 px-8 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-display font-extrabold text-sm sm:text-base flex items-center gap-2.5 shadow-2xl hover:shadow-emerald-500/30 hover:scale-105 transition-all"
+              className="min-h-[46px] py-3 sm:py-3.5 px-6 sm:px-8 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-display font-extrabold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-2xl hover:shadow-emerald-500/30 active:scale-95 transition-all"
             >
-              <Play className="w-5 h-5 fill-current" />
+              <Play className="w-5 h-5 fill-current shrink-0" />
               <span>
                 {language === 'bn' 
                   ? `অভিযানে ফিরে যাও (দিন ${formatNum(savedMissionDay || 1)})` 
@@ -146,9 +145,9 @@ export const LandingHero: React.FC<LandingHeroProps> = ({
 
           <button
             onClick={handleStart}
-            className="py-3.5 px-9 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#52D6FF] hover:from-[#2563EB] hover:to-[#38BDF8] text-slate-950 font-display font-black text-sm sm:text-base flex items-center gap-2.5 shadow-2xl hover:shadow-[#52D6FF]/30 hover:scale-105 transition-all"
+            className="min-h-[46px] py-3 sm:py-3.5 px-6 sm:px-9 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#52D6FF] hover:from-[#2563EB] hover:to-[#38BDF8] text-slate-950 font-display font-black text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-2xl hover:shadow-[#52D6FF]/30 active:scale-95 transition-all"
           >
-            <Rocket className="w-5 h-5 fill-current" />
+            <Rocket className="w-5 h-5 fill-current shrink-0" />
             <span>
               {hasSavedMission 
                 ? (language === 'bn' ? 'নতুন অভিযান শুরু করো' : 'START NEW EXPEDITION')
@@ -158,17 +157,17 @@ export const LandingHero: React.FC<LandingHeroProps> = ({
 
           <button
             onClick={handleDemo}
-            className="py-3.5 px-6 rounded-xl bg-[#101827]/90 hover:bg-[#152238] border border-purple-500/40 text-purple-300 font-mono font-medium text-xs sm:text-sm flex items-center gap-2 backdrop-blur-md shadow-lg hover:border-purple-400 transition-all"
+            className="min-h-[46px] py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl bg-[#101827]/90 hover:bg-[#152238] border border-purple-500/40 text-purple-300 font-mono font-medium text-xs sm:text-sm flex items-center justify-center gap-2 backdrop-blur-md shadow-lg hover:border-purple-400 active:scale-95 transition-all"
           >
-            <Play className="w-4 h-4 fill-current" />
+            <Play className="w-4 h-4 fill-current shrink-0" />
             <span>{t('landing.btn.demo')}</span>
           </button>
 
           <button
             onClick={onToggleCommanderMode}
-            className="py-3.5 px-6 rounded-xl bg-[#101827]/90 hover:bg-[#152238] border border-amber-500/40 text-amber-300 font-mono font-medium text-xs sm:text-sm flex items-center gap-2 backdrop-blur-md shadow-lg hover:border-amber-400 transition-all hidden sm:flex"
+            className="min-h-[46px] py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl bg-[#101827]/90 hover:bg-[#152238] border border-amber-500/40 text-amber-300 font-mono font-medium text-xs sm:text-sm flex items-center justify-center gap-2 backdrop-blur-md shadow-lg hover:border-amber-400 active:scale-95 transition-all hidden xs:flex"
           >
-            <Eye className="w-4 h-4" />
+            <Eye className="w-4 h-4 shrink-0" />
             <span>{t('landing.btn.commander')}</span>
           </button>
         </div>

@@ -18,6 +18,7 @@ import { sound } from '../sound/audioEngine';
 import { useLanguage } from '../i18n/LanguageContext';
 
 export const LOCAL_STORAGE_KEY = 'outpost_save_v1';
+export const SETUP_STORAGE_KEY = 'outpost_setup_v1';
 
 // Helper to safely load and re-hydrate stored simulation state
 function loadSavedGameState(): SimulationState {
@@ -104,11 +105,50 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Setup configuration state
-  const [destConfig, setDestConfig] = useState<DestinationType>('moon');
-  const [crewCountConfig, setCrewCountConfig] = useState<number>(4);
-  const [durationConfig, setDurationConfig] = useState<MissionDuration>(30);
-  const [modeConfig, setModeConfig] = useState<GameMode>('junior');
+  // Setup configuration state (hydrated from localStorage to survive page refreshes)
+  const [destConfig, setDestConfig] = useState<DestinationType>(() => {
+    try {
+      const raw = localStorage.getItem(SETUP_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.destConfig === 'moon' || parsed.destConfig === 'mars') return parsed.destConfig;
+      }
+    } catch {}
+    return 'moon';
+  });
+
+  const [crewCountConfig, setCrewCountConfig] = useState<number>(() => {
+    try {
+      const raw = localStorage.getItem(SETUP_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (typeof parsed.crewCountConfig === 'number') return parsed.crewCountConfig;
+      }
+    } catch {}
+    return 4;
+  });
+
+  const [durationConfig, setDurationConfig] = useState<MissionDuration>(() => {
+    try {
+      const raw = localStorage.getItem(SETUP_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.durationConfig === 30 || parsed.durationConfig === 60 || parsed.durationConfig === 90) return parsed.durationConfig;
+      }
+    } catch {}
+    return 30;
+  });
+
+  const [modeConfig, setModeConfig] = useState<GameMode>(() => {
+    try {
+      const raw = localStorage.getItem(SETUP_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.modeConfig === 'junior' || parsed.modeConfig === 'commander') return parsed.modeConfig;
+      }
+    } catch {}
+    return 'junior';
+  });
 
   // Active Simulation State with function re-hydration
   const [gameState, setGameState] = useState<SimulationState>(() => loadSavedGameState());
@@ -187,13 +227,23 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSimulationRoute, gameState.activeEvent, stepDays]);
 
-  // Persist game state to localStorage
+  // Persist setup parameters to localStorage
   useEffect(() => {
-    if (gameState.missionDay > 1 || gameState.missionStatus !== 'ongoing') {
-      try {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(gameState));
-      } catch {}
-    }
+    try {
+      localStorage.setItem(SETUP_STORAGE_KEY, JSON.stringify({
+        destConfig,
+        crewCountConfig,
+        durationConfig,
+        modeConfig
+      }));
+    } catch {}
+  }, [destConfig, crewCountConfig, durationConfig, modeConfig]);
+
+  // Persist game state to localStorage (preserves active mission on refresh)
+  useEffect(() => {
+    try {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(gameState));
+    } catch {}
   }, [gameState]);
 
   // Timer loop when active and unpaused on simulation route
@@ -216,12 +266,14 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Handle Event Decision Selection
   const handleDecisionChoice = (choice: DecisionChoice) => {
+    setEventModalVisible(false);
     setGameState(prev => {
-      if (!prev.activeEvent) return prev;
+      const currentEvent = prev.activeEvent || GAME_EVENTS.find(e => e.choices.some(c => c.id === choice.id));
+      if (!currentEvent) return prev;
       sound.playClick();
 
       // Find authoritative event and choice from GAME_EVENTS to guarantee applyChoice exists
-      const realEvent = GAME_EVENTS.find(e => e.id === prev.activeEvent?.id);
+      const realEvent = GAME_EVENTS.find(e => e.id === currentEvent.id) || currentEvent;
       const realChoice = realEvent?.choices.find(c => c.id === choice.id) || choice;
 
       // Apply decision impacts safely
@@ -242,7 +294,7 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       const decisionLog = {
         day: prev.missionDay,
-        eventId: prev.activeEvent.id,
+        eventId: realEvent.id,
         choiceId: realChoice.id,
         choiceLabel: (language === 'bn' && realChoice.labelBn) ? realChoice.labelBn : realChoice.label
       };
@@ -258,7 +310,7 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     // If on /mission/event/:eventId, return to simulation screen
     if (location.pathname.startsWith('/mission/event')) {
-      navigate('/mission/simulation');
+      navigate('/mission/simulation', { replace: true });
     }
   };
 
@@ -352,6 +404,7 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const clearSaveData = () => {
     try {
       localStorage.removeItem(LOCAL_STORAGE_KEY);
+      localStorage.removeItem(SETUP_STORAGE_KEY);
     } catch {}
     setGameState(createInitialSimulationState('moon', 30, 'junior', 4));
   };
@@ -365,7 +418,7 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     navigate('/mission/briefing');
   };
 
-  const hasSavedMission = gameState.missionDay > 1 && gameState.missionStatus === 'ongoing';
+  const hasSavedMission = Boolean(localStorage.getItem(LOCAL_STORAGE_KEY)) && gameState.missionStatus === 'ongoing';
 
   return (
     <MissionContext.Provider

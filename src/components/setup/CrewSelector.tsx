@@ -49,7 +49,7 @@ export const CrewSelector: React.FC<CrewSelectorProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 sm:p-6 text-slate-100">
+    <div className="w-full max-w-4xl mx-auto p-3 sm:p-6 text-slate-100">
       <div className="text-center mb-6">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#52D6FF]/15 border border-[#52D6FF]/30 text-[#52D6FF] text-xs font-mono mb-2">
           <Users className="w-3.5 h-3.5" />
@@ -64,19 +64,20 @@ export const CrewSelector: React.FC<CrewSelectorProps> = ({
       </div>
 
       {/* Crew Size Selector Buttons */}
-      <div className="flex justify-center gap-3 mb-6">
+      <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6">
         {[2, 3, 4].map(count => (
           <button
             key={count}
             onClick={() => handleCountChange(count)}
-            className={`px-5 py-2.5 rounded-xl font-mono text-xs font-bold border transition-all flex items-center gap-2 ${
+            className={`flex-1 sm:flex-initial min-w-[85px] px-3 sm:px-5 py-2.5 rounded-xl font-mono text-xs font-bold border transition-all flex items-center justify-center gap-1.5 sm:gap-2 min-h-[42px] ${
               crewCount === count
-                ? 'bg-[#52D6FF] text-slate-950 border-[#52D6FF] shadow-lg shadow-[#52D6FF]/20 scale-105'
+                ? 'bg-[#52D6FF] text-slate-950 border-[#52D6FF] shadow-lg shadow-[#52D6FF]/20 scale-[1.02] sm:scale-105'
                 : 'bg-[#101827] text-slate-300 border-slate-700 hover:border-slate-500'
             }`}
           >
-            <Users className="w-4 h-4" />
-            {t('crew.btn.count', { count: formatNum(count) })} {count === 4 && t('crew.recommended')}
+            <Users className="w-4 h-4 shrink-0" />
+            <span>{t('crew.btn.count', { count: formatNum(count) })}</span>
+            {count === 4 && <span className="hidden xs:inline text-[10px] opacity-80">({language === 'bn' ? 'সুপারিশ' : 'rec'})</span>}
           </button>
         ))}
       </div>

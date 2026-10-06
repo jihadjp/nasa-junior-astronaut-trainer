@@ -52,45 +52,51 @@ export const BriefingPage: React.FC = () => {
 
   return (
     <div className="w-full min-h-screen bg-[#050914] text-slate-100 flex flex-col justify-between relative overflow-hidden selection:bg-[#52D6FF]/30">
-      {/* Background Ambient Glow & Starfield */}
-      <div className="absolute inset-0 bg-dot-pattern opacity-40 pointer-events-none" />
-      <div className={`absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] rounded-full blur-3xl pointer-events-none opacity-20 ${
-        destConfig === 'moon' ? 'bg-[#52D6FF]' : 'bg-red-600'
-      }`} />
+      {/* Real Planetary Image Backdrop */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={destConfig === 'moon' ? '/assets/moon_outpost.jpg' : '/assets/mars_outpost.jpg'}
+          alt="Target Outpost Environment"
+          className="w-full h-full object-cover object-center scale-105 filter brightness-[0.35] contrast-125 saturate-110 pointer-events-none"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050914] via-[#050914]/80 to-[#050914]/90" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-sky-950/20 via-[#050914]/70 to-[#050914]" />
+        <div className="absolute inset-0 bg-dot-pattern opacity-30 pointer-events-none" />
+      </div>
 
       {/* Top Directive Header */}
-      <header className="w-full px-6 py-4 flex items-center justify-between border-b border-slate-800/80 backdrop-blur-md relative z-10">
-        <div className="flex items-center gap-3">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#52D6FF] animate-pulse" />
-          <span className="font-display font-bold text-sm tracking-widest text-white">
+      <header className="w-full px-3.5 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-slate-800/80 backdrop-blur-md relative z-10">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#52D6FF] animate-pulse shrink-0" />
+          <span className="font-display font-bold text-xs sm:text-sm tracking-widest text-white truncate">
             {t('nav.brand')} // {t('briefing.badge')}
           </span>
         </div>
-        <div className="font-mono text-xs text-slate-400 flex items-center gap-1.5">
+        <div className="font-mono text-[11px] sm:text-xs text-slate-400 flex items-center gap-1.5 shrink-0">
           <Compass className="w-3.5 h-3.5 text-[#52D6FF]" />
-          <span className="capitalize">{destConfig} Orbit Insertion</span>
+          <span className="capitalize">{destConfig} Orbit</span>
         </div>
       </header>
 
       {/* Main Briefing Stage */}
-      <main className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 flex-1 flex flex-col justify-center relative z-10">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#101827] border border-[#52D6FF]/40 text-[#52D6FF] text-xs font-mono mb-3 shadow-lg">
+      <main className="max-w-5xl mx-auto w-full px-3 sm:px-6 py-5 sm:py-8 flex-1 flex flex-col justify-center relative z-10">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#101827] border border-[#52D6FF]/40 text-[#52D6FF] text-[11px] sm:text-xs font-mono mb-2.5 sm:mb-3 shadow-lg">
             <Sparkles className="w-3.5 h-3.5" />
             <span>MISSION 01 DIRECTIVE</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-display font-extrabold text-white tracking-tight mb-2">
+          <h1 className="text-2xl sm:text-5xl font-display font-extrabold text-white tracking-tight mb-2">
             {destConfig === 'moon' ? t('briefing.title.moon') : t('briefing.title.mars')}
           </h1>
 
           {/* Primary Objective Banner */}
-          <div className="max-w-2xl mx-auto mt-4 p-4 rounded-2xl bg-[#0B1222]/90 border border-slate-800 text-slate-200 backdrop-blur-md shadow-xl">
+          <div className="max-w-2xl mx-auto mt-3 sm:mt-4 p-3.5 sm:p-4 rounded-2xl bg-[#0B1222]/90 border border-slate-800 text-slate-200 backdrop-blur-md shadow-xl">
             <div className="flex items-center justify-center gap-2 text-xs font-mono font-bold text-[#52D6FF] uppercase mb-1">
               <Target className="w-4 h-4 text-[#52D6FF]" />
               <span>{t('briefing.obj.title')}</span>
             </div>
-            <p className="text-sm sm:text-base font-sans text-slate-300">
+            <p className="text-xs sm:text-base font-sans text-slate-300">
               {t('briefing.obj.desc').replace('{days}', String(formatNum(durationConfig)))}
             </p>
           </div>
@@ -146,23 +152,23 @@ export const BriefingPage: React.FC = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-800/80">
+        <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 sm:gap-4 pt-4 border-t border-slate-800/80">
           <button
             onClick={() => {
               sound.playClick();
               navigate('/mission/setup');
             }}
-            className="w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white text-xs sm:text-sm font-mono flex items-center justify-center gap-2 transition-all"
+            className="w-full sm:w-auto min-h-[44px] px-5 sm:px-6 py-3 rounded-xl border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white text-xs sm:text-sm font-mono flex items-center justify-center gap-2 transition-all active:scale-95"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 shrink-0" />
             <span>{t('briefing.btn.adjust')}</span>
           </button>
 
           <button
             onClick={handleBeginMission}
-            className="w-full sm:w-auto px-10 py-4 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-[#52D6FF] hover:from-emerald-400 hover:to-[#38BDF8] text-slate-950 font-display font-black text-base sm:text-lg flex items-center justify-center gap-3 shadow-2xl hover:shadow-emerald-500/30 hover:scale-105 transition-all"
+            className="w-full sm:w-auto min-h-[48px] px-6 sm:px-10 py-3 sm:py-4 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-[#52D6FF] hover:from-emerald-400 hover:to-[#38BDF8] text-slate-950 font-display font-black text-sm sm:text-lg flex items-center justify-center gap-2.5 sm:gap-3 shadow-2xl hover:shadow-emerald-500/30 active:scale-95 transition-all"
           >
-            <Rocket className="w-6 h-6 fill-current" />
+            <Rocket className="w-5 h-5 sm:w-6 sm:h-6 fill-current shrink-0" />
             <span>{t('briefing.btn.begin')}</span>
           </button>
         </div>

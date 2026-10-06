@@ -58,8 +58,8 @@ export const EducationalModal: React.FC<EducationalModalProps> = ({ whyId, onClo
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 overflow-y-auto">
-      <div className="w-full max-w-2xl bg-[#0B1220] border border-[#52D6FF]/50 rounded-2xl shadow-2xl p-5 sm:p-6 text-slate-100 my-auto animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-3 sm:p-4 overflow-y-auto">
+      <div className="w-full max-w-2xl bg-[#0B1220] border border-[#52D6FF]/50 rounded-2xl shadow-2xl p-4 sm:p-6 text-slate-100 my-auto animate-in fade-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
           <div className="flex items-center gap-2">
