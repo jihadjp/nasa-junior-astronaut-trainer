@@ -6,58 +6,78 @@ export const DEFAULT_ASTRONAUTS: Astronaut[] = [
   {
     id: 'astro_1',
     name: 'Maya Lin',
+    nameBn: 'মায়া লিন',
     role: 'commander',
+    roleBn: 'কমান্ডার',
     callsign: 'Polaris-1',
     specialty: 'Expedition Command',
+    specialtyBn: 'অভিযান নেতৃত্ব',
     specialtyDescription: '+15% Base Morale resilience & lower crew panic during crises',
+    specialtyDescriptionBn: 'দলের মনোবল ১৫% বেশি থাকে ও বিপদের সময় আতঙ্ক কমে',
     avatarSeed: 'maya',
     health: 98,
     morale: 95,
     stress: 10,
     status: 'Healthy',
-    currentTask: 'Supervising mission control & life support telemetry'
+    currentTask: 'Supervising mission control & life support telemetry',
+    currentTaskBn: 'মিশন নিয়ন্ত্রণ ও জীবন সুরক্ষার ডেটা পর্যবেক্ষণ করছে'
   },
   {
     id: 'astro_2',
     name: 'Tariq Al-Mansoor',
+    nameBn: 'তারিক আল-মনসুর',
     role: 'engineer',
+    roleBn: 'প্রকৌশলী',
     callsign: 'Vector-2',
     specialty: 'ECLSS & Power Systems',
+    specialtyBn: 'বিদ্যুৎ ও জীবন সুরক্ষা প্রকৌশল',
     specialtyDescription: '+25% Repair efficiency, -30% spare parts consumed during fixes',
+    specialtyDescriptionBn: 'মেরামত ২৫% দ্রুত হয় এবং ৩০% কম যন্ত্রাংশ খরচ হয়',
     avatarSeed: 'tariq',
     health: 96,
     morale: 92,
     stress: 15,
     status: 'Healthy',
-    currentTask: 'Calibrating solar array tracking and battery bus voltages'
+    currentTask: 'Calibrating solar array tracking and battery bus voltages',
+    currentTaskBn: 'সৌর প্যানেলের গতিবিধি ও ব্যাটারির ভোল্টেজ ঠিক করছে'
   },
   {
     id: 'astro_3',
     name: 'Elena Rostova',
+    nameBn: 'এলেনা রোস্তোভা',
     role: 'biologist',
+    roleBn: 'জীববিজ্ঞানী',
     callsign: 'Sprout-3',
     specialty: 'Hydroponics & Bioregeneration',
+    specialtyBn: 'উদ্ভিদ ও গ্রিনহাউস চাষাবাদ',
     specialtyDescription: '+20% Crop yield & +15% water recovery efficiency',
+    specialtyDescriptionBn: 'ফসল ২০% বেশি ফলে এবং পানি শোধনের ক্ষমতা ১৫% বাড়ে',
     avatarSeed: 'elena',
     health: 97,
     morale: 90,
     stress: 12,
     status: 'Healthy',
-    currentTask: 'Inspecting nutrient solutions in greenhouse hydroponic racks'
+    currentTask: 'Inspecting nutrient solutions in greenhouse hydroponic racks',
+    currentTaskBn: 'গ্রিনহাউসে গাছের জন্য প্রয়োজনীয় পুষ্টি ও পানি পরীক্ষা করছে'
   },
   {
     id: 'astro_4',
     name: 'Marcus Chen',
+    nameBn: 'মার্কাস চেন',
     role: 'scientist',
+    roleBn: 'বিজ্ঞানী',
     callsign: 'Nova-4',
     specialty: 'Planetary Geology & Physics',
+    specialtyBn: 'মহাকাশ ভূতত্ত্ব ও পদার্থবিজ্ঞান',
     specialtyDescription: '+35% Science points generated from lab experiments and sorties',
+    specialtyDescriptionBn: 'গবেষণাগার ও রোভারের অভিযানে ৩৫% বেশি বিজ্ঞান পয়েন্ট পায়',
     avatarSeed: 'marcus',
     health: 95,
     morale: 94,
     stress: 14,
     status: 'Healthy',
-    currentTask: 'Analyzing mass spectrometry coring data from surface rover'
+    currentTask: 'Analyzing mass spectrometry coring data from surface rover',
+    currentTaskBn: 'রোভারের সংগৃহীত মাটির নমুনার রাসায়নিক উপাদান বিশ্লেষণ করছে'
   }
 ];
 

@@ -2,7 +2,7 @@
 > **NASA Space Apps Challenge 2026** — *Junior Astronaut Mission Trainer*  
 > *"Build smart. Survive longer. Discover more."*
 
-[![Build & Tests](https://img.shields.io/badge/tests-9%20passed-35D07F?style=for-the-badge&logo=vitest)](./TESTING.md)
+[![Build & Tests](https://img.shields.io/badge/tests-16%20passed-35D07F?style=for-the-badge&logo=vitest)](./TESTING.md)
 [![Vite + React](https://img.shields.io/badge/React_19-TypeScript-52D6FF?style=for-the-badge&logo=react)](https://react.dev/)
 [![NASA Space Apps](https://img.shields.io/badge/NASA-Space_Apps_2026-3B82F6?style=for-the-badge&logo=nasa)](https://www.spaceappschallenge.org/)
 [![License](https://img.shields.io/badge/License-MIT_Open_Source-F4C95D?style=for-the-badge)](./ASSET_LICENSES.md)
@@ -56,6 +56,12 @@ In space, there is no infinite budget and no rescue truck. Every kilogram launch
   - 5-factor scoring model (Survival, Efficiency, Science, Resilience, Learning) with 30-day visual timeline and decision branching replay tool.
 - **🔊 Procedural Sound Synthesizer**:
   - 100% offline Web Audio API sound generator (ambient space drone, telemetry beeps, emergency klaxons, success chimes).
+- **🇧🇩 Bilingual Language System (বাংলা ↔ English)**:
+  - **Full-Game Coverage**: Instant toggle between natural Bangladeshi Bengali (সহজ ও সাবলীল বাংলা) and English without page reload or active mission reset.
+  - **Educational Dual-Terminology**: Core scientific concepts feature dual terms (`অক্সিজেন (Oxygen)`, `বিকিরণ (Radiation)`, `সৌর প্যানেল (Solar Panel)`, `রেগোলিথ (Regolith)`) so young learners simultaneously grasp international STEM terminology.
+  - **Native Numeral Localization**: Dynamic formatting automatically renders metrics, percentages, and days in native Bengali numerals (`০-৯`) when toggled to Bengali.
+  - **Typography & Font Optimization**: High-fidelity Google Fonts integration (`Hind Siliguri` & `Noto Sans Bengali`) ensuring zero layout clipping or text overlap.
+  - **Persistent Preference**: Stored in `localStorage` (`outpost_language_pref`), defaulting to English with instant synchronization across all dialogs and screens.
 - **♿ Accessibility & Performance**:
   - Color-independent badges (`✓ SAFE`, `⚠ WARNING`, `✕ CRITICAL`), keyboard shortcuts, reduced-motion compliance, responsive mobile layout, 60 FPS target.
 
@@ -70,7 +76,7 @@ In space, there is no infinite budget and no rescue truck. Every kilogram launch
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/nasa-junior-astronaut-trainer.git
+git clone https://github.com/jihadjp/nasa-junior-astronaut-trainer.git
 cd nasa-junior-astronaut-trainer
 
 # Install dependencies

@@ -3,6 +3,7 @@
 import React from 'react';
 import { ACHIEVEMENTS_LIST } from '../../data/achievements';
 import { Award, Lock, CheckCircle2, X } from 'lucide-react';
+import { useLanguage } from '../../i18n/LanguageContext';
 
 interface AchievementsModalProps {
   unlockedIds: string[];
@@ -13,6 +14,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
   unlockedIds,
   onClose
 }) => {
+  const { t, formatNum, language } = useLanguage();
   const unlockedSet = new Set(unlockedIds);
 
   return (
@@ -23,10 +25,10 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-mono font-bold flex items-center gap-1.5">
               <Award className="w-4 h-4 text-amber-400" />
-              EXPEDITION HONORS & ACHIEVEMENTS
+              {t('ach.badge')}
             </span>
             <span className="text-xs font-mono text-slate-400">
-              ({unlockedSet.size} / {ACHIEVEMENTS_LIST.length} UNLOCKED)
+              ({formatNum(unlockedSet.size)} / {formatNum(ACHIEVEMENTS_LIST.length)} {language === 'bn' ? 'অর্জিত' : 'UNLOCKED'})
             </span>
           </div>
           <button
@@ -41,6 +43,8 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6 max-h-[460px] overflow-y-auto pr-1">
           {ACHIEVEMENTS_LIST.map(ach => {
             const isUnlocked = unlockedSet.has(ach.id);
+            const title = (language === 'bn' && ach.titleBn) ? ach.titleBn : ach.title;
+            const desc = (language === 'bn' && ach.descriptionBn) ? ach.descriptionBn : ach.description;
 
             return (
               <div
@@ -64,14 +68,14 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                     <h4 className={`font-display font-bold text-xs uppercase tracking-wider ${
                       isUnlocked ? 'text-amber-300' : 'text-slate-400'
                     }`}>
-                      {ach.title}
+                      {title}
                     </h4>
                     {isUnlocked && (
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                     )}
                   </div>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    {ach.description}
+                    {desc}
                   </p>
                 </div>
               </div>
@@ -85,7 +89,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
             onClick={onClose}
             className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-mono font-bold text-white transition-all"
           >
-            RETURN TO MISSION
+            {language === 'bn' ? 'মিশনে ফিরে যাও' : 'RETURN TO MISSION'}
           </button>
         </div>
       </div>

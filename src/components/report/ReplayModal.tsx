@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import type { SimulationState } from '../../types/game';
 import { GitBranch, RotateCcw, X, Sparkles } from 'lucide-react';
 import { sound } from '../../sound/audioEngine';
+import { useLanguage } from '../../i18n/LanguageContext';
 
 interface ReplayModalProps {
   state: SimulationState;
@@ -16,6 +17,7 @@ export const ReplayModal: React.FC<ReplayModalProps> = ({
   onBranchReplay,
   onClose
 }) => {
+  const { t, formatNum, language } = useLanguage();
   const { completedDecisions, scores } = state;
   const [selectedBranchDay, setSelectedBranchDay] = useState<number>(
     completedDecisions.length > 0 ? completedDecisions[0].day : 1
@@ -34,7 +36,7 @@ export const ReplayModal: React.FC<ReplayModalProps> = ({
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded bg-purple-500/20 border border-purple-500/40 text-purple-300 text-xs font-mono font-bold flex items-center gap-1.5">
               <GitBranch className="w-3.5 h-3.5" />
-              "WHAT IF?" DECISION BRANCHING
+              {t('replay.badge')}
             </span>
           </div>
           <button
@@ -47,29 +49,37 @@ export const ReplayModal: React.FC<ReplayModalProps> = ({
 
         {/* Narrative Concept */}
         <h2 className="text-xl sm:text-2xl font-display font-bold text-white mb-1">
-          Explore Alternate Engineering Outcomes
+          {t('replay.title')}
         </h2>
         <p className="text-xs text-slate-400 mb-5 leading-relaxed">
-          In space systems engineering, every trade-off carries opportunity costs. Replay from a crucial decision fork to observe how alternative choices would have shifted life support buffers, crew wellbeing, and science milestones.
+          {t('replay.desc')}
         </p>
 
         {/* First Run Benchmark Summary */}
         <div className="p-3.5 rounded-xl bg-[#101827] border border-slate-800 mb-5">
           <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block mb-2">
-            ORIGINAL EXPEDITION BENCHMARK (RUN 1):
+            {t('replay.benchmark')}
           </span>
           <div className="grid grid-cols-3 gap-2 text-xs font-mono text-center">
             <div className="p-2 rounded bg-[#060B18] border border-slate-800">
-              <span className="text-slate-400 block text-[10px]">WELLBEING</span>
-              <span className="text-white font-bold">{Math.round(state.crewWellbeing)}%</span>
+              <span className="text-slate-400 block text-[10px]">
+                {language === 'bn' ? 'ক্রুর সুস্থতা' : 'WELLBEING'}
+              </span>
+              <span className="text-white font-bold">{formatNum(Math.round(state.crewWellbeing))}%</span>
             </div>
             <div className="p-2 rounded bg-[#060B18] border border-slate-800">
-              <span className="text-slate-400 block text-[10px]">SCIENCE</span>
-              <span className="text-purple-400 font-bold">{state.sciencePoints} PTS</span>
+              <span className="text-slate-400 block text-[10px]">
+                {language === 'bn' ? 'বিজ্ঞান পয়েন্ট' : 'SCIENCE'}
+              </span>
+              <span className="text-purple-400 font-bold">{formatNum(state.sciencePoints)} PTS</span>
             </div>
             <div className="p-2 rounded bg-[#060B18] border border-slate-800">
-              <span className="text-slate-400 block text-[10px]">SCORE</span>
-              <span className="text-[#52D6FF] font-bold">{scores?.overallScore || 70} / 100</span>
+              <span className="text-slate-400 block text-[10px]">
+                {language === 'bn' ? 'স্কোর' : 'SCORE'}
+              </span>
+              <span className="text-[#52D6FF] font-bold">
+                {formatNum(scores?.overallScore || 70)} / {formatNum(100)}
+              </span>
             </div>
           </div>
         </div>
@@ -77,12 +87,12 @@ export const ReplayModal: React.FC<ReplayModalProps> = ({
         {/* Select Branch Decision Point */}
         <div className="mb-6">
           <span className="text-xs font-mono uppercase tracking-wider text-slate-300 font-bold block mb-2.5">
-            SELECT DECISION BRANCH POINT:
+            {t('replay.select')}
           </span>
 
           {completedDecisions.length === 0 ? (
             <div className="p-3 rounded-lg bg-[#060B18] border border-slate-800 text-xs text-slate-400 font-mono text-center">
-              Replay from Mission Day 1 (Fresh Base Baseline)
+              {language === 'bn' ? 'মিশনের দিন ১ থেকে পুনরায় খেলো (নতুন বেস)' : 'Replay from Mission Day 1 (Fresh Base Baseline)'}
             </div>
           ) : (
             <div className="space-y-2">
@@ -98,14 +108,16 @@ export const ReplayModal: React.FC<ReplayModalProps> = ({
                 >
                   <div>
                     <div className="font-bold text-white mb-0.5">
-                      Day {d.day}: {d.eventId.replace(/_/g, ' ').toUpperCase()}
+                      {language === 'bn' ? `দিন ${formatNum(d.day)}: ` : `Day ${d.day}: `}
+                      {d.eventId.replace(/_/g, ' ').toUpperCase()}
                     </div>
                     <div className="text-[11px] text-slate-400">
-                      Chosen: <span className="text-[#52D6FF]">{d.choiceLabel}</span>
+                      {language === 'bn' ? 'গৃহীত সিদ্ধান্ত: ' : 'Chosen: '}
+                      <span className="text-[#52D6FF]">{d.choiceLabel}</span>
                     </div>
                   </div>
                   <span className="text-purple-400 text-[11px] font-bold shrink-0">
-                    {selectedBranchDay === d.day ? 'SELECTED FORK' : 'SELECT'}
+                    {selectedBranchDay === d.day ? t('replay.selected') : t('replay.choose')}
                   </span>
                 </button>
               ))}
@@ -117,7 +129,10 @@ export const ReplayModal: React.FC<ReplayModalProps> = ({
         <div className="p-3 rounded-xl bg-purple-950/20 border border-purple-500/30 text-xs text-purple-200/90 mb-6 flex items-start gap-2">
           <Sparkles className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
           <p className="leading-relaxed">
-            <strong>Hypothesis to test:</strong> What if you conserved spare parts instead of rushing repairs? Or prioritized science over safety? Notice how short-term risk alters long-term resilience.
+            <strong className="text-purple-300">
+              {language === 'bn' ? 'পরীক্ষণীয় অনুমান: ' : 'Hypothesis to test: '}
+            </strong>
+            {t('replay.hypothesis')}
           </p>
         </div>
 
@@ -127,14 +142,14 @@ export const ReplayModal: React.FC<ReplayModalProps> = ({
             onClick={onClose}
             className="px-4 py-2 rounded-xl text-xs font-mono text-slate-400 hover:text-white transition-all"
           >
-            CANCEL
+            {t('common.cancel')}
           </button>
           <button
             onClick={handleStartBranch}
             className="py-2.5 px-5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-display font-bold text-xs flex items-center gap-2 shadow-lg transition-all"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            FORK SIMULATION FROM DAY {selectedBranchDay}
+            {t('replay.btn.fork', { day: formatNum(selectedBranchDay) })}
           </button>
         </div>
       </div>

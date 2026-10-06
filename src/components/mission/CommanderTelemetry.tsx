@@ -3,12 +3,14 @@
 import React from 'react';
 import type { SimulationState } from '../../types/game';
 import { Cpu, Activity, Zap, Wind, ShieldCheck, Layers } from 'lucide-react';
+import { useLanguage } from '../../i18n/LanguageContext';
 
 interface CommanderTelemetryProps {
   state: SimulationState;
 }
 
 export const CommanderTelemetry: React.FC<CommanderTelemetryProps> = ({ state }) => {
+  const { t, formatNum, language } = useLanguage();
   const { resources, deltas, modules, environment, cumulativeRadiation_mSv, baseIntegrity, crew } = state;
 
   return (
@@ -17,11 +19,11 @@ export const CommanderTelemetry: React.FC<CommanderTelemetryProps> = ({ state })
       <div className="flex items-center justify-between pb-3 border-b border-amber-500/20 mb-3">
         <div className="flex items-center gap-2 text-amber-300 font-display font-bold text-sm">
           <Cpu className="w-4 h-4 text-amber-400" />
-          MISSION COMMANDER // DEEP TELEMETRY MATRIX
+          {t('cmd.title')}
         </div>
         <div className="flex items-center gap-2 text-[10px] text-amber-400/80">
           <Activity className="w-3.5 h-3.5 animate-pulse" />
-          REAL-TIME BUS VOLTAGES & ECLSS SENSORS ACTIVE
+          {t('cmd.active')}
         </div>
       </div>
 
@@ -30,29 +32,29 @@ export const CommanderTelemetry: React.FC<CommanderTelemetryProps> = ({ state })
         <div className="p-3 rounded-lg bg-[#101827] border border-slate-800 space-y-2">
           <div className="text-[#52D6FF] font-bold text-[11px] flex items-center gap-1.5 border-b border-slate-800 pb-1">
             <Zap className="w-3.5 h-3.5" />
-            ELECTRICAL BUS TELEMETRY
+            {t('cmd.bus')}
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Photovoltaic Output:</span>
-            <span className="text-emerald-400 font-bold">{deltas.powerGen} kW</span>
+            <span className="text-slate-400">{t('cmd.solarGen')}</span>
+            <span className="text-emerald-400 font-bold">{formatNum(deltas.powerGen)} kW</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Total Outpost Load:</span>
-            <span className="text-rose-400 font-bold">{deltas.powerLoad} kW</span>
+            <span className="text-slate-400">{t('cmd.load')}</span>
+            <span className="text-rose-400 font-bold">{formatNum(deltas.powerLoad)} kW</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Net Power Flux:</span>
+            <span className="text-slate-400">{t('cmd.net')}</span>
             <span className={deltas.powerNet >= 0 ? "text-emerald-400 font-bold" : "text-rose-400 font-bold"}>
-              {deltas.powerNet > 0 ? `+${deltas.powerNet}` : deltas.powerNet} kW
+              {deltas.powerNet > 0 ? `+${formatNum(deltas.powerNet)}` : formatNum(deltas.powerNet)} kW
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Battery Storage:</span>
-            <span className="text-white">{resources.power} / {resources.powerMax} kWh</span>
+            <span className="text-slate-400">{t('cmd.battery')}</span>
+            <span className="text-white">{formatNum(resources.power)} / {formatNum(resources.powerMax)} kWh</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Solar Optical Depth (Tau):</span>
-            <span className="text-amber-300">{(environment.dustLevel * 0.05).toFixed(2)}</span>
+            <span className="text-slate-400">{t('cmd.tau')}</span>
+            <span className="text-amber-300">{formatNum((environment.dustLevel * 0.05).toFixed(2))}</span>
           </div>
         </div>
 
@@ -60,30 +62,30 @@ export const CommanderTelemetry: React.FC<CommanderTelemetryProps> = ({ state })
         <div className="p-3 rounded-lg bg-[#101827] border border-slate-800 space-y-2">
           <div className="text-emerald-400 font-bold text-[11px] flex items-center gap-1.5 border-b border-slate-800 pb-1">
             <Wind className="w-3.5 h-3.5" />
-            ECLSS & ATMOSPHERE MASS BALANCE
+            {t('cmd.eclss')}
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Crew O₂ Consumption:</span>
-            <span className="text-slate-200">{(crew.length * 0.84).toFixed(2)} kg/day</span>
+            <span className="text-slate-400">{t('cmd.o2Use')}</span>
+            <span className="text-slate-200">{formatNum((crew.length * 0.84).toFixed(2))} {language === 'bn' ? 'কেজি/দিন' : 'kg/day'}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Electrolysis + Bio O₂:</span>
-            <span className="text-emerald-400 font-bold">+{((crew.length * 0.84) + deltas.oxygen).toFixed(2)} kg/day</span>
+            <span className="text-slate-400">{t('cmd.o2Gen')}</span>
+            <span className="text-emerald-400 font-bold">+{formatNum(((crew.length * 0.84) + deltas.oxygen).toFixed(2))} {language === 'bn' ? 'কেজি/দিন' : 'kg/day'}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Water Recycling Closure:</span>
-            <span className="text-sky-400 font-bold">{Math.round(modules.water_recycler.efficiency * 95)}%</span>
+            <span className="text-slate-400">{t('cmd.h2oClosure')}</span>
+            <span className="text-sky-400 font-bold">{formatNum(Math.round(modules.water_recycler.efficiency * 95))}%</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Daily Water Balance:</span>
+            <span className="text-slate-400">{t('cmd.h2oBal')}</span>
             <span className={deltas.water >= 0 ? "text-emerald-400 font-bold" : "text-amber-400 font-bold"}>
-              {deltas.water > 0 ? `+${deltas.water}` : deltas.water} L/day
+              {deltas.water > 0 ? `+${formatNum(deltas.water)}` : formatNum(deltas.water)} {language === 'bn' ? 'লিটার/দিন' : 'L/day'}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Daily Food Calorie Flux:</span>
+            <span className="text-slate-400">{t('cmd.foodFlux')}</span>
             <span className={deltas.food >= 0 ? "text-emerald-400" : "text-amber-400"}>
-              {deltas.food > 0 ? `+${deltas.food}` : deltas.food} kg/day
+              {deltas.food > 0 ? `+${formatNum(deltas.food)}` : formatNum(deltas.food)} {language === 'bn' ? 'কেজি/দিন' : 'kg/day'}
             </span>
           </div>
         </div>
@@ -92,29 +94,29 @@ export const CommanderTelemetry: React.FC<CommanderTelemetryProps> = ({ state })
         <div className="p-3 rounded-lg bg-[#101827] border border-slate-800 space-y-2">
           <div className="text-purple-400 font-bold text-[11px] flex items-center gap-1.5 border-b border-slate-800 pb-1">
             <ShieldCheck className="w-3.5 h-3.5" />
-            DOSIMETRY & FAULT TOLERANCE
+            {t('cmd.rad')}
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Daily Dose Rate:</span>
-            <span className="text-purple-300 font-bold">{deltas.radiationDose} mSv/day</span>
+            <span className="text-slate-400">{t('cmd.dailyDose')}</span>
+            <span className="text-purple-300 font-bold">{formatNum(deltas.radiationDose)} mSv/day</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Cumulative Mission Dose:</span>
-            <span className="text-white font-bold">{cumulativeRadiation_mSv.toFixed(2)} mSv</span>
+            <span className="text-slate-400">{t('cmd.cumDose')}</span>
+            <span className="text-white font-bold">{formatNum(cumulativeRadiation_mSv.toFixed(2))} mSv</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">NASA Career Limit Margin:</span>
+            <span className="text-slate-400">{t('cmd.margin')}</span>
             <span className="text-emerald-400 font-bold">
-              {Math.max(0, Math.round((1 - cumulativeRadiation_mSv / 600) * 100))}%
+              {formatNum(Math.max(0, Math.round((1 - cumulativeRadiation_mSv / 600) * 100)))}%
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Base Hull Integrity:</span>
-            <span className="text-sky-300 font-bold">{baseIntegrity}%</span>
+            <span className="text-slate-400">{t('cmd.hull')}</span>
+            <span className="text-sky-300 font-bold">{formatNum(baseIntegrity)}%</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Spare Parts Inventory:</span>
-            <span className="text-amber-300 font-bold">{resources.spareParts} units</span>
+            <span className="text-slate-400">{t('cmd.spares')}</span>
+            <span className="text-amber-300 font-bold">{formatNum(resources.spareParts)} {language === 'bn' ? 'টি' : 'units'}</span>
           </div>
         </div>
       </div>
@@ -123,24 +125,40 @@ export const CommanderTelemetry: React.FC<CommanderTelemetryProps> = ({ state })
       <div className="mt-3 p-3 rounded-lg bg-[#0A1020] border border-slate-800">
         <div className="text-[11px] font-bold text-slate-300 mb-2 flex items-center gap-1.5">
           <Layers className="w-3.5 h-3.5 text-amber-400" />
-          SUBSYSTEM COUPLING & SINGLE-POINT DEPENDENCY MATRIX
+          {t('cmd.matrix')}
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px]">
           <div className="p-2 rounded bg-[#101827] border border-slate-800">
-            <span className="text-amber-400 font-bold block mb-1">⚡ Power Grid</span>
-            <p className="text-slate-400">Powers ECLSS, Water distillation, Hydroponic LEDs, and Lab spectrometers.</p>
+            <span className="text-amber-400 font-bold block mb-1">
+              {language === 'bn' ? '⚡ বিদ্যুৎ গ্রিড' : '⚡ Power Grid'}
+            </span>
+            <p className="text-slate-400">
+              {language === 'bn' ? 'ECLSS, ওয়াটার ডিস্টিলেশন, হাইড্রোপনিক এলইডি ও বিজ্ঞান ল্যাব চালায়।' : 'Powers ECLSS, Water distillation, Hydroponic LEDs, and Lab spectrometers.'}
+            </p>
           </div>
           <div className="p-2 rounded bg-[#101827] border border-slate-800">
-            <span className="text-sky-400 font-bold block mb-1">💧 Water Loop</span>
-            <p className="text-slate-400">Feeds crew hydration, hydroponics, and oxygen electrolysis feedstock.</p>
+            <span className="text-sky-400 font-bold block mb-1">
+              {language === 'bn' ? '💧 পানি সরবরাহ লুপ' : '💧 Water Loop'}
+            </span>
+            <p className="text-slate-400">
+              {language === 'bn' ? 'নভোচারীদের পানি, হাইড্রোপনিক গ্রিনহাউস ও অক্সিজেন উৎপাদনের মূল উৎস।' : 'Feeds crew hydration, hydroponics, and oxygen electrolysis feedstock.'}
+            </p>
           </div>
           <div className="p-2 rounded bg-[#101827] border border-slate-800">
-            <span className="text-emerald-400 font-bold block mb-1">🌱 Bioregenerative</span>
-            <p className="text-slate-400">Plants consume crew CO₂ & water; release fresh O₂ & Vitamin C/K calories.</p>
+            <span className="text-emerald-400 font-bold block mb-1">
+              {language === 'bn' ? '🌱 বায়োরিজেনারেটিভ চক্র' : '🌱 Bioregenerative'}
+            </span>
+            <p className="text-slate-400">
+              {language === 'bn' ? 'উদ্ভিদ মানুষের CO₂ ও পানি নিয়ে তাজা অক্সিজেন ও পুষ্টিকর ক্যালরি তৈরি করে।' : 'Plants consume crew CO₂ & water; release fresh O₂ & Vitamin C/K calories.'}
+            </p>
           </div>
           <div className="p-2 rounded bg-[#101827] border border-slate-800">
-            <span className="text-purple-400 font-bold block mb-1">🛡️ Passive Regolith</span>
-            <p className="text-slate-400">Shields crew DNA & module microelectronics from ionising cosmic protons.</p>
+            <span className="text-purple-400 font-bold block mb-1">
+              {language === 'bn' ? '🛡️ প্যাসিভ রেগোলিথ শিল্ড' : '🛡️ Passive Regolith'}
+            </span>
+            <p className="text-slate-400">
+              {language === 'bn' ? 'নভোচারীদের ডিএনএ ও কম্পিউটারের চিপগুলোকে ক্ষতিকর কসমিক রশ্মি থেকে বাঁচায়।' : 'Shields crew DNA & module microelectronics from ionising cosmic protons.'}
+            </p>
           </div>
         </div>
       </div>

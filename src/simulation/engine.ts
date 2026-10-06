@@ -61,7 +61,7 @@ export function createInitialSimulationState(
     totalDays: duration,
     destination,
     mode,
-    isPaused: false,
+    isPaused: true,
     speed: 1,
     resources: initialResources,
     deltas: initialDeltas,
@@ -163,18 +163,22 @@ export function stepSimulationDay(state: SimulationState): SimulationState {
   // 7. Check Victory or Failure Conditions
   let missionStatus: SimulationState['missionStatus'] = 'ongoing';
   let failureReason: string | undefined = undefined;
+  let failureReasonBn: string | undefined = undefined;
 
   // Failure criteria: O2 fully depleted, or crew health <= 0, or total life support collapse
   const avgHealth = updatedCrew.reduce((acc, c) => acc + c.health, 0) / updatedCrew.length;
   if (nextResources.oxygen <= 0) {
     missionStatus = 'failed';
     failureReason = 'Atmospheric Hypoxia: Oxygen generation completely exhausted.';
+    failureReasonBn = 'বায়ুমণ্ডলীয় হাইপোক্সিয়া: শ্বাসযোগ্য অক্সিজেনের মজুত সম্পূর্ণ শেষ হয়ে গেছে।';
   } else if (avgHealth <= 10) {
     missionStatus = 'failed';
     failureReason = 'Crew Incapacitation: Severe biological exhaustion and medical emergency.';
+    failureReasonBn = 'নভোচারী অসুস্থতা: তীব্র শারীরিক ক্লান্তি এবং চিকিৎসাগত জরুরি অবস্থা।';
   } else if (nextResources.water <= 0 && nextDay > 5) {
     missionStatus = 'failed';
     failureReason = 'Dehydration Crisis: Zero potable water remaining in habitat storage.';
+    failureReasonBn = 'পানিশূন্যতার সংকট: ঘাঁটিতে কোনো খাবার উপযোগী পানির মজুত আর অবশিষ্ট নেই।';
   } else if (nextDay >= state.totalDays) {
     missionStatus = 'victory';
   }
@@ -224,7 +228,8 @@ export function stepSimulationDay(state: SimulationState): SimulationState {
     timeline: [...state.timeline, timelineEntry],
     unlockedAchievements: unlocked,
     missionStatus,
-    failureReason
+    failureReason,
+    failureReasonBn
   };
 
   // If game ended, compute score

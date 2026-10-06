@@ -37,16 +37,21 @@ export interface DestinationConfig {
 export interface Astronaut {
   id: string;
   name: string;
+  nameBn?: string;
   role: AstronautRole;
+  roleBn?: string;
   callsign: string;
   specialty: string;
+  specialtyBn?: string;
   specialtyDescription: string;
+  specialtyDescriptionBn?: string;
   avatarSeed: string;
   health: number; // 0 - 100
   morale: number; // 0 - 100
   stress: number; // 0 - 100
   status: 'Healthy' | 'Tired' | 'Radiation Alert' | 'Hypoxic' | 'Critical';
   currentTask: string;
+  currentTaskBn?: string;
 }
 
 export type ModuleType = 
@@ -63,7 +68,9 @@ export type ModuleType =
 export interface BaseModule {
   id: ModuleType;
   name: string;
+  nameBn?: string;
   shortName: string;
+  shortNameBn?: string;
   category: 'core' | 'energy' | 'life_support' | 'science' | 'support';
   level: number; // 1 to 3
   maxLevel: number;
@@ -74,7 +81,9 @@ export interface BaseModule {
   operational: boolean;
   durability: number; // 0 - 100
   description: string;
+  descriptionBn?: string;
   educationalFact: string;
+  educationalFactBn?: string;
 }
 
 export interface Resources {
@@ -114,18 +123,25 @@ export interface EnvironmentalConditions {
 export interface CausalStep {
   step: number;
   title: string;
+  titleBn?: string;
   description: string;
+  descriptionBn?: string;
   icon: string;
   highlightCategory: 'decision' | 'system' | 'crew' | 'mission';
   metricImpact?: string;
+  metricImpactBn?: string;
 }
 
 export interface DecisionChoice {
   id: string;
   label: string;
+  labelBn?: string;
   description: string;
+  descriptionBn?: string;
   immediateEffectsSummary: string;
+  immediateEffectsSummaryBn?: string;
   tradeoffHint: string;
+  tradeoffHintBn?: string;
   applyChoice: (state: SimulationState) => SimulationState;
   causalChain: CausalStep[];
   educationalWhyId: string;
@@ -134,13 +150,16 @@ export interface DecisionChoice {
 export interface GameEvent {
   id: string;
   title: string;
+  titleBn?: string;
   category: 'environmental' | 'mechanical' | 'medical' | 'discovery' | 'crisis';
   urgency: 'low' | 'medium' | 'high' | 'critical';
   dayTriggerMin?: number;
   dayTriggerMax?: number;
   destinationSpecific?: DestinationType;
   storyContext: string;
+  storyContextBn?: string;
   telemetrySnapshotText: string;
+  telemetrySnapshotTextBn?: string;
   illustrationType: 'dust_storm' | 'power_shortage' | 'greenhouse_stress' | 'radiation_spike' | 'equipment_failure' | 'meteoroid' | 'discovery' | 'water_leak';
   choices: DecisionChoice[];
 }
@@ -167,7 +186,9 @@ export interface MissionScores {
   learningScore: number;    // 0 - 100
   overallScore: number;     // 0 - 100
   grade: 'PIONEER COMMANDER (A+)' | 'MISSION VETERAN (A)' | 'SPACE CADET (B)' | 'SURVIVOR (C)' | 'MISSION COMPROMISED (D)';
+  gradeBn?: string;
   feedback: string[];
+  feedbackBn?: string[];
 }
 
 export interface SimulationState {
@@ -193,5 +214,6 @@ export interface SimulationState {
   lastCausalChain: CausalStep[] | null;
   missionStatus: 'ongoing' | 'victory' | 'failed';
   failureReason?: string;
+  failureReasonBn?: string;
   scores?: MissionScores;
 }

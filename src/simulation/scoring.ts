@@ -53,33 +53,45 @@ export function calculateMissionScores(state: SimulationState): MissionScores {
   )));
 
   let grade: MissionScores['grade'] = 'SPACE CADET (B)';
+  let gradeBn = 'স্পেস ক্যাডেট (B)';
   if (missionStatus === 'failed') {
     grade = 'MISSION COMPROMISED (D)';
+    gradeBn = 'মিশন বিপর্যস্ত (D)';
   } else if (overallScore >= 90) {
     grade = 'PIONEER COMMANDER (A+)';
+    gradeBn = 'পায়োনিয়ার কমান্ডার (A+)';
   } else if (overallScore >= 80) {
     grade = 'MISSION VETERAN (A)';
+    gradeBn = 'মিশন অভিজ্ঞ (A)';
   } else if (overallScore >= 65) {
     grade = 'SPACE CADET (B)';
+    gradeBn = 'স্পেস ক্যাডেট (B)';
   } else {
     grade = 'SURVIVOR (C)';
+    gradeBn = 'বেঁচে ফেরা অভিযাত্রী (C)';
   }
 
   const feedback: string[] = [];
+  const feedbackBn: string[] = [];
   if (scienceScore > 85) {
     feedback.push('Outstanding astrobiology & geology discovery throughput—NASA Science Mission Directorate commends your crew.');
+    feedbackBn.push('অসাধারণ অ্যাস্ট্রোবায়োলজি ও ভূতাত্ত্বিক গবেষণা আবিষ্কার—নাসা সায়েন্স ডিরেক্টরেট তোমাদের দলকে অভিনন্দন জানিয়েছে।');
   } else if (scienceScore < 50) {
     feedback.push('Science output was conservative. Future missions should prioritize laboratory research sorties.');
+    feedbackBn.push('বৈজ্ঞানিক ফলাফল তুলনামূলক কম ছিল। পরবর্তী মিশনে গবেষণাগার অনুসন্ধানকে আরও অগ্রাধিকার দেওয়া উচিত।');
   }
 
   if (resilienceScore > 80) {
     feedback.push('Excellent proactive maintenance and spare parts discipline prevented single-point cascades.');
+    feedbackBn.push('চমৎকার দূরদর্শী রক্ষণাবেক্ষণ এবং খুচরা যন্ত্রাংশের সুশৃঙ্খল ব্যবহার যেকোনো একক বিপর্যয় আটকে দিয়েছে।');
   } else {
     feedback.push('Outpost spare parts inventory ran close to critical thresholds during environmental stress.');
+    feedbackBn.push('পরিবেশগত ঝড়ের সময় ঘাঁটির খুচরা যন্ত্রাংশের মজুত বিপজ্জনক সীমার কাছাকাছি নেমে গিয়েছিল।');
   }
 
   if (survivalScore > 85) {
     feedback.push('Crew returned in prime physical and psychological health with minimal radiation dose accumulation.');
+    feedbackBn.push('নভোচারীরা ন্যূনতম বিকিরণের সংস্পর্শে এসে চমৎকার শারীরিক ও মানসিক সুস্থতা নিয়ে মিশন সম্পন্ন করেছে।');
   }
 
   return {
@@ -90,6 +102,8 @@ export function calculateMissionScores(state: SimulationState): MissionScores {
     learningScore,
     overallScore,
     grade,
-    feedback
+    gradeBn,
+    feedback,
+    feedbackBn
   };
 }

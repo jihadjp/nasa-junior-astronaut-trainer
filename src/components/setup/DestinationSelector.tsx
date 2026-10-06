@@ -1,9 +1,10 @@
 // Destination Selector: Moon vs Mars environmental physics comparison
 
-import React from 'react';
+import React, { useState } from 'react';
 import type { DestinationType } from '../../types/game';
-import { Compass, Thermometer, ShieldAlert, Sun, Wind, ArrowRight } from 'lucide-react';
+import { Compass, Thermometer, ShieldAlert, Wind, ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { sound } from '../../sound/audioEngine';
+import { useLanguage } from '../../i18n/LanguageContext';
 
 interface DestinationSelectorProps {
   selected: DestinationType;
@@ -16,6 +17,10 @@ export const DestinationSelector: React.FC<DestinationSelectorProps> = ({
   onSelect,
   onNext
 }) => {
+  const { t, language } = useLanguage();
+  const [showMoonDetails, setShowMoonDetails] = useState<boolean>(false);
+  const [showMarsDetails, setShowMarsDetails] = useState<boolean>(false);
+
   const handleSelect = (dest: DestinationType) => {
     sound.playClick();
     onSelect(dest);
@@ -31,13 +36,13 @@ export const DestinationSelector: React.FC<DestinationSelectorProps> = ({
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#52D6FF]/15 border border-[#52D6FF]/30 text-[#52D6FF] text-xs font-mono mb-2">
           <Compass className="w-3.5 h-3.5" />
-          PHASE 1: DESTINATION ASSIGNMENT
+          {t('dest.badge')}
         </div>
         <h2 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight">
-          Select Outpost Environment
+          {t('dest.title')}
         </h2>
         <p className="text-sm text-slate-400 max-w-xl mx-auto mt-1">
-          Every extraterrestrial body presents distinct physical constraints. Solar irradiance, thermal swings, and atmospheric dynamics fundamentally dictate engineering trade-offs.
+          {t('dest.desc')}
         </p>
       </div>
 
@@ -54,7 +59,7 @@ export const DestinationSelector: React.FC<DestinationSelectorProps> = ({
           {/* Active selection badge */}
           {selected === 'moon' && (
             <div className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-[#52D6FF] text-slate-950 font-mono text-[10px] font-bold">
-              SELECTED
+              {t('common.selected')}
             </div>
           )}
 
@@ -62,46 +67,46 @@ export const DestinationSelector: React.FC<DestinationSelectorProps> = ({
             <div className="flex items-center gap-3 mb-3">
               <span className="text-4xl">🌙</span>
               <div>
-                <h3 className="text-xl font-display font-bold text-white">THE MOON</h3>
-                <span className="text-xs font-mono text-[#52D6FF]">SHACKLETON CRATER // SOUTH POLE</span>
+                <h3 className="text-xl font-display font-bold text-white">{t('dest.moon.name')}</h3>
+                <span className="text-xs font-mono text-[#52D6FF]">{t('dest.moon.loc')}</span>
               </div>
             </div>
 
-            <p className="text-xs text-slate-300 mb-5 leading-relaxed">
-              Airless vacuum with extreme thermal extremes and unmitigated cosmic radiation. Peaks of Eternal Light provide continuous solar energy, but long lunar shadows require massive battery reserves.
-            </p>
-
-            {/* Environmental Specifications Grid */}
-            <div className="space-y-2 text-xs font-mono mb-6 bg-[#060B18]/80 p-3.5 rounded-xl border border-slate-800">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400 flex items-center gap-1.5">
-                  <Sun className="w-3.5 h-3.5 text-amber-400" /> Solar Irradiance:
-                </span>
-                <span className="text-white font-bold">1,361 W/m² (100% Earth)</span>
+            {/* Quick Summary Pill Row */}
+            <div className="grid grid-cols-2 gap-2 text-[11px] font-mono mb-4 bg-[#060B18]/80 p-2.5 rounded-xl border border-slate-800">
+              <div className="flex items-center gap-1.5 text-slate-300">
+                <Thermometer className="w-3.5 h-3.5 text-rose-400" />
+                <span>-130°C ~ +120°C</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400 flex items-center gap-1.5">
-                  <Thermometer className="w-3.5 h-3.5 text-rose-400" /> Temperature:
-                </span>
-                <span className="text-white font-bold">-130°C to +120°C</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400 flex items-center gap-1.5">
-                  <ShieldAlert className="w-3.5 h-3.5 text-purple-400" /> Radiation:
-                </span>
-                <span className="text-rose-400 font-bold">Extreme (Zero Magnetosphere)</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400 flex items-center gap-1.5">
-                  <Wind className="w-3.5 h-3.5 text-sky-400" /> Atmosphere:
-                </span>
-                <span className="text-slate-300 font-bold">Hard Vacuum (0 kPa)</span>
+              <div className="flex items-center gap-1.5 text-rose-400 font-bold">
+                <ShieldAlert className="w-3.5 h-3.5 text-purple-400" />
+                <span>{language === 'bn' ? 'তীব্র বিকিরণ' : 'Zero Magnetosphere'}</span>
               </div>
             </div>
-          </div>
 
-          <div className="text-[11px] font-mono text-sky-300/80 italic border-l-2 border-[#52D6FF] pl-2.5">
-            Key Challenge: Massive battery storage required for 14-day lunar night and regolith shielding for cosmic ray protection.
+            {/* Progressive Disclosure Toggle */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowMoonDetails(prev => !prev);
+              }}
+              className="text-xs font-mono text-[#52D6FF] hover:underline flex items-center gap-1.5 mb-3"
+            >
+              <span>{language === 'bn' ? 'ⓘ পরিবেশগত চ্যালেঞ্জ ও ডেটা' : 'ⓘ Environment Specs & Challenge'}</span>
+              {showMoonDetails ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            </button>
+
+            {showMoonDetails && (
+              <div className="space-y-3 mb-4 animate-fadeIn">
+                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                  {t('dest.moon.desc')}
+                </p>
+                <div className="text-[11px] font-mono text-sky-300/90 italic border-l-2 border-[#52D6FF] pl-2.5 py-0.5 bg-sky-950/20 rounded-r">
+                  {t('dest.moon.challenge')}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -116,7 +121,7 @@ export const DestinationSelector: React.FC<DestinationSelectorProps> = ({
         >
           {selected === 'mars' && (
             <div className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-red-500 text-white font-mono text-[10px] font-bold">
-              SELECTED
+              {t('common.selected')}
             </div>
           )}
 
@@ -124,45 +129,46 @@ export const DestinationSelector: React.FC<DestinationSelectorProps> = ({
             <div className="flex items-center gap-3 mb-3">
               <span className="text-4xl">🔴</span>
               <div>
-                <h3 className="text-xl font-display font-bold text-white">MARS</h3>
-                <span className="text-xs font-mono text-red-400">CHRYSE PLANITIA // RED PLANET</span>
+                <h3 className="text-xl font-display font-bold text-white">{t('dest.mars.name')}</h3>
+                <span className="text-xs font-mono text-red-400">{t('dest.mars.loc')}</span>
               </div>
             </div>
 
-            <p className="text-xs text-slate-300 mb-5 leading-relaxed">
-              Thin carbon-dioxide atmosphere subject to planet-encircling dust storms that coat solar arrays. Communication latency to Earth spans 4 to 20 minutes each way, requiring high autonomous crew resilience.
-            </p>
-
-            <div className="space-y-2 text-xs font-mono mb-6 bg-[#060B18]/80 p-3.5 rounded-xl border border-slate-800">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400 flex items-center gap-1.5">
-                  <Sun className="w-3.5 h-3.5 text-amber-400" /> Solar Irradiance:
-                </span>
-                <span className="text-white font-bold">590 W/m² (43% Earth)</span>
+            {/* Quick Summary Pill Row */}
+            <div className="grid grid-cols-2 gap-2 text-[11px] font-mono mb-4 bg-[#060B18]/80 p-2.5 rounded-xl border border-slate-800">
+              <div className="flex items-center gap-1.5 text-slate-300">
+                <Thermometer className="w-3.5 h-3.5 text-rose-400" />
+                <span>-140°C ~ +20°C</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400 flex items-center gap-1.5">
-                  <Thermometer className="w-3.5 h-3.5 text-rose-400" /> Temperature:
-                </span>
-                <span className="text-white font-bold">-140°C to +20°C</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400 flex items-center gap-1.5">
-                  <ShieldAlert className="w-3.5 h-3.5 text-purple-400" /> Radiation:
-                </span>
-                <span className="text-amber-400 font-bold">High (Thin CO₂ buffer)</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400 flex items-center gap-1.5">
-                  <Wind className="w-3.5 h-3.5 text-orange-400" /> Atmosphere:
-                </span>
-                <span className="text-orange-300 font-bold">95% CO₂ (0.6 kPa) + Dust Storms</span>
+              <div className="flex items-center gap-1.5 text-orange-400 font-bold">
+                <Wind className="w-3.5 h-3.5 text-orange-400" />
+                <span>{language === 'bn' ? 'ধূলিঝড় ও পাতলা বাতাস' : 'Dust Storms & CO₂'}</span>
               </div>
             </div>
-          </div>
 
-          <div className="text-[11px] font-mono text-red-300/80 italic border-l-2 border-red-500 pl-2.5">
-            Key Challenge: Atmospheric dust lowers solar efficiency by up to 75%; requires MOXIE CO₂-to-O₂ electrolysis and mechanical dust wipers.
+            {/* Progressive Disclosure Toggle */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowMarsDetails(prev => !prev);
+              }}
+              className="text-xs font-mono text-red-400 hover:underline flex items-center gap-1.5 mb-3"
+            >
+              <span>{language === 'bn' ? 'ⓘ পরিবেশগত চ্যালেঞ্জ ও ডেটা' : 'ⓘ Environment Specs & Challenge'}</span>
+              {showMarsDetails ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            </button>
+
+            {showMarsDetails && (
+              <div className="space-y-3 mb-4 animate-fadeIn">
+                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                  {t('dest.mars.desc')}
+                </p>
+                <div className="text-[11px] font-mono text-red-300/90 italic border-l-2 border-red-500 pl-2.5 py-0.5 bg-red-950/20 rounded-r">
+                  {t('dest.mars.challenge')}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -173,7 +179,7 @@ export const DestinationSelector: React.FC<DestinationSelectorProps> = ({
           onClick={handleProceed}
           className="py-3 px-6 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#52D6FF] hover:from-[#2563EB] hover:to-[#38BDF8] text-slate-950 font-display font-bold text-sm flex items-center gap-2 shadow-lg hover:shadow-[#52D6FF]/20 transition-all"
         >
-          CONFIRM DESTINATION & SELECT CREW
+          {t('dest.btn.confirm')}
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
