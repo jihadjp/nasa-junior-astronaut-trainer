@@ -105,7 +105,7 @@ export const AppNavbar: React.FC = () => {
         </button>
 
         {/* Language Toggle Segmented Button */}
-        <LanguageToggle size="sm" className="scale-[0.88] sm:scale-100 origin-right" />
+        <LanguageToggle size="sm" className="scale-[0.88] sm:scale-100 origin-right shrink-0" />
       </div>
     </nav>
   );

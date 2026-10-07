@@ -1,20 +1,17 @@
-// Cinematic Landing Hero & Educational Overview with Authentic NASA Photorealistic Imagery
-import React from 'react';
+// AAA Space Simulation Title Screen: OUTPOST - Junior Astronaut Mission Trainer
+import React, { useState, useEffect } from 'react';
 import { 
   Play, 
   Rocket, 
   GraduationCap, 
   Eye, 
   Sparkles, 
-  Wind, 
-  Droplets, 
-  Zap, 
-  Apple, 
-  Shield, 
-  Wrench, 
-  ArrowRight, 
-  Radio, 
-  Activity 
+  Settings, 
+  HelpCircle,
+  Volume2,
+  VolumeX,
+  Radio,
+  Satellite
 } from 'lucide-react';
 import { sound } from '../../sound/audioEngine';
 import { useLanguage } from '../../i18n/LanguageContext';
@@ -29,6 +26,8 @@ interface LandingHeroProps {
   onOpenTeacher: () => void;
   onOpenSources: () => void;
   onToggleCommanderMode: () => void;
+  onOpenTutorial?: () => void;
+  onOpenSettings?: () => void;
 }
 
 export const LandingHero: React.FC<LandingHeroProps> = ({
@@ -39,13 +38,26 @@ export const LandingHero: React.FC<LandingHeroProps> = ({
   onStartDemo,
   onOpenTeacher,
   onOpenSources,
-  onToggleCommanderMode
+  onToggleCommanderMode,
+  onOpenTutorial,
+  onOpenSettings
 }) => {
   const { t, formatNum, language } = useLanguage();
+  const [isMuted, setIsMuted] = useState(false);
+
+  // Subtle ambient audio cue on title screen interaction
+  useEffect(() => {
+    sound.startAmbient();
+  }, []);
 
   const handleStart = () => {
     sound.playClick();
     onStartMission();
+  };
+
+  const handleResume = () => {
+    sound.playClick();
+    if (onResumeMission) onResumeMission();
   };
 
   const handleDemo = () => {
@@ -53,267 +65,189 @@ export const LandingHero: React.FC<LandingHeroProps> = ({
     onStartDemo();
   };
 
+  const handleTutorial = () => {
+    sound.playClick();
+    if (onOpenTutorial) onOpenTutorial();
+  };
+
+  const handleSettings = () => {
+    sound.playClick();
+    if (onOpenSettings) onOpenSettings();
+  };
+
+  const toggleSound = () => {
+    sound.toggleMute();
+    setIsMuted(!isMuted);
+  };
+
   return (
-    <div className="w-full min-h-screen text-slate-100 relative overflow-hidden bg-[#050914] flex flex-col justify-between selection:bg-[#52D6FF]/30">
-      {/* 1. Cinematic Photorealistic Space Backdrop */}
-      <div className="absolute inset-0 z-0">
+    <div className="w-full min-h-screen text-slate-100 relative overflow-hidden bg-[#030712] flex flex-col justify-between selection:bg-[#52D6FF]/30 select-none">
+      {/* 1. Cinematic Animated Celestial World Backdrop */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Photorealistic planetary horizon */}
         <img
           src="/assets/hero_lunar.jpg"
-          alt="NASA Lunar and Martian Outpost Simulation"
-          className="w-full h-full object-cover object-center scale-105 filter brightness-[0.45] contrast-125 saturate-110 pointer-events-none transition-transform duration-1000 ease-out"
+          alt="NASA Outpost Simulation Horizon"
+          className="w-full h-full object-cover object-center scale-110 filter brightness-[0.38] contrast-125 saturate-110 animate-subtle-drift"
         />
-        {/* Cinematic Vignette & Radial Atmospheric Glow Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#050914] via-[#050914]/75 to-[#050914]/90" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-sky-900/20 via-[#050914]/60 to-[#050914]" />
-        <div className="absolute inset-0 bg-dot-pattern opacity-30 pointer-events-none" />
+
+        {/* Ambient Animated Starfield & Horizon Fog Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/60 to-[#030712]/80" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,_rgba(82,214,255,0.12),transparent_70%)]" />
+
+        {/* Pulsing Planetary Base Beacon Lights */}
+        <div className="absolute bottom-1/4 left-1/3 w-2 h-2 rounded-full bg-[#52D6FF] animate-ping opacity-75" />
+        <div className="absolute bottom-[28%] right-1/4 w-2 h-2 rounded-full bg-emerald-400 animate-ping opacity-60 delay-700" />
+        <div className="absolute bottom-[26%] left-1/2 w-3 h-3 rounded-full bg-amber-400 blur-[2px] animate-pulse" />
+
+        {/* Subtle Scanline Grid for authentic NASA Flight HUD aesthetic */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-15" />
       </div>
 
-      {/* Top Mission Control Bar */}
-      <nav className="w-full px-3.5 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-slate-800/80 backdrop-blur-md relative z-10">
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#52D6FF] animate-pulse shadow-[0_0_10px_#52D6FF] shrink-0" />
-          <span className="font-display font-extrabold text-sm sm:text-base tracking-widest text-white truncate">
+      {/* Top Header Utility Bar */}
+      <nav className="w-full px-4 sm:px-8 py-3.5 sm:py-4 flex items-center justify-between border-b border-slate-800/60 backdrop-blur-md relative z-20">
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#52D6FF] animate-pulse shadow-[0_0_12px_#52D6FF] shrink-0" />
+          <span className="font-display font-black text-xs sm:text-sm tracking-[0.2em] text-white uppercase">
             {t('nav.brand')}
           </span>
-          <span className="hidden md:inline text-[11px] font-mono text-slate-400 border-l border-slate-700 pl-3">
-            NASA SPACE APPS CHALLENGE 2026
+          <span className="hidden sm:inline-block text-[10px] font-mono text-sky-400/80 border-l border-slate-700/80 pl-3 uppercase tracking-wider">
+            NASA SPACE APPS 2026
           </span>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          <LanguageToggle />
-
+          {/* Sound Toggle */}
           <button
-            onClick={onOpenTeacher}
-            className="text-xs font-mono text-slate-300 hover:text-white px-3 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 hover:bg-slate-800/50 transition-all hidden sm:flex items-center gap-1.5 backdrop-blur-sm"
+            onClick={toggleSound}
+            className="p-1.5 sm:p-2 rounded-lg border border-slate-800 hover:border-slate-600 bg-slate-900/60 text-slate-400 hover:text-white transition-all min-h-[32px] min-w-[32px] flex items-center justify-center backdrop-blur-sm"
+            title={isMuted ? "Unmute Audio" : "Mute Audio"}
+            aria-label="Toggle Sound"
           >
-            <GraduationCap className="w-3.5 h-3.5 text-blue-400" />
-            <span>{t('nav.teacher')}</span>
+            {isMuted ? <VolumeX className="w-4 h-4 text-slate-500" /> : <Volume2 className="w-4 h-4 text-[#52D6FF]" />}
           </button>
 
-          <button
-            onClick={onOpenSources}
-            className="text-xs font-mono text-slate-300 hover:text-white px-3 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 hover:bg-slate-800/50 transition-all hidden sm:flex items-center gap-1.5 backdrop-blur-sm"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-[#52D6FF]" />
-            <span>{t('nav.sources')}</span>
-          </button>
+          {/* Canonical Global Language Toggle */}
+          <LanguageToggle size="sm" />
         </div>
       </nav>
 
-      {/* Hero Central Showcase */}
-      <main className="max-w-6xl mx-auto px-3 sm:px-6 py-6 sm:py-10 text-center relative z-10 my-auto w-full">
-        {/* Mission Status Callout Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#101827]/90 border border-[#52D6FF]/40 text-[#52D6FF] text-[11px] sm:text-xs font-mono mb-4 sm:mb-6 shadow-xl backdrop-blur-md animate-in fade-in duration-700">
+      {/* Main Game Title Showcase */}
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-12 text-center relative z-20 my-auto w-full flex flex-col items-center">
+        {/* Mission Telemetry Status Badge */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#0A1020]/90 border border-[#52D6FF]/40 text-[#52D6FF] text-[10px] sm:text-xs font-mono uppercase tracking-wider mb-4 shadow-2xl backdrop-blur-md animate-fadeIn">
           <Radio className="w-3.5 h-3.5 text-[#52D6FF] animate-pulse shrink-0" />
           <span>{t('landing.badge')}</span>
         </div>
 
-        {/* Main Title */}
-        <h1 className="text-3xl sm:text-6xl lg:text-7xl font-display font-black tracking-tight text-white mb-2 sm:mb-3 leading-tight sm:leading-none drop-shadow-2xl">
-          {t('landing.title')}
+        {/* HERO GAME LOGO */}
+        <h1 className="text-5xl sm:text-7xl md:text-8xl font-display font-black tracking-tight text-white mb-1.5 drop-shadow-[0_10px_35px_rgba(82,214,255,0.25)] leading-none">
+          OUTPOST
         </h1>
 
-        <div className="text-base sm:text-2xl font-display font-semibold text-transparent bg-clip-text bg-gradient-to-r from-slate-100 via-sky-200 to-[#52D6FF] mb-3 sm:mb-4 tracking-wide">
-          {t('landing.subtitle')}
+        <div className="text-xs sm:text-base md:text-lg font-mono font-bold uppercase tracking-[0.25em] sm:tracking-[0.35em] text-transparent bg-clip-text bg-gradient-to-r from-slate-200 via-sky-300 to-[#52D6FF] mb-6 sm:mb-8">
+          JUNIOR ASTRONAUT MISSION TRAINER
         </div>
 
-        <p className="text-xs sm:text-base text-slate-300 max-w-2xl mx-auto mb-6 sm:mb-8 font-sans leading-relaxed drop-shadow-md">
-          {t('landing.quote')}
-          <br className="hidden sm:inline" />
-          {' '}{t('landing.desc')}
-        </p>
+        {/* Tactical Subtitle / Tagline */}
+        <div className="text-xs sm:text-sm font-sans text-slate-400 mb-8 sm:mb-12 max-w-md mx-auto">
+          {language === 'bn' 
+            ? 'বাস্তব নাসা ডেটা ও ইঞ্জিনিয়ারিং সিদ্ধান্তের শিক্ষামূলক স্পেস সিমুলেশন'
+            : 'Extraterrestrial Base Simulation • Grounded in NASA Planetary Data'}
+        </div>
 
-        {/* Primary Call to Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-4 mb-8 sm:mb-14 max-w-md sm:max-w-none mx-auto w-full">
+        {/* ACTION BUTTON CLUSTER (GAME FIRST) */}
+        <div className="w-full max-w-sm sm:max-w-md flex flex-col gap-3">
+          {/* Resume Expedition (if save game exists) */}
           {hasSavedMission && onResumeMission && (
             <button
-              onClick={() => {
-                sound.playClick();
-                onResumeMission();
-              }}
-              className="min-h-[46px] py-3 sm:py-3.5 px-6 sm:px-8 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-display font-extrabold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-2xl hover:shadow-emerald-500/30 active:scale-95 transition-all"
+              onClick={handleResume}
+              className="w-full py-3.5 sm:py-4 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-display font-black text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-[0_0_30px_rgba(16,185,129,0.35)] active:scale-98 transition-all group"
             >
-              <Play className="w-5 h-5 fill-current shrink-0" />
+              <Play className="w-5 h-5 fill-current shrink-0 group-hover:scale-110 transition-transform" />
               <span>
                 {language === 'bn' 
                   ? `অভিযানে ফিরে যাও (দিন ${formatNum(savedMissionDay || 1)})` 
-                  : `RESUME EXPEDITION (DAY ${savedMissionDay || 1})`}
+                  : `CONTINUE MISSION (DAY ${savedMissionDay || 1})`}
               </span>
             </button>
           )}
 
+          {/* Primary Action: Start Mission */}
           <button
             onClick={handleStart}
-            className="min-h-[46px] py-3 sm:py-3.5 px-6 sm:px-9 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#52D6FF] hover:from-[#2563EB] hover:to-[#38BDF8] text-slate-950 font-display font-black text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-2xl hover:shadow-[#52D6FF]/30 active:scale-95 transition-all"
+            className={`w-full py-3.5 sm:py-4 px-6 rounded-xl text-slate-950 font-display font-black text-sm sm:text-base flex items-center justify-center gap-2.5 active:scale-98 transition-all group ${
+              hasSavedMission
+                ? 'bg-[#101827]/90 hover:bg-[#18243A] text-slate-200 border border-slate-700 hover:border-[#52D6FF]'
+                : 'bg-gradient-to-r from-[#3B82F6] to-[#52D6FF] hover:from-[#2563EB] hover:to-[#38BDF8] shadow-[0_0_35px_rgba(82,214,255,0.4)]'
+            }`}
           >
-            <Rocket className="w-5 h-5 fill-current shrink-0" />
+            <Rocket className="w-5 h-5 fill-current shrink-0 group-hover:translate-x-0.5 transition-transform" />
             <span>
               {hasSavedMission 
-                ? (language === 'bn' ? 'নতুন অভিযান শুরু করো' : 'START NEW EXPEDITION')
-                : t('landing.btn.start')}
+                ? (language === 'bn' ? 'নতুন অভিযান শুরু করো' : 'START NEW MISSION')
+                : (language === 'bn' ? 'অভিযান শুরু করো' : 'START MISSION')}
             </span>
           </button>
 
-          <button
-            onClick={handleDemo}
-            className="min-h-[46px] py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl bg-[#101827]/90 hover:bg-[#152238] border border-purple-500/40 text-purple-300 font-mono font-medium text-xs sm:text-sm flex items-center justify-center gap-2 backdrop-blur-md shadow-lg hover:border-purple-400 active:scale-95 transition-all"
-          >
-            <Play className="w-4 h-4 fill-current shrink-0" />
-            <span>{t('landing.btn.demo')}</span>
-          </button>
+          {/* Secondary Action Row: Demo, How to Play, Settings */}
+          <div className="grid grid-cols-3 gap-2 pt-1">
+            <button
+              onClick={handleDemo}
+              className="py-2.5 px-3 rounded-lg bg-[#0F172A]/85 hover:bg-[#1E293B] border border-purple-500/40 text-purple-300 hover:text-white font-mono text-[11px] sm:text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95"
+              title="60-second judging demo showcase"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              <span>{t('nav.demo')}</span>
+            </button>
 
+            <button
+              onClick={handleTutorial}
+              className="py-2.5 px-3 rounded-lg bg-[#0F172A]/85 hover:bg-[#1E293B] border border-sky-500/40 text-sky-300 hover:text-white font-mono text-[11px] sm:text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95"
+              title="How to Play"
+            >
+              <HelpCircle className="w-3.5 h-3.5" />
+              <span>{language === 'bn' ? 'টিউটোরিয়াল' : 'HOW TO PLAY'}</span>
+            </button>
+
+            <button
+              onClick={handleSettings}
+              className="py-2.5 px-3 rounded-lg bg-[#0F172A]/85 hover:bg-[#1E293B] border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white font-mono text-[11px] sm:text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95"
+              title="Simulator Settings"
+            >
+              <Settings className="w-3.5 h-3.5" />
+              <span>{t('nav.settings')}</span>
+            </button>
+          </div>
+
+          {/* Commander Mode Quick Toggle */}
           <button
             onClick={onToggleCommanderMode}
-            className="min-h-[46px] py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl bg-[#101827]/90 hover:bg-[#152238] border border-amber-500/40 text-amber-300 font-mono font-medium text-xs sm:text-sm flex items-center justify-center gap-2 backdrop-blur-md shadow-lg hover:border-amber-400 active:scale-95 transition-all hidden xs:flex"
+            className="mt-2 text-[11px] font-mono text-amber-400/80 hover:text-amber-300 flex items-center justify-center gap-1.5 py-1.5 transition-colors"
           >
-            <Eye className="w-4 h-4 shrink-0" />
+            <Eye className="w-3.5 h-3.5" />
             <span>{t('landing.btn.commander')}</span>
           </button>
         </div>
-
-        {/* 2. REALISTIC PLANETARY THEATERS PREVIEW (Moon & Mars) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 text-left">
-          {/* Moon Card Preview */}
-          <div 
-            onClick={handleStart}
-            className="group cursor-pointer rounded-2xl overflow-hidden border border-slate-700/80 hover:border-[#52D6FF] bg-[#0A1122]/90 backdrop-blur-md transition-all duration-300 shadow-2xl relative"
-          >
-            <div className="h-44 w-full relative overflow-hidden">
-              <img
-                src="/assets/moon_outpost.jpg"
-                alt="NASA Artemis Lunar Outpost"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-90"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A1122] via-[#0A1122]/40 to-transparent" />
-              <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-950/80 border border-slate-700 text-slate-200 text-xs font-mono font-bold backdrop-blur-md flex items-center gap-1.5">
-                <span>🌙</span>
-                <span>{language === 'bn' ? 'চাঁদ: শ্যাকলটন ক্র্যাটার' : 'MOON: SHACKLETON CRATER'}</span>
-              </div>
-            </div>
-            <div className="p-5">
-              <h3 className="text-lg font-display font-bold text-white group-hover:text-[#52D6FF] transition-colors flex items-center justify-between mb-2">
-                <span>{language === 'bn' ? 'আর্টেমিস লুনার বেস ক্যাম্প' : 'Artemis Lunar Base Camp'}</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </h3>
-              <p className="text-xs text-slate-300 font-sans leading-relaxed mb-3">
-                {language === 'bn' 
-                  ? 'তীব্র কসমিক বিকিরণ, ১৪ দিনের অন্ধকার রাত এবং চরম তাপমাত্রা (-১৩০°C থেকে +১২০°C)।' 
-                  : 'Zero atmosphere, unmitigated cosmic radiation, and 14-day lunar nights requiring massive battery buffers.'}
-              </p>
-              <div className="flex items-center gap-2 text-[11px] font-mono text-slate-400">
-                <span className="px-2 py-0.5 rounded bg-sky-950/60 border border-sky-800 text-sky-300">
-                  {language === 'bn' ? 'রেগোলিথ শিল্ড' : 'Regolith Berms'}
-                </span>
-                <span className="px-2 py-0.5 rounded bg-amber-950/60 border border-amber-800 text-amber-300">
-                  {language === 'bn' ? '১৪-দিনের শক্তি রিজার্ভ' : 'RFC Fuel Cells'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Mars Card Preview */}
-          <div 
-            onClick={handleStart}
-            className="group cursor-pointer rounded-2xl overflow-hidden border border-slate-700/80 hover:border-red-500 bg-[#160B0B]/90 backdrop-blur-md transition-all duration-300 shadow-2xl relative"
-          >
-            <div className="h-44 w-full relative overflow-hidden">
-              <img
-                src="/assets/mars_outpost.jpg"
-                alt="NASA Mars Research Outpost"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-90"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#160B0B] via-[#160B0B]/40 to-transparent" />
-              <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-950/80 border border-slate-700 text-slate-200 text-xs font-mono font-bold backdrop-blur-md flex items-center gap-1.5">
-                <span>🔴</span>
-                <span>{language === 'bn' ? 'মঙ্গল: জেজেরো স্টেশন' : 'MARS: JEZERO STATION'}</span>
-              </div>
-            </div>
-            <div className="p-5">
-              <h3 className="text-lg font-display font-bold text-white group-hover:text-red-400 transition-colors flex items-center justify-between mb-2">
-                <span>{language === 'bn' ? 'মার্শিয়ান হিউম্যান রিসার্চ আউটপোস্ট' : 'Martian Human Research Outpost'}</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </h3>
-              <p className="text-xs text-slate-300 font-sans leading-relaxed mb-3">
-                {language === 'bn' 
-                  ? 'পাতলা CO₂ বাতাস, মাসব্যাপী ধূলিঝড় এবং পৃথিবী থেকে রেডিও সিগন্যালে ২০ মিনিটের বিলম্ব।' 
-                  : 'Thin CO₂ atmosphere, global solar-attenuating dust storms, and 20-minute radio communication latency.'}
-              </p>
-              <div className="flex items-center gap-2 text-[11px] font-mono text-slate-400">
-                <span className="px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-800 text-emerald-300">
-                  {language === 'bn' ? 'হাইড্রোপনিক গ্রিনহাউস' : 'LED Biodome'}
-                </span>
-                <span className="px-2 py-0.5 rounded bg-red-950/60 border border-red-800 text-red-300">
-                  {language === 'bn' ? 'MOXIE O₂ রূপান্তর' : 'MOXIE ISRU'}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* "WHY THIS MATTERS" Educational Foundation */}
-        <div className="text-left bg-[#0B1222]/90 border border-slate-800 rounded-2xl p-6 sm:p-8 backdrop-blur-md mb-12 shadow-2xl">
-          <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[#52D6FF] mb-2">
-            <Activity className="w-4 h-4" />
-            <span>{t('landing.why.badge')}</span>
-          </div>
-          <h3 className="text-xl sm:text-2xl font-display font-bold text-white mb-3">
-            {t('landing.why.title')}
-          </h3>
-          <p className="text-sm text-slate-300 leading-relaxed mb-6 font-sans">
-            {t('landing.why.desc')}
-          </p>
-
-          {/* 6 Interconnected Systems Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            <div className="p-3 rounded-xl bg-[#060B18] border border-slate-800 text-center">
-              <Wind className="w-5 h-5 text-[#52D6FF] mx-auto mb-1.5" />
-              <span className="text-xs font-bold text-white block">{language === 'bn' ? 'অক্সিজেন' : 'OXYGEN'}</span>
-              <span className="text-[10px] text-slate-400">{language === 'bn' ? 'ইলেক্ট্রোলাইসিস ও উদ্ভিদ' : 'Electrolysis & Plants'}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-[#060B18] border border-slate-800 text-center">
-              <Droplets className="w-5 h-5 text-blue-400 mx-auto mb-1.5" />
-              <span className="text-xs font-bold text-white block">{language === 'bn' ? 'পানি' : 'WATER'}</span>
-              <span className="text-[10px] text-slate-400">{language === 'bn' ? '৯৮% রিসাইক্লিং' : '98% Closed-Loop Recycler'}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-[#060B18] border border-slate-800 text-center">
-              <Zap className="w-5 h-5 text-amber-400 mx-auto mb-1.5" />
-              <span className="text-xs font-bold text-white block">{language === 'bn' ? 'বিদ্যুৎ' : 'POWER'}</span>
-              <span className="text-[10px] text-slate-400">{language === 'bn' ? 'সৌর প্যানেল' : 'Photovoltaic Arrays'}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-[#060B18] border border-slate-800 text-center">
-              <Apple className="w-5 h-5 text-emerald-400 mx-auto mb-1.5" />
-              <span className="text-xs font-bold text-white block">{language === 'bn' ? 'খাবার' : 'FOOD'}</span>
-              <span className="text-[10px] text-slate-400">{language === 'bn' ? 'হাইড্রোপনিক গ্রিনহাউস' : 'Hydroponic Crops'}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-[#060B18] border border-slate-800 text-center">
-              <Shield className="w-5 h-5 text-purple-400 mx-auto mb-1.5" />
-              <span className="text-xs font-bold text-white block">{language === 'bn' ? 'সুরক্ষাবলয়' : 'SHIELDING'}</span>
-              <span className="text-[10px] text-slate-400">{language === 'bn' ? 'রেগোলিথ ও বিকিরণ শিল্ড' : 'Regolith & Water Vault'}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-[#060B18] border border-slate-800 text-center">
-              <Wrench className="w-5 h-5 text-orange-400 mx-auto mb-1.5" />
-              <span className="text-xs font-bold text-white block">{language === 'bn' ? 'যন্ত্রাংশ' : 'SPARES'}</span>
-              <span className="text-[10px] text-slate-400">{language === 'bn' ? 'জরুরি ৩ডি প্রিন্টিং' : '3D In-Situ Printing'}</span>
-            </div>
-          </div>
-        </div>
       </main>
 
-      {/* Footer */}
-      <footer className="w-full px-6 py-4 border-t border-slate-800/80 text-xs font-mono text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-2 z-10 backdrop-blur-md bg-[#050914]/80">
-        <div>
-          {t('landing.footer.text')}
+      {/* Streamlined Game Footer */}
+      <footer className="w-full px-4 sm:px-8 py-3 border-t border-slate-900/90 text-[11px] font-mono text-slate-500 flex items-center justify-between gap-2 z-20 backdrop-blur-sm bg-[#030712]/80">
+        <div className="flex items-center gap-1.5 text-slate-400">
+          <Satellite className="w-3.5 h-3.5 text-[#52D6FF]" />
+          <span>NASA Solar System Treks & PDS Integration</span>
         </div>
-        <div className="flex items-center gap-4">
-          <button onClick={onOpenSources} className="hover:text-white transition-colors">
-            {t('landing.footer.sources')}
+
+        <div className="flex items-center gap-3">
+          <button onClick={onOpenTeacher} className="hover:text-slate-300 transition-colors flex items-center gap-1">
+            <GraduationCap className="w-3 h-3 text-purple-400" />
+            <span>{t('nav.teacher')}</span>
           </button>
           <span>•</span>
-          <button onClick={onOpenTeacher} className="hover:text-white transition-colors">
-            {t('landing.footer.teacher')}
+          <button onClick={onOpenSources} className="hover:text-slate-300 transition-colors flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-sky-400" />
+            <span>{t('nav.sources')}</span>
           </button>
-          <LanguageToggle className="sm:hidden" />
         </div>
       </footer>
     </div>

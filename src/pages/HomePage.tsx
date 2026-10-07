@@ -12,7 +12,8 @@ export const HomePage: React.FC = () => {
     handleStartSetup,
     handleToggleMode,
     setShowDemoModal,
-    setShowSourcesModal
+    setShowSourcesModal,
+    setShowTutorialModal
   } = useMission();
 
   return (
@@ -28,6 +29,8 @@ export const HomePage: React.FC = () => {
         onStartDemo={() => setShowDemoModal(true)}
         onOpenTeacher={() => navigate('/teacher')}
         onOpenSources={() => setShowSourcesModal(true)}
+        onOpenTutorial={() => setShowTutorialModal(true)}
+        onOpenSettings={() => navigate('/settings')}
         onToggleCommanderMode={() => {
           handleToggleMode();
           handleStartSetup('moon');

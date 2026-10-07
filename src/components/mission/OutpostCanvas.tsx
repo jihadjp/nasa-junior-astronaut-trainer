@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import type { SimulationState, ModuleType } from '../../types/game';
-import { AlertTriangle, Info, Compass, Maximize2 } from 'lucide-react';
+import { AlertTriangle, Info, Compass } from 'lucide-react';
 import { useLanguage } from '../../i18n/LanguageContext';
 import { sound } from '../../sound/audioEngine';
 
@@ -10,6 +10,8 @@ interface OutpostCanvasProps {
   onInspectModule?: (moduleId: ModuleType) => void;
   onOpenTerrainExplorer?: () => void;
   onOpenRoverSortie?: () => void;
+  onOpenCrew?: () => void;
+  onPerformTacticalAction?: (action: string, moduleId: ModuleType) => void;
 }
 
 interface Particle {
@@ -26,12 +28,24 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
   focusedModule = null, 
   onInspectModule,
   onOpenTerrainExplorer,
-  onOpenRoverSortie
+  onOpenRoverSortie,
+  onOpenCrew,
+  onPerformTacticalAction
 }) => {
   const { t, formatNum, language } = useLanguage();
   const { destination, environment, modules, resources, deltas, missionDay, activeEvent, landingSite } = state;
   const isMars = destination === 'mars';
   const [selectedModule, setSelectedModule] = useState<ModuleType | null>(null);
+  const [zoomLevel, setZoomLevel] = useState<number>(1.0);
+  const [actionToast, setActionToast] = useState<{ message: string; icon: string } | null>(null);
+  const [showDeepFact, setShowDeepFact] = useState<boolean>(false);
+
+  const showToast = (message: string, icon: string = '✨') => {
+    setActionToast({ message, icon });
+    setTimeout(() => {
+      setActionToast(null);
+    }, 2800);
+  };
 
   const siteId = landingSite?.id || '';
   const isMountainSite = siteId === 'malapert_mountain' || siteId === 'olympus_mons' || siteId === 'gale_crater';
@@ -129,30 +143,50 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
       activeEvent?.illustrationType === 'water_leak' ? 'life_support' :
       selectedModule);
 
+    let baseBox = { x: 0, y: 0, w: 960, h: 480 };
+
     if (!targetModule) {
       // Subtle idle breathing drift (±4px)
       const driftX = Math.sin(animTime * 0.3) * 6;
       const driftY = Math.cos(animTime * 0.2) * 3;
-      return { x: driftX, y: driftY, w: 960, h: 480 };
+      baseBox = { x: driftX, y: driftY, w: 960, h: 480 };
+    } else {
+      switch (targetModule) {
+        case 'solar_array':
+          baseBox = { x: 50, y: 180, w: 560, h: 280 };
+          break;
+        case 'habitat':
+          baseBox = { x: 260, y: 220, w: 520, h: 260 };
+          break;
+        case 'life_support':
+          baseBox = { x: 190, y: 200, w: 500, h: 250 };
+          break;
+        case 'greenhouse':
+          baseBox = { x: 420, y: 220, w: 500, h: 250 };
+          break;
+        case 'science_lab':
+          baseBox = { x: 550, y: 200, w: 460, h: 230 };
+          break;
+        case 'rover_garage':
+          baseBox = { x: 620, y: 240, w: 450, h: 225 };
+          break;
+        default:
+          baseBox = { x: 0, y: 0, w: 960, h: 480 };
+      }
     }
 
-    switch (targetModule) {
-      case 'solar_array':
-        return { x: 50, y: 180, w: 560, h: 280 };
-      case 'habitat':
-        return { x: 260, y: 220, w: 520, h: 260 };
-      case 'life_support':
-        return { x: 190, y: 200, w: 500, h: 250 };
-      case 'greenhouse':
-        return { x: 420, y: 220, w: 500, h: 250 };
-      case 'science_lab':
-        return { x: 550, y: 200, w: 460, h: 230 };
-      case 'rover_garage':
-        return { x: 620, y: 240, w: 450, h: 225 };
-      default:
-        return { x: 0, y: 0, w: 960, h: 480 };
-    }
-  }, [focusedModule, activeEvent, selectedModule, animTime]);
+    const scaledW = baseBox.w * zoomLevel;
+    const scaledH = baseBox.h * zoomLevel;
+    const centerX = baseBox.x + baseBox.w / 2;
+    const centerY = baseBox.y + baseBox.h / 2;
+
+    return {
+      x: centerX - scaledW / 2,
+      y: centerY - scaledH / 2,
+      w: scaledW,
+      h: scaledH
+    };
+  }, [focusedModule, activeEvent, selectedModule, animTime, zoomLevel]);
 
   // Smooth Camera Lerp
   useEffect(() => {
@@ -166,7 +200,9 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
   }, [targetCamera]);
 
   const handleModuleClick = (modId: ModuleType) => {
+    sound.playClick();
     setSelectedModule(modId);
+    setShowDeepFact(false);
     if (onInspectModule) onInspectModule(modId);
   };
 
@@ -232,7 +268,7 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
     : 220 + Math.sin(animTime * 0.8) * 18; // Normal patrol inspection
 
   return (
-    <div className="relative w-full h-[260px] xs:h-[300px] sm:h-[400px] lg:h-[480px] rounded-2xl overflow-hidden border border-[#52D6FF]/25 bg-[#040814] shadow-2xl select-none group">
+    <div className="relative w-full h-[360px] xs:h-[420px] sm:h-[500px] md:h-[560px] lg:h-[620px] rounded-2xl overflow-hidden border border-[#52D6FF]/25 bg-[#040814] shadow-2xl select-none group">
       {/* Dynamic Animated SVG Space Simulation */}
       <svg 
         className="w-full h-full transition-all duration-300" 
@@ -863,8 +899,8 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
         )}
       </svg>
 
-      {/* Floating Outpost Environment Telemetry Overlay */}
-      <div className="absolute top-2 sm:top-3 left-2 sm:left-3 right-2 sm:right-auto flex flex-wrap gap-1 sm:gap-2 items-center text-[10px] sm:text-xs">
+      {/* Floating Outpost Environment Telemetry Overlay (Top-Left) */}
+      <div className="absolute top-2 sm:top-3 left-2 sm:left-3 right-auto flex flex-wrap gap-1 sm:gap-2 items-center text-[10px] sm:text-xs z-20">
         <button
           type="button"
           onClick={onOpenTerrainExplorer}
@@ -872,108 +908,351 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
           title={language === 'bn' ? 'নাসা আসল ভূখণ্ড প্রোফাইল দেখুন' : 'Explore NASA LOLA/MOLA Topography Profile'}
         >
           <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#52D6FF] animate-pulse shrink-0"></span>
-          <span className="font-bold truncate max-w-[130px] sm:max-w-[220px]">
+          <span className="font-bold truncate max-w-[110px] sm:max-w-[180px]">
             {landingSite 
               ? ((language === 'bn' && landingSite.nameBn) ? landingSite.nameBn : landingSite.name) 
               : (isMars ? 'MARS EXPEDITION' : 'LUNAR EXPEDITION')}
           </span>
           {landingSite && (
-            <span className="text-slate-400 text-[9px] hidden md:inline">
+            <span className="text-slate-400 text-[9px] hidden lg:inline">
               ({landingSite.elevation_km >= 0 ? `+${formatNum(landingSite.elevation_km)}` : formatNum(landingSite.elevation_km)} km)
             </span>
           )}
         </button>
+
         <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 rounded bg-[#101827]/85 border border-slate-700 text-slate-300 font-mono">
           {t('canvas.temp', { temp: formatNum(environment.externalTempC) })}
         </span>
-        <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 rounded bg-[#101827]/85 border border-slate-700 text-slate-300 font-mono hidden xs:inline">
-          {t('canvas.solarFlux', { flux: formatNum(Math.round(environment.sunIntensity * 100)) })}
-        </span>
+
         {environment.dustLevel > 30 && (
           <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 rounded bg-amber-950/80 border border-amber-500/50 text-amber-300 font-mono flex items-center gap-1">
             <AlertTriangle className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
             <span>{t('canvas.dustTau', { tau: formatNum(environment.dustLevel) })}</span>
           </span>
         )}
+
         {environment.solarFlareActive && (
           <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 rounded bg-red-950/80 border border-red-500 text-red-300 font-mono flex items-center gap-1 animate-pulse">
             <AlertTriangle className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
             <span>{t('canvas.spe')}</span>
           </span>
         )}
-
-        {/* Autonomous Rover Science Sortie Trigger */}
-        {onOpenRoverSortie && (
-          <button
-            type="button"
-            onClick={onOpenRoverSortie}
-            className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 font-mono text-[10px] sm:text-xs font-bold flex items-center gap-1 shadow-md transition-all active:scale-95 cursor-pointer ml-auto sm:ml-0"
-            title={language === 'bn' ? 'স্বায়ত্তশাসিত রোভার বিজ্ঞান ও বরফ অভিযান' : 'Deploy Autonomous Rover Science Sortie'}
-          >
-            <span>🚜</span>
-            <span>{language === 'bn' ? 'রোভার সর্টি' : 'ROVER SORTIE'}</span>
-          </button>
-        )}
       </div>
 
-      {/* Reset Camera View Button */}
-      {selectedModule && (
-        <button
-          onClick={() => setSelectedModule(null)}
-          className="absolute top-3 right-3 p-2 rounded-lg bg-[#0A1020]/85 border border-slate-700 hover:border-[#52D6FF]/50 text-slate-300 hover:text-white font-mono text-xs flex items-center gap-1.5 transition-all shadow-md"
-          title="Reset camera to outpost overview"
+      {/* Floating Tactical Camera Presets Toolbar (Top-Right) */}
+      <div className="absolute top-2 sm:top-3 right-2 sm:right-3 flex items-center gap-0.5 sm:gap-1 bg-[#050914]/90 border border-slate-700/80 backdrop-blur-md rounded-xl p-1 z-20 shadow-xl">
+        <button 
+          type="button"
+          onClick={() => { 
+            sound.playClick(); 
+            setSelectedModule(null); 
+            setZoomLevel(1.0); 
+          }}
+          className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-mono font-bold flex items-center gap-1 transition-all ${
+            !selectedModule && zoomLevel === 1.0 ? 'bg-[#52D6FF] text-slate-950 shadow-md' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+          }`}
+          title={language === 'bn' ? 'পুরো ঘাঁটি ভিউ' : 'Base Overview Camera'}
         >
-          <Maximize2 className="w-3.5 h-3.5 text-[#52D6FF]" />
-          {t('common.overview')}
+          <span>👁</span>
+          <span className="hidden md:inline">{language === 'bn' ? 'ঘাঁটি' : 'BASE'}</span>
         </button>
+
+        <button 
+          type="button"
+          onClick={() => { 
+            sound.playClick(); 
+            setSelectedModule('solar_array'); 
+            setShowDeepFact(false);
+          }}
+          className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-mono font-bold flex items-center gap-1 transition-all ${
+            selectedModule === 'solar_array' ? 'bg-[#52D6FF] text-slate-950 shadow-md' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+          }`}
+          title={language === 'bn' ? 'সৌর প্যানেল ভিউ' : 'Solar Array Camera'}
+        >
+          <span>☀</span>
+          <span className="hidden md:inline">{language === 'bn' ? 'সোলার' : 'SOLAR'}</span>
+        </button>
+
+        <button 
+          type="button"
+          onClick={() => { 
+            sound.playClick(); 
+            setSelectedModule('habitat'); 
+            setShowDeepFact(false);
+          }}
+          className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-mono font-bold flex items-center gap-1 transition-all ${
+            selectedModule === 'habitat' ? 'bg-[#52D6FF] text-slate-950 shadow-md' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+          }`}
+          title={language === 'bn' ? 'আবাসস্থল ভিউ' : 'Crew Habitat Camera'}
+        >
+          <span>🏠</span>
+          <span className="hidden md:inline">{language === 'bn' ? 'হাব' : 'HAB'}</span>
+        </button>
+
+        <button 
+          type="button"
+          onClick={() => { 
+            sound.playClick(); 
+            setSelectedModule('greenhouse'); 
+            setShowDeepFact(false);
+          }}
+          className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-mono font-bold flex items-center gap-1 transition-all ${
+            selectedModule === 'greenhouse' ? 'bg-[#52D6FF] text-slate-950 shadow-md' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+          }`}
+          title={language === 'bn' ? 'বায়ো-ডোম ভিউ' : 'Bio-Dome Camera'}
+        >
+          <span>🌱</span>
+          <span className="hidden md:inline">{language === 'bn' ? 'ডোম' : 'DOME'}</span>
+        </button>
+
+        <button 
+          type="button"
+          onClick={() => { 
+            sound.playClick(); 
+            setSelectedModule('rover_garage'); 
+            setShowDeepFact(false);
+          }}
+          className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-mono font-bold flex items-center gap-1 transition-all ${
+            selectedModule === 'rover_garage' ? 'bg-[#52D6FF] text-slate-950 shadow-md' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+          }`}
+          title={language === 'bn' ? 'রোভার হ্যাঙ্গার ভিউ' : 'Rover Garage Camera'}
+        >
+          <span>🚜</span>
+          <span className="hidden md:inline">{language === 'bn' ? 'রোভার' : 'ROVER'}</span>
+        </button>
+
+        <div className="w-px h-3.5 bg-slate-700 mx-0.5" />
+
+        {/* Zoom In */}
+        <button
+          type="button"
+          onClick={() => { 
+            sound.playClick(); 
+            setZoomLevel(z => Math.max(0.6, Number((z - 0.15).toFixed(2)))); 
+          }}
+          className="px-1.5 py-0.5 rounded text-slate-300 hover:text-white hover:bg-slate-800/80 font-mono text-xs font-bold"
+          title="Zoom In"
+        >
+          +
+        </button>
+
+        {/* Zoom Out */}
+        <button
+          type="button"
+          onClick={() => { 
+            sound.playClick(); 
+            setZoomLevel(z => Math.min(1.4, Number((z + 0.15).toFixed(2)))); 
+          }}
+          className="px-1.5 py-0.5 rounded text-slate-300 hover:text-white hover:bg-slate-800/80 font-mono text-xs font-bold"
+          title="Zoom Out"
+        >
+          -
+        </button>
+      </div>
+
+      {/* Floating Action Toast Notification (Top-Center) */}
+      {actionToast && (
+        <div className="absolute top-12 sm:top-14 left-1/2 -translate-x-1/2 z-30 px-3.5 py-1.5 rounded-full bg-slate-900/95 border border-[#52D6FF] text-[#52D6FF] text-xs font-mono font-bold shadow-2xl flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-200">
+          <span className="text-sm">{actionToast.icon}</span>
+          <span>{actionToast.message}</span>
+        </div>
       )}
 
-      {/* Quick Inspection Floating Drawer */}
+      {/* Tactical Contextual Object HUD (Bottom Overlay) */}
       {selectedModule && (
-        <div className="absolute bottom-3 left-3 right-3 sm:right-auto sm:max-w-md p-3.5 rounded-xl bg-[#101827]/95 border border-[#52D6FF]/40 backdrop-blur-md shadow-2xl text-xs z-10 animate-in fade-in zoom-in-95 duration-150">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="font-display font-bold text-sm text-[#52D6FF] flex items-center gap-2">
-              <Info className="w-4 h-4 text-[#52D6FF]" />
-              {(language === 'bn' && modules[selectedModule].nameBn) ? modules[selectedModule].nameBn : modules[selectedModule].name}{' '}
-              {language === 'bn' ? `(লেভেল ${formatNum(modules[selectedModule].level)})` : `(Level ${modules[selectedModule].level})`}
-            </span>
-            <button
-              onClick={() => setSelectedModule(null)}
-              className="text-slate-400 hover:text-white px-1.5 font-mono"
-            >
-              ✕
-            </button>
-          </div>
-          <p className="text-slate-300 mb-2 leading-relaxed">
-            {(language === 'bn' && modules[selectedModule].descriptionBn) ? modules[selectedModule].descriptionBn : modules[selectedModule].description}
-          </p>
-          <div className="grid grid-cols-2 gap-2 font-mono text-[11px] mb-2 bg-[#0A1020]/70 p-2 rounded border border-slate-800">
-            <div>{language === 'bn' ? '⚡ বিদ্যুৎ খরচ: ' : '⚡ Power Load: '}<span className="text-amber-400">{formatNum(modules[selectedModule].powerDraw)} kW</span></div>
-            <div>{language === 'bn' ? '⚙️ কার্যক্ষমতা: ' : '⚙️ Efficiency: '}<span className="text-emerald-400">{formatNum(Math.round(modules[selectedModule].efficiency * 100))}%</span></div>
-          </div>
-          <div className="text-[11px] text-sky-200/80 italic border-l-2 border-[#52D6FF] pl-2 mb-2">
-            {t('canvas.spec')} {modules[selectedModule].educationalFact}
-          </div>
-
-          {selectedModule === 'rover_garage' && onOpenRoverSortie && (
+        <div className="absolute bottom-3 left-3 right-3 sm:right-auto sm:max-w-md p-3 sm:p-3.5 rounded-xl bg-[#0A1020]/95 border border-[#52D6FF]/40 backdrop-blur-md shadow-2xl text-xs z-20 animate-in fade-in zoom-in-95 duration-150">
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
+            <div className="flex items-center gap-2">
+              <span className="text-base sm:text-lg">
+                {selectedModule === 'solar_array' ? '☀' :
+                 selectedModule === 'habitat' ? '🏠' :
+                 selectedModule === 'life_support' ? '🫁' :
+                 selectedModule === 'greenhouse' ? '🌱' :
+                 selectedModule === 'science_lab' ? '🔬' : '🚜'}
+              </span>
+              <div>
+                <span className="font-display font-bold text-xs sm:text-sm text-[#52D6FF] block leading-tight">
+                  {(language === 'bn' && modules[selectedModule].nameBn) ? modules[selectedModule].nameBn : modules[selectedModule].name}
+                </span>
+                <span className="text-[10px] font-mono text-slate-400">
+                  {language === 'bn' ? `লেভেল ${formatNum(modules[selectedModule].level)} মডিউল` : `Level ${modules[selectedModule].level} Module`}
+                </span>
+              </div>
+            </div>
             <button
               type="button"
               onClick={() => {
                 sound.playClick();
-                onOpenRoverSortie();
+                setSelectedModule(null);
+                setZoomLevel(1.0);
               }}
-              className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-display font-bold text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all mt-2"
+              className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 font-mono text-xs cursor-pointer"
+              title="Close Panel"
             >
-              <span>🚜</span>
-              <span>{language === 'bn' ? 'রোভার সর্টি অভিযান শুরু করুন ↗' : 'Launch Rover Science Sortie ↗'}</span>
+              ✕
             </button>
+          </div>
+
+          {/* Quick Metrics Bar */}
+          <div className="grid grid-cols-2 gap-2 font-mono text-[11px] mb-2.5 bg-[#101827]/80 p-2 rounded-lg border border-slate-800/80">
+            <div className="flex items-center justify-between">
+              <span className="text-slate-400">{language === 'bn' ? '⚡ লোড:' : '⚡ Load:'}</span>
+              <span className="text-amber-400 font-bold">{formatNum(modules[selectedModule].powerDraw)} kW</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-slate-400">{language === 'bn' ? '⚙️ কার্যক্ষমতা:' : '⚙️ Eff:'}</span>
+              <span className="text-emerald-400 font-bold">{formatNum(Math.round(modules[selectedModule].efficiency * 100))}%</span>
+            </div>
+          </div>
+
+          {/* Instant Tactical Action Buttons */}
+          <div className="mb-2">
+            {selectedModule === 'solar_array' && (
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playSuccess();
+                  showToast(
+                    language === 'bn' ? 'প্যানেলের ধুলো পরিষ্কার! বিদ্যুৎ উৎপাদন ক্ষমতা বৃদ্ধি পেল' : 'DUST WIPED OFF ARRAYS • SOLAR OUTPUT RESTORED',
+                    '🧹'
+                  );
+                  if (onPerformTacticalAction) onPerformTacticalAction('clean_dust', 'solar_array');
+                }}
+                className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-display font-bold text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer"
+              >
+                <span>🧹</span>
+                <span>{language === 'bn' ? 'ধুলো পরিষ্কার করুন (+২০% বিদ্যুৎ)' : 'CLEAN DUST DEPOSITS (+20% POWER)'}</span>
+              </button>
+            )}
+
+            {selectedModule === 'greenhouse' && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (resources.water < 5) {
+                    sound.playWarning();
+                    showToast(
+                      language === 'bn' ? 'পর্যাপ্ত পানি নেই! (কমপক্ষে ৫ লিটার প্রয়োজন)' : 'INSUFFICIENT WATER RESERVES (MIN 5L)',
+                      '⚠️'
+                    );
+                    return;
+                  }
+                  sound.playSuccess();
+                  showToast(
+                    language === 'bn' ? 'গাছে সেচ সম্পন্ন! ফলন বৃদ্ধি নিশ্চিত' : 'CROPS IRRIGATED • HYDROPONIC BIOMASS OPTIMIZED',
+                    '💧'
+                  );
+                  if (onPerformTacticalAction) onPerformTacticalAction('irrigate', 'greenhouse');
+                }}
+                className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-emerald-500 to-green-400 hover:from-emerald-400 hover:to-green-300 text-slate-950 font-display font-bold text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer"
+              >
+                <span>💧</span>
+                <span>{language === 'bn' ? 'ফসলে সেচ দিন (-৫ লিটার পানি)' : 'IRRIGATE BIODOME CROPS (-5L H2O)'}</span>
+              </button>
+            )}
+
+            {selectedModule === 'life_support' && (
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playSuccess();
+                  showToast(
+                    language === 'bn' ? 'ইসিএলএস স্ক্রাবার ও ফিল্টার মেরামত সম্পন্ন' : 'ECLSS O2 SCRUBBER & FILTERS SERVICED',
+                    '🔧'
+                  );
+                  if (onPerformTacticalAction) onPerformTacticalAction('service_eclss', 'life_support');
+                }}
+                className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-sky-500 to-cyan-400 hover:from-sky-400 hover:to-cyan-300 text-slate-950 font-display font-bold text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer"
+              >
+                <span>🔧</span>
+                <span>{language === 'bn' ? 'ইসিএলএস সার্ভিসিং করুন (১০০% কার্যক্ষমতা)' : 'SERVICE ECLSS SCRUBBERS (100% EFF)'}</span>
+              </button>
+            )}
+
+            {selectedModule === 'science_lab' && (
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playSuccess();
+                  showToast(
+                    language === 'bn' ? 'গ্রহের ভূতাত্ত্বিক বিশ্লেষণ সম্পন্ন (+১৫ বিজ্ঞান পয়েন্ট)' : 'SPECTRAL ANALYSIS COMPLETE (+15 SCIENCE PTS)',
+                    '🔬'
+                  );
+                  if (onPerformTacticalAction) onPerformTacticalAction('science_experiment', 'science_lab');
+                }}
+                className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-400 hover:from-purple-400 hover:to-indigo-300 text-white font-display font-bold text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer"
+              >
+                <span>🔬</span>
+                <span>{language === 'bn' ? 'রেগোলিথ বিশ্লেষণ চালান (+১৫ পয়েন্ট)' : 'RUN REGOLITH ANALYSIS (+15 PTS)'}</span>
+              </button>
+            )}
+
+            {selectedModule === 'rover_garage' && onOpenRoverSortie && (
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playClick();
+                  onOpenRoverSortie();
+                }}
+                className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-display font-bold text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer"
+              >
+                <span>🚜</span>
+                <span>{language === 'bn' ? 'রোভার সর্টি অভিযান শুরু করুন ↗' : 'LAUNCH ROVER SCIENCE SORTIE ↗'}</span>
+              </button>
+            )}
+
+            {selectedModule === 'habitat' && onOpenCrew && (
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playClick();
+                  onOpenCrew();
+                }}
+                className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-400 hover:to-blue-400 text-white font-display font-bold text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer"
+              >
+                <span>👨‍🚀</span>
+                <span>{language === 'bn' ? 'নভোচারীদের স্বাস্থ্য পরীক্ষা করুন ↗' : 'INSPECT CREW WELLBEING ↗'}</span>
+              </button>
+            )}
+          </div>
+
+          {/* Deep Science Progressive Disclosure Toggle */}
+          <div className="pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+            <button
+              type="button"
+              onClick={() => {
+                sound.playClick();
+                setShowDeepFact(prev => !prev);
+              }}
+              className="text-[#52D6FF] hover:underline flex items-center gap-1 font-mono text-[10px] cursor-pointer"
+            >
+              <Info className="w-3 h-3" />
+              <span>{showDeepFact ? (language === 'bn' ? 'তথ্য লুকান' : 'Hide NASA Spec') : (language === 'bn' ? 'নাসা বৈজ্ঞানিক তথ্য ▾' : 'NASA Technical Spec ▾')}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                sound.playClick();
+                setSelectedModule(null);
+                setZoomLevel(1.0);
+              }}
+              className="text-slate-400 hover:text-white font-mono text-[10px]"
+            >
+              {language === 'bn' ? 'ঘাঁটি ভিউ' : 'Reset View'}
+            </button>
+          </div>
+
+          {showDeepFact && (
+            <div className="mt-2 text-[10px] text-sky-200/90 italic border-l-2 border-[#52D6FF] pl-2 py-0.5 bg-slate-900/60 rounded-r animate-in fade-in duration-150">
+              {modules[selectedModule].educationalFact}
+            </div>
           )}
         </div>
       )}
 
       {/* Interactive Helper Hint */}
       {!selectedModule && (
-        <div className="absolute bottom-3 right-3 hidden sm:flex items-center gap-1.5 text-[11px] text-slate-400 font-mono bg-[#0A1020]/75 px-2.5 py-1 rounded-lg border border-slate-800">
+        <div className="absolute bottom-3 right-3 hidden sm:flex items-center gap-1.5 text-[11px] text-slate-400 font-mono bg-[#0A1020]/75 px-2.5 py-1 rounded-lg border border-slate-800 pointer-events-none">
           <Compass className="w-3.5 h-3.5 text-[#52D6FF]" />
           {t('canvas.hint')}
         </div>

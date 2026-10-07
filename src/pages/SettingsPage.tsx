@@ -14,6 +14,7 @@ import {
   Radio, 
   CheckCircle2 
 } from 'lucide-react';
+import { LanguageToggle } from '../components/common/LanguageToggle';
 
 export const SettingsPage: React.FC = () => {
   const { 
@@ -23,7 +24,7 @@ export const SettingsPage: React.FC = () => {
     hasSavedMission, 
     gameState 
   } = useMission();
-  const { t, formatNum, language, setLanguage } = useLanguage();
+  const { t, formatNum, language } = useLanguage();
 
   const [reducedMotion, setReducedMotion] = useState<boolean>(() => {
     return document.documentElement.classList.contains('reduced-motion');
@@ -90,34 +91,7 @@ export const SettingsPage: React.FC = () => {
                 </p>
               </div>
 
-              <div className="inline-flex p-1 rounded-xl bg-[#0F172A] border border-slate-700">
-                <button
-                  onClick={() => {
-                    sound.playClick();
-                    setLanguage('bn');
-                  }}
-                  className={`px-4 py-2 rounded-lg text-xs font-mono font-bold transition-all ${
-                    language === 'bn'
-                      ? 'bg-[#52D6FF] text-slate-950 shadow-md'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  🇧🇩 বাংলা
-                </button>
-                <button
-                  onClick={() => {
-                    sound.playClick();
-                    setLanguage('en');
-                  }}
-                  className={`px-4 py-2 rounded-lg text-xs font-mono font-bold transition-all ${
-                    language === 'en'
-                      ? 'bg-[#52D6FF] text-slate-950 shadow-md'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  English 🇬🇧
-                </button>
-              </div>
+              <LanguageToggle size="md" />
             </div>
 
             {/* 2. Audio & Synthesizer Controls */}
