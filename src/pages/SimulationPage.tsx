@@ -519,24 +519,29 @@ export const SimulationPage: React.FC = () => {
       {/* Floating Tactical Crew Modal */}
       {showCrewModal && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-md animate-fadeIn"
           role="dialog"
           aria-modal="true"
           onClick={() => setShowCrewModal(false)}
         >
           <div 
-            className="relative w-full max-w-4xl bg-[#0F172A] border border-[#52D6FF]/40 rounded-2xl shadow-2xl p-4 sm:p-5 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-150"
+            className="relative w-full max-w-5xl bg-[#0F172A] border-2 border-[#52D6FF]/50 rounded-2xl shadow-2xl p-4 sm:p-6 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-150"
             onClick={e => e.stopPropagation()}
+            style={{ boxShadow: '0 0 40px -10px rgba(82, 214, 255, 0.25), 0 25px 50px -12px rgba(0, 0, 0, 0.9)' }}
           >
-            <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
-              <div className="flex items-center gap-2 text-white font-display font-bold text-base">
-                <span>👨‍🚀</span>
+            <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-slate-700/80">
+              <div className="flex items-center gap-2.5 text-white font-display font-bold text-base sm:text-lg">
+                <span className="text-xl">👨‍🚀</span>
                 <span>{language === 'bn' ? 'নভোচারীদের স্বাস্থ্য ও দায়িত্ব' : 'CREW ROSTER & HEALTH TELEMETRY'}</span>
               </div>
               <button
                 type="button"
-                onClick={() => setShowCrewModal(false)}
-                className="text-slate-400 hover:text-white p-1 rounded font-mono text-sm cursor-pointer"
+                onClick={() => {
+                  sound.playClick();
+                  setShowCrewModal(false);
+                }}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                aria-label="Close"
               >
                 ✕
               </button>
