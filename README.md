@@ -259,8 +259,8 @@ OUTPOST offers 100% full bilingual parity designed for both international space 
 ### Setup Steps
 ```bash
 # 1. Clone the repository
-git clone https://github.com/jihadjp/nasa-junior-astronaut-trainer.git
-cd nasa-junior-astronaut-trainer
+git clone https://github.com/jihadjp/outpost-app.git
+cd outpost-app
 
 # 2. Install project dependencies
 npm install
