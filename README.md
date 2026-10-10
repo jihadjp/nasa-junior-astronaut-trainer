@@ -4,14 +4,14 @@
 > *"Build smart. Survive longer. Discover more."* • *"বিজ্ঞান ও সিদ্ধান্তের শক্তিতে মহাশূন্যে টিকে থাকা।"*
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-outpost--app.vercel.app-00D4FF?style=for-the-badge&logo=vercel)](https://outpost-app.vercel.app/)
-[![Build & Tests](https://img.shields.io/badge/tests-18%20passed-35D07F?style=for-the-badge&logo=vitest)](./TESTING.md)
+[![Build & Tests](https://img.shields.io/badge/tests-18%20passed-35D07F?style=for-the-badge&logo=vitest)](./docs/TESTING.md)
 [![Three.js WebGL](https://img.shields.io/badge/3D_Engine-Three.js_r186-black?style=for-the-badge&logo=three.js)](https://threejs.org/)
 [![React 19](https://img.shields.io/badge/React_19-TypeScript-52D6FF?style=for-the-badge&logo=react)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![NASA Space Apps](https://img.shields.io/badge/NASA-Space_Apps_2026-3B82F6?style=for-the-badge&logo=nasa)](https://www.spaceappschallenge.org/)
 [![PWA Ready](https://img.shields.io/badge/PWA-Offline_Ready-purple?style=for-the-badge)](./public/manifest.json)
 [![Bilingual Parity](https://img.shields.io/badge/Language-English_%7C_%E0%A6%AC%E0%A6%BE%E0%A6%82%E0%A6%B2%E0%A6%BE-FF5C5C?style=for-the-badge)](#-bilingual-localization-system-বাংলা--english)
-[![License](https://img.shields.io/badge/License-MIT_Open_Source-F4C95D?style=for-the-badge)](./ASSET_LICENSES.md)
+[![License](https://img.shields.io/badge/License-MIT_Open_Source-F4C95D?style=for-the-badge)](./docs/ASSET_LICENSES.md)
 
 ---
 
@@ -37,7 +37,8 @@
 12. [Installation & Local Setup](#12-installation--local-setup)
 13. [Automated Test Suite (18/18 Passing)](#13-automated-test-suite-1818-passing)
 14. [NASA Scientific Citations & Compliance](#14-nasa-scientific-citations--compliance)
-15. [License](#15-license)
+15. [Project Documentation Directory (`docs/`)](#15-project-documentation-directory-docs)
+16. [License](#16-license)
 
 ---
 
@@ -301,13 +302,28 @@ All planetary topography, life support benchmarks, and scientific parameters uti
 5. **NASA Solar System Treks:** Planetary spatial visualization and mission landing site layers ([https://trek.nasa.gov/](https://trek.nasa.gov/)).
 6. **NASA Planetary Data System (PDS):** Geosciences, Atmospheres, and PPI Nodes ([https://pds.nasa.gov/](https://pds.nasa.gov/)).
 
-*For detailed paper citations and document links, see [`SOURCES.md`](./SOURCES.md).*
+*For detailed paper citations and document links, see [`docs/SOURCES.md`](./docs/SOURCES.md).*
 
 ---
 
-## 15. License
+## 15. Project Documentation Directory (`docs/`)
 
-This project is open-source software licensed under the **[MIT License](./ASSET_LICENSES.md)**.  
+To keep the repository clean and maintainable, all comprehensive reports, game design documents, and scientific validation files are organized in the [`docs/`](./docs/) directory:
+
+| Document | Purpose & Judging Value |
+|:---|:---|
+| 📐 [**`docs/ARCHITECTURE.md`**](./docs/ARCHITECTURE.md) | Technical architecture, data flow diagrams, Three.js WebGL canvas integration, and state machine lifecycle. |
+| 🎮 [**`docs/GAME_DESIGN.md`**](./docs/GAME_DESIGN.md) | Game mechanics, Sol tick loop, module formulas, environmental crises, and scoring algorithms. |
+| 🔬 [**`docs/SOURCES.md`**](./docs/SOURCES.md) | Comprehensive NASA dataset citations, PDS nodes, Solar System Treks URLs, and research papers. |
+| 🎓 [**`docs/EDUCATIONAL_MODEL.md`**](./docs/EDUCATIONAL_MODEL.md) | Pedagogical foundation, STEM curriculum alignment, Next Generation Science Standards (NGSS), and rubrics. |
+| 🧪 [**`docs/TESTING.md`**](./docs/TESTING.md) | Automated testing report, test suite coverage (18/18 passing tests), and reproduction commands. |
+| ⚖️ [**`docs/ASSET_LICENSES.md`**](./docs/ASSET_LICENSES.md) | MIT software license, NASA open media guidelines compliance, and third-party attribution. |
+
+---
+
+## 16. License
+
+This project is open-source software licensed under the **[MIT License](./docs/ASSET_LICENSES.md)**.  
 All NASA technical data, mission information, and planetary names are used in accordance with NASA Open Data and Media Usage guidelines for non-commercial educational purposes.
 
 ---
