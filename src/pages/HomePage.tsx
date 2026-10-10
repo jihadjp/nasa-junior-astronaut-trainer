@@ -22,18 +22,19 @@ export const HomePage: React.FC = () => {
         hasSavedMission={hasSavedMission}
         savedMissionDay={gameState.missionDay}
         onResumeMission={() => navigate('/mission/simulation')}
-        onStartMission={() => {
-          handleStartSetup('moon');
+        onStartMission={(dest = 'moon') => {
+          handleStartSetup(dest);
           navigate('/mission');
         }}
         onStartDemo={() => setShowDemoModal(true)}
+        onOpenAcademy={() => navigate('/learn')}
         onOpenTeacher={() => navigate('/teacher')}
         onOpenSources={() => setShowSourcesModal(true)}
         onOpenTutorial={() => setShowTutorialModal(true)}
         onOpenSettings={() => navigate('/settings')}
-        onToggleCommanderMode={() => {
+        onToggleCommanderMode={(dest = 'moon') => {
           handleToggleMode();
-          handleStartSetup('moon');
+          handleStartSetup(dest);
           navigate('/mission');
         }}
       />
