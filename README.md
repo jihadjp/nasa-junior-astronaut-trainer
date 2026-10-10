@@ -3,7 +3,7 @@
 > **NASA Space Apps Challenge 2026** — *Junior Astronaut Mission Trainer*  
 > *"Build smart. Survive longer. Discover more."* • *"বিজ্ঞান ও সিদ্ধান্তের শক্তিতে মহাশূন্যে টিকে থাকা।"*
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-outpost--app.vercel.app-00D4FF?style=for-the-badge&logo=vercel)](https://outpost-app.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-outpost--trainer.vercel.app-00D4FF?style=for-the-badge&logo=vercel)](https://outpost-trainer.vercel.app/)
 [![Build & Tests](https://img.shields.io/badge/tests-18%20passed-35D07F?style=for-the-badge&logo=vitest)](./docs/TESTING.md)
 [![Three.js WebGL](https://img.shields.io/badge/3D_Engine-Three.js_r186-black?style=for-the-badge&logo=three.js)](https://threejs.org/)
 [![React 19](https://img.shields.io/badge/React_19-TypeScript-52D6FF?style=for-the-badge&logo=react)](https://react.dev/)
@@ -16,7 +16,7 @@
 ---
 
 ## 🌐 Live Application & Links
-- **Official Live Web Application:** [https://outpost-app.vercel.app/](https://outpost-app.vercel.app/)
+- **Official Live Web Application:** [https://outpost-trainer.vercel.app/](https://outpost-trainer.vercel.app/)
 - **GitHub Repository:** [https://github.com/jihadjp/outpost-app](https://github.com/jihadjp/outpost-app)
 - **NASA Space Apps Challenge 2026 Submission:** Junior Astronaut Mission Trainer
 
