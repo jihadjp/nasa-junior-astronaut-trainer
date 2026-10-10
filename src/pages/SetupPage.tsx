@@ -243,6 +243,8 @@ export const SetupPage: React.FC = () => {
               <BaseBuilder
                 onCompleteBase={handleBaseBuilderDone}
                 onBack={() => setCurrentStep('crew')}
+                planet={destConfig}
+                siteName={siteName}
               />
             </div>
           )}

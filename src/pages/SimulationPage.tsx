@@ -22,6 +22,7 @@ import { sound } from '../sound/audioEngine';
 import { NasaDataSourceModal } from '../components/nasa/NasaDataSourceModal';
 import { NasaTerrainExplorerModal } from '../components/nasa/NasaTerrainExplorerModal';
 import { RoverSortieModal } from '../components/mission/RoverSortieModal';
+import { PauseMenuModal } from '../components/mission/PauseMenuModal';
 
 import { 
   StepForward, 
@@ -51,6 +52,7 @@ export const SimulationPage: React.FC = () => {
   const [showTelemetryModal, setShowTelemetryModal] = useState(false);
   const [showResourcesModal, setShowResourcesModal] = useState(false);
   const [selectedResourceDetail, setSelectedResourceDetail] = useState<ResourceDetailData | null>(null);
+  const [showPauseModal, setShowPauseModal] = useState(false);
 
   const {
     gameState,
@@ -66,6 +68,59 @@ export const SimulationPage: React.FC = () => {
     setShowAbortModal,
     eventModalVisible
   } = useMission();
+
+  // In-Game Tactical Keyboard Controls
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore key events if focused in form input or textarea
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+        return;
+      }
+
+      // If active event decision modal is open, don't trigger game hotkeys
+      if (gameState.activeEvent && eventModalVisible) {
+        return;
+      }
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        sound.playClick();
+        stepDays(1);
+      } else if (e.code === 'Digit1') {
+        e.preventDefault();
+        sound.playClick();
+        setGameState(prev => ({ ...prev, speed: 1 }));
+      } else if (e.code === 'Digit3') {
+        e.preventDefault();
+        sound.playClick();
+        setGameState(prev => ({ ...prev, speed: 3 }));
+      } else if (e.code === 'KeyP' || e.code === 'Escape') {
+        e.preventDefault();
+        sound.playClick();
+        setShowPauseModal(prev => !prev);
+      } else if (e.code === 'KeyC') {
+        e.preventDefault();
+        sound.playClick();
+        setShowCrewModal(prev => !prev);
+      } else if (e.code === 'KeyR') {
+        e.preventDefault();
+        sound.playClick();
+        setShowRoverSortieModal(prev => !prev);
+      } else if (e.code === 'KeyV') {
+        e.preventDefault();
+        sound.playClick();
+        setShowResourcesModal(prev => !prev);
+      } else if (e.code === 'KeyT') {
+        e.preventDefault();
+        sound.playClick();
+        setShowTerrainModal(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [eventModalVisible, gameState.activeEvent, setGameState, stepDays]);
 
   // Support direct route deep-linking to /mission/event/:eventId
   useEffect(() => {
@@ -461,6 +516,21 @@ export const SimulationPage: React.FC = () => {
               <Satellite className="w-3.5 h-3.5 text-sky-400" />
               <span className="hidden sm:inline">{language === 'bn' ? 'নাসা' : 'NASA'}</span>
             </button>
+
+            {/* TACTICAL PAUSE / MENU BUTTON (ESC) */}
+            <button
+              type="button"
+              onClick={() => {
+                sound.playClick();
+                setShowPauseModal(true);
+              }}
+              className="p-2 sm:px-2.5 sm:py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 hover:border-[#52D6FF]/50 text-slate-200 text-xs font-mono font-bold flex items-center gap-1.5 transition-all min-h-[38px] cursor-pointer"
+              title={language === 'bn' ? 'ট্যাকটিক্যাল মেনু [ESC]' : 'Tactical Pause Menu [ESC]'}
+            >
+              <span className="text-amber-400 font-bold">⏸</span>
+              <span className="hidden sm:inline">{language === 'bn' ? 'মেনু' : 'MENU'}</span>
+              <kbd className="hidden lg:inline text-[9px] px-1 py-0.5 bg-slate-900 border border-slate-700 rounded text-slate-400">ESC</kbd>
+            </button>
           </div>
         </div>
       </main>
@@ -642,6 +712,21 @@ export const SimulationPage: React.FC = () => {
           />
         </>
       )}
+
+      {/* In-Game Tactical Pause Menu Modal */}
+      <PauseMenuModal
+        isOpen={showPauseModal}
+        state={gameState}
+        onResume={() => setShowPauseModal(false)}
+        onRestart={() => {
+          setShowPauseModal(false);
+          handleAbortToSetup();
+        }}
+        onAbortToReport={() => {
+          setShowPauseModal(false);
+          handleAbortToReport();
+        }}
+      />
     </div>
   );
 };

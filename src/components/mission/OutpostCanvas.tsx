@@ -390,6 +390,26 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
           />
         )}
 
+        {/* Mars Dust Storm Veil (Dynamic atmospheric dust when active or high dust tau) */}
+        {isMars && (environment.dustLevel > 35 || environment.dustStormActive) && (
+          <g opacity={Math.min(0.65, environment.dustLevel / 100)}>
+            <rect width="960" height="480" fill="#C2410C" opacity="0.18" />
+            {Array.from({ length: 6 }).map((_, i) => (
+              <line 
+                key={i}
+                x1={(i * 160 + animTime * 140) % 1040 - 80}
+                y1={240 + (i * 34) % 180}
+                x2={(i * 160 + animTime * 140) % 1040 + 20}
+                y2={240 + (i * 34) % 180 + 3}
+                stroke="#EA580C"
+                strokeWidth="1.4"
+                strokeDasharray="25 45"
+                opacity="0.38"
+              />
+            ))}
+          </g>
+        )}
+
         {/* Celestial Body: Earth (from Moon) or Phobos (from Mars) */}
         {!isMars ? (
           <g transform="translate(770, 65)">
@@ -609,9 +629,38 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
             stroke="#52D6FF"
             strokeWidth="2"
           />
-          {/* Observation Viewports: Tinted glass by day, warm yellow glow at night */}
-          <circle cx="395" cy="315" r="7" fill={isNight ? "#FDE047" : "#38BDF8"} opacity={isNight ? 0.95 : 0.65} />
-          <circle cx="425" cy="315" r="7" fill={isNight ? "#FDE047" : "#38BDF8"} opacity={isNight ? 0.95 : 0.65} />
+          {/* Emergency Alert Beacon on Habitat Roof (Active during crisis, low power, or low oxygen) */}
+          {(isEmergencyPower || isOxygenCritical || activeEvent) && (
+            <g transform="translate(410, 285)">
+              <circle cx="0" cy="0" r="10" fill="#EF4444" opacity={0.25 + 0.25 * Math.sin(animTime * 7)} />
+              <circle cx="0" cy="0" r="2.5" fill="#EF4444" />
+              <line 
+                x1="0" 
+                y1="0" 
+                x2={12 * Math.cos(animTime * 5)} 
+                y2={-12 * Math.sin(animTime * 5)} 
+                stroke="#EF4444" 
+                strokeWidth="1.5" 
+                opacity="0.85" 
+              />
+            </g>
+          )}
+
+          {/* Observation Viewports: Dynamically reacts to power brownout or day/night cycle */}
+          <circle 
+            cx="395" 
+            cy="315" 
+            r="7" 
+            fill={isEmergencyPower ? "#EF4444" : isLowPower ? "#F59E0B" : isNight ? "#FDE047" : "#38BDF8"} 
+            opacity={isEmergencyPower ? (0.4 + 0.4 * Math.sin(animTime * 6)) : isNight ? 0.95 : 0.65} 
+          />
+          <circle 
+            cx="425" 
+            cy="315" 
+            r="7" 
+            fill={isEmergencyPower ? "#EF4444" : isLowPower ? "#F59E0B" : isNight ? "#FDE047" : "#38BDF8"} 
+            opacity={isEmergencyPower ? (0.4 + 0.4 * Math.sin(animTime * 6)) : isNight ? 0.95 : 0.65} 
+          />
           
           {/* Commander Silhouette Visible in Viewport at x: 425 */}
           <circle cx="425" cy="313" r="2.5" fill="#1E293B" opacity="0.8" />
@@ -619,13 +668,13 @@ export const OutpostCanvas: React.FC<OutpostCanvasProps> = ({
 
           {/* Pressure Airlock Hatch */}
           <rect x="400" y="330" width="20" height="20" rx="3" fill="#1E293B" stroke="#F4C95D" strokeWidth="1.5" />
-          <circle cx="410" cy="326" r="1.5" fill="#10B981" />
+          <circle cx="410" cy="326" r="1.5" fill={isEmergencyPower ? "#EF4444" : "#10B981"} />
 
           {/* Night Floodlight Beam */}
-          {isNight && (
+          {isNight && !isEmergencyPower && (
             <polygon 
               points="400,340 375,390 445,390" 
-              fill="#FDE047" 
+              fill={isLowPower ? "#F59E0B" : "#FDE047"} 
               opacity="0.12" 
             />
           )}
