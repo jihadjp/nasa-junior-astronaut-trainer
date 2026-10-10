@@ -2,6 +2,7 @@
 > **NASA Space Apps Challenge 2026** — *Junior Astronaut Mission Trainer*  
 > *"Build smart. Survive longer. Discover more."* • *"বিজ্ঞান ও সিদ্ধান্তের শক্তিতে টিকে থাকা।"*
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-outpost.vercel.app-00D4FF?style=for-the-badge&logo=vercel)](https://outpost.vercel.app)
 [![Build & Tests](https://img.shields.io/badge/tests-18%20passed-35D07F?style=for-the-badge&logo=vitest)](./TESTING.md)
 [![Vite + React](https://img.shields.io/badge/React_19-TypeScript-52D6FF?style=for-the-badge&logo=react)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
