@@ -17,7 +17,7 @@
 
 ## 🌐 Live Application & Links
 - **Official Live Web Application:** [https://outpost-app.vercel.app/](https://outpost-app.vercel.app/)
-- **GitHub Repository:** [https://github.com/jihadjp/nasa-junior-astronaut-trainer](https://github.com/jihadjp/nasa-junior-astronaut-trainer)
+- **GitHub Repository:** [https://github.com/jihadjp/outpost-app](https://github.com/jihadjp/outpost-app)
 - **NASA Space Apps Challenge 2026 Submission:** Junior Astronaut Mission Trainer
 
 ---
